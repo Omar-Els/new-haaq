@@ -1,0 +1,300 @@
+/* Finance Page Styles */
+.finance-container {
+  padding: var(--spacing-md) var(--spacing-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.btn-success {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #27ae60;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.page-header button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Summary Cards */
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.summary-card {
+  padding: var(--spacing-lg);
+  text-align: center;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: transform 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+}
+
+.summary-amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.income-card {
+  background-color: rgba(46, 204, 113, 0.1);
+  border-left: 4px solid var(--secondary-color);
+}
+
+.expense-card {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid var(--error-color);
+}
+
+.balance-card {
+  background-color: rgba(52, 152, 219, 0.1);
+  border-left: 4px solid var(--primary-color);
+}
+
+/* أنماط اختيار المستفيدين */
+.beneficiaries-selection {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.5rem;
+  background-color: var(--card-bg);
+  margin-bottom: 0.5rem;
+}
+
+.beneficiaries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.beneficiary-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.beneficiary-checkbox input[type="checkbox"] {
+  margin: 0;
+}
+
+.selected-count {
+  font-size: 0.875rem;
+  color: var(--text-secondary-color);
+  margin-top: 0.25rem;
+}
+
+.no-beneficiaries {
+  text-align: center;
+  color: var(--text-secondary-color);
+  padding: 1rem;
+}
+
+/* أنماط عرض المستفيدين في المعاملات */
+.transaction-beneficiaries-container {
+  margin-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 0.75rem;
+}
+
+.show-beneficiaries-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.transaction-beneficiaries {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+/* عرض المستفيدين عند النقر على الزر */
+.transaction-beneficiaries-container.show-details .transaction-beneficiaries {
+  display: block;
+}
+
+.transaction-beneficiaries ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.transaction-beneficiaries li {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.beneficiary-name {
+  font-weight: 500;
+}
+
+.beneficiary-amount {
+  color: var(--primary-color);
+  font-weight: 500;
+  background-color: rgba(52, 152, 219, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* أنماط المبالغ */
+.income-amount {
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+.expense-amount {
+  color: var(--error-color);
+  font-weight: bold;
+}
+
+/* أنماط أزرار الإجراءات */
+.transaction-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--bg-color);
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background-color: rgba(52, 152, 219, 0.2);
+  color: var(--primary-color);
+}
+
+.delete-btn:hover {
+  background-color: rgba(231, 76, 60, 0.2);
+  color: var(--error-color);
+}
+
+/* أنماط حالة التحميل */
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary-color);
+}
+
+/* أنماط رسائل الخطأ */
+.error-message {
+  color: var(--error-color);
+  text-align: center;
+  padding: 1rem;
+  background-color: rgba(231, 76, 60, 0.1);
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+/* أنماط نموذج توب أب */
+.top-up-form {
+  margin-bottom: var(--spacing-lg);
+  border-right: 4px solid var(--secondary-color);
+}
+
+.top-up-form h2 {
+  color: var(--secondary-color);
+}
+
+.top-up-form .form-actions button[type="submit"] {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.payment-method-icons {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.payment-method-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+}
+
+.payment-method-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.payment-method-icon.active {
+  background-color: rgba(46, 204, 113, 0.1);
+  border: 1px solid var(--secondary-color);
+}
+
+.payment-method-icon svg {
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+}
+
+.payment-method-icon span {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+}
+
+
