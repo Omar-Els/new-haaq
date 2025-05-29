@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
 
@@ -217,7 +217,7 @@ const beneficiariesSlice = createSlice({
       };
 
       // Apply filters
-      const filteredItems = state.items.filter(item => {
+      state.filteredItems = state.items.filter(item => {
         const nameMatch = !state.filter.name ||
           item.name.toLowerCase().includes(state.filter.name.toLowerCase());
 
@@ -232,13 +232,6 @@ const beneficiariesSlice = createSlice({
 
         return nameMatch && nationalIdMatch && beneficiaryIdMatch && phoneMatch;
       });
-
-      // Sort filtered items by beneficiaryId
-      state.filteredItems = filteredItems.sort((a, b) => {
-        const aId = parseInt(a.beneficiaryId) || 0;
-        const bId = parseInt(b.beneficiaryId) || 0;
-        return aId - bId;
-      });
     },
     clearFilters: (state) => {
       state.filter = {
@@ -247,12 +240,7 @@ const beneficiariesSlice = createSlice({
         beneficiaryId: '',
         phone: ''
       };
-      // Sort items by beneficiaryId when clearing filters
-      state.filteredItems = [...state.items].sort((a, b) => {
-        const aId = parseInt(a.beneficiaryId) || 0;
-        const bId = parseInt(b.beneficiaryId) || 0;
-        return aId - bId;
-      });
+      state.filteredItems = state.items;
     }
   },
   extraReducers: (builder) => {
@@ -264,14 +252,8 @@ const beneficiariesSlice = createSlice({
       })
       .addCase(fetchBeneficiaries.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Sort items by beneficiaryId when fetching
-        const sortedItems = action.payload.sort((a, b) => {
-          const aId = parseInt(a.beneficiaryId) || 0;
-          const bId = parseInt(b.beneficiaryId) || 0;
-          return aId - bId;
-        });
-        state.items = sortedItems;
-        state.filteredItems = sortedItems;
+        state.items = action.payload;
+        state.filteredItems = action.payload;
       })
       .addCase(fetchBeneficiaries.rejected, (state, action) => {
         state.isLoading = false;
@@ -285,12 +267,6 @@ const beneficiariesSlice = createSlice({
       .addCase(addBeneficiary.fulfilled, (state, action) => {
         state.isLoading = false;
         state.items.push(action.payload);
-        // Sort items by beneficiaryId after adding new beneficiary
-        state.items.sort((a, b) => {
-          const aId = parseInt(a.beneficiaryId) || 0;
-          const bId = parseInt(b.beneficiaryId) || 0;
-          return aId - bId;
-        });
         state.filteredItems = state.items;
       })
       .addCase(addBeneficiary.rejected, (state, action) => {
@@ -308,12 +284,6 @@ const beneficiariesSlice = createSlice({
         if (index !== -1) {
           state.items[index] = action.payload;
         }
-        // Sort items by beneficiaryId after updating beneficiary
-        state.items.sort((a, b) => {
-          const aId = parseInt(a.beneficiaryId) || 0;
-          const bId = parseInt(b.beneficiaryId) || 0;
-          return aId - bId;
-        });
         state.filteredItems = state.items;
       })
       .addCase(updateBeneficiary.rejected, (state, action) => {
@@ -339,9 +309,13 @@ const beneficiariesSlice = createSlice({
 
 export const { setFilter, clearFilters } = beneficiariesSlice.actions;
 
-// Selector for all beneficiaries sorted by beneficiaryId in ascending order
-export const selectAllBeneficiaries = (state) => {
-  return [...state.beneficiaries.items].sort((a, b) => {
+// Basic selectors
+const selectBeneficiariesItems = (state) => state.beneficiaries.items;
+const selectBeneficiariesFilteredItems = (state) => state.beneficiaries.filteredItems;
+
+// Helper function for sorting beneficiaries
+const sortBeneficiariesByIdAsc = (beneficiaries) => {
+  return [...beneficiaries].sort((a, b) => {
     // Convert beneficiaryId to number for proper numeric sorting
     const aId = parseInt(a.beneficiaryId) || 0;
     const bId = parseInt(b.beneficiaryId) || 0;
@@ -349,18 +323,25 @@ export const selectAllBeneficiaries = (state) => {
   });
 };
 
-// Selector for filtered beneficiaries sorted by beneficiaryId in ascending order
-export const selectFilteredBeneficiaries = (state) => {
-  return [...state.beneficiaries.filteredItems].sort((a, b) => {
-    // Convert beneficiaryId to number for proper numeric sorting
-    const aId = parseInt(a.beneficiaryId) || 0;
-    const bId = parseInt(b.beneficiaryId) || 0;
-    return aId - bId;
-  });
-};
+// Memoized selector for all beneficiaries sorted by beneficiaryId in ascending order
+export const selectAllBeneficiaries = createSelector(
+  [selectBeneficiariesItems],
+  (items) => sortBeneficiariesByIdAsc(items)
+);
 
-export const selectBeneficiaryById = (state, id) =>
-  state.beneficiaries.items.find(b => b.id === id);
+// Memoized selector for filtered beneficiaries sorted by beneficiaryId in ascending order
+export const selectFilteredBeneficiaries = createSelector(
+  [selectBeneficiariesFilteredItems],
+  (filteredItems) => sortBeneficiariesByIdAsc(filteredItems)
+);
+
+// Memoized selector for finding beneficiary by ID
+export const selectBeneficiaryById = createSelector(
+  [selectBeneficiariesItems, (state, id) => id],
+  (items, id) => items.find(b => b.id === id)
+);
+
+// Other simple selectors
 export const selectBeneficiariesLoading = (state) => state.beneficiaries.isLoading;
 export const selectBeneficiariesError = (state) => state.beneficiaries.error;
 export const selectBeneficiariesFilter = (state) => state.beneficiaries.filter;
