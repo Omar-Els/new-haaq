@@ -287,6 +287,8 @@ const Finance = () => {
                   value={topUpData.date}
                   onChange={handleTopUpInputChange}
                   required
+                  autocomplete="off"
+                  aria-label="تاريخ التوب أب"
                 />
               </div>
 
@@ -301,6 +303,9 @@ const Finance = () => {
                   required
                   min="0"
                   step="0.01"
+                  autocomplete="off"
+                  aria-label="مبلغ التوب أب"
+                  placeholder="أدخل المبلغ"
                 />
               </div>
 
@@ -312,6 +317,8 @@ const Finance = () => {
                   value={topUpData.method}
                   onChange={handleTopUpInputChange}
                   required
+                  autocomplete="off"
+                  aria-label="اختر طريقة الدفع"
                 >
                   <option value="cash">نقدي</option>
                   <option value="card">بطاقة ائتمان</option>
@@ -360,6 +367,9 @@ const Finance = () => {
                   onChange={handleTopUpInputChange}
                   required
                   placeholder="أدخل وصفًا للتوب أب أو اسم المتبرع"
+                  autocomplete="off"
+                  aria-label="وصف التوب أب"
+                  rows="3"
                 />
               </div>
 
@@ -393,6 +403,8 @@ const Finance = () => {
                   value={newTransaction.date}
                   onChange={handleInputChange}
                   required
+                  autocomplete="off"
+                  aria-label="تاريخ المعاملة"
                 />
               </div>
 
@@ -404,6 +416,8 @@ const Finance = () => {
                   value={newTransaction.type}
                   onChange={handleInputChange}
                   required
+                  autocomplete="off"
+                  aria-label="اختر نوع المعاملة"
                 >
                   <option value="income">إيراد</option>
                   <option value="expense">مصروف</option>
@@ -421,6 +435,9 @@ const Finance = () => {
                   required
                   min="0"
                   step="0.01"
+                  autocomplete="off"
+                  aria-label="مبلغ المعاملة"
+                  placeholder="أدخل المبلغ"
                 />
               </div>
 
@@ -432,6 +449,10 @@ const Finance = () => {
                   value={newTransaction.description}
                   onChange={handleInputChange}
                   required
+                  autocomplete="off"
+                  aria-label="وصف المعاملة"
+                  placeholder="أدخل وصف المعاملة"
+                  rows="3"
                 />
               </div>
 

@@ -270,9 +270,12 @@ const BeneficiaryForm = ({
               onChange={handleChange}
               className={formErrors.name ? "error" : ""}
               ref={inputRefs.name}
+              autocomplete="name"
+              aria-describedby={formErrors.name ? "name-error" : undefined}
+              placeholder="أدخل اسم المستفيد"
             />
             {formErrors.name && (
-              <span className="error-text">{formErrors.name}</span>
+              <span id="name-error" className="error-text" role="alert">{formErrors.name}</span>
             )}
           </motion.div>
 
@@ -286,9 +289,13 @@ const BeneficiaryForm = ({
               onChange={handleChange}
               className={formErrors.nationalId ? "error" : ""}
               ref={inputRefs.nationalId}
+              autocomplete="off"
+              aria-describedby={formErrors.nationalId ? "nationalId-error" : undefined}
+              placeholder="أدخل الرقم القومي"
+              maxLength="14"
             />
             {formErrors.nationalId && (
-              <span className="error-text">{formErrors.nationalId}</span>
+              <span id="nationalId-error" className="error-text" role="alert">{formErrors.nationalId}</span>
             )}
           </motion.div>
 
@@ -302,25 +309,32 @@ const BeneficiaryForm = ({
               onChange={handleChange}
               className={formErrors.beneficiaryId ? "error" : ""}
               ref={inputRefs.beneficiaryId}
+              autocomplete="off"
+              aria-describedby={formErrors.beneficiaryId ? "beneficiaryId-error" : undefined}
+              placeholder="أدخل رقم المستفيد"
             />
             {formErrors.beneficiaryId && (
-              <span className="error-text">{formErrors.beneficiaryId}</span>
+              <span id="beneficiaryId-error" className="error-text" role="alert">{formErrors.beneficiaryId}</span>
             )}
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
             <label htmlFor="phone">رقم الهاتف</label>
             <input
-              type="text"
+              type="tel"
               id="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
               className={formErrors.phone ? "error" : ""}
               ref={inputRefs.phone}
+              autocomplete="tel"
+              aria-describedby={formErrors.phone ? "phone-error" : undefined}
+              placeholder="أدخل رقم الهاتف"
+              maxLength="11"
             />
             {formErrors.phone && (
-              <span className="error-text">{formErrors.phone}</span>
+              <span id="phone-error" className="error-text" role="alert">{formErrors.phone}</span>
             )}
           </motion.div>
 
@@ -334,9 +348,14 @@ const BeneficiaryForm = ({
               onChange={handleChange}
               className={formErrors.income ? "error" : ""}
               ref={inputRefs.income}
+              autocomplete="off"
+              aria-describedby={formErrors.income ? "income-error" : undefined}
+              placeholder="أدخل الدخل الشهري"
+              min="0"
+              step="1"
             />
             {formErrors.income && (
-              <span className="error-text">{formErrors.income}</span>
+              <span id="income-error" className="error-text" role="alert">{formErrors.income}</span>
             )}
           </motion.div>
 
@@ -348,6 +367,8 @@ const BeneficiaryForm = ({
               value={formData.maritalStatus}
               onChange={handleChange}
               ref={inputRefs.maritalStatus}
+              autocomplete="off"
+              aria-label="اختر الحالة الاجتماعية"
             >
               <option value="single">أعزب</option>
               <option value="married">متزوج</option>
@@ -366,9 +387,12 @@ const BeneficiaryForm = ({
               className={formErrors.address ? "error" : ""}
               rows="3"
               ref={inputRefs.address}
+              autocomplete="street-address"
+              aria-describedby={formErrors.address ? "address-error" : undefined}
+              placeholder="أدخل العنوان التفصيلي"
             ></textarea>
             {formErrors.address && (
-              <span className="error-text">{formErrors.address}</span>
+              <span id="address-error" className="error-text" role="alert">{formErrors.address}</span>
             )}
           </motion.div>
 
@@ -382,6 +406,8 @@ const BeneficiaryForm = ({
               rows="3"
               ref={inputRefs.notes}
               placeholder="أي ملاحظات إضافية عن المستفيد..."
+              autocomplete="off"
+              aria-label="ملاحظات إضافية عن المستفيد"
             ></textarea>
           </motion.div>
 
@@ -389,15 +415,16 @@ const BeneficiaryForm = ({
           <motion.div className="form-group full-width" variants={itemVariants}>
             <h3>صورة المستفيد</h3>
             <div className="form-group">
-              <label>صورة شخصية للمستفيد (اختيارية)</label>
+              <label htmlFor="profileImage-upload">صورة شخصية للمستفيد (اختيارية)</label>
               <ImageUpload
                 key={`profile-${formData.name}`}
                 initialImage={formData.profileImage}
                 onImageUpload={(imageData) => handleImageUpload('profileImage', imageData)}
                 label="اختر صورة المستفيد"
                 id="profileImage-container"
+                inputId="profileImage-upload"
               />
-              <small className="form-help-text">يمكنك رفع صورة شخصية للمستفيد (اختيارية)</small>
+              <small className="form-help-text" id="profileImage-help">يمكنك رفع صورة شخصية للمستفيد (اختيارية)</small>
             </div>
           </motion.div>
 
@@ -407,27 +434,29 @@ const BeneficiaryForm = ({
               <h3>صور البطاقات (اختيارية)</h3>
               <div className="form-row">
                 <div className="form-group">
-                  <label>صورة بطاقة الزوج (اختيارية)</label>
+                  <label htmlFor="spouseIdImage-upload">صورة بطاقة الزوج (اختيارية)</label>
                   <ImageUpload
                     key={`spouse-${formData.maritalStatus}`}
                     initialImage={formData.spouseIdImage}
                     onImageUpload={(imageData) => handleImageUpload('spouseIdImage', imageData)}
                     label="اختر صورة بطاقة الزوج"
                     id="spouseIdImage-container"
+                    inputId="spouseIdImage-upload"
                   />
-                  <small className="form-help-text">يمكنك رفع صورة بطاقة الزوج (اختيارية)</small>
+                  <small className="form-help-text" id="spouseIdImage-help">يمكنك رفع صورة بطاقة الزوج (اختيارية)</small>
                 </div>
 
                 <div className="form-group">
-                  <label>صورة بطاقة الزوجة (اختيارية)</label>
+                  <label htmlFor="wifeIdImage-upload">صورة بطاقة الزوجة (اختيارية)</label>
                   <ImageUpload
                     key={`wife-${formData.maritalStatus}`}
                     initialImage={formData.wifeIdImage}
                     onImageUpload={(imageData) => handleImageUpload('wifeIdImage', imageData)}
                     label="اختر صورة بطاقة الزوجة"
                     id="wifeIdImage-container"
+                    inputId="wifeIdImage-upload"
                   />
-                  <small className="form-help-text">يمكنك رفع صورة بطاقة الزوجة (اختيارية)</small>
+                  <small className="form-help-text" id="wifeIdImage-help">يمكنك رفع صورة بطاقة الزوجة (اختيارية)</small>
                 </div>
               </div>
             </motion.div>

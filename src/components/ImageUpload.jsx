@@ -18,7 +18,8 @@ const ImageUpload = ({
   onImageUpload,
   initialImage = "",
   label = "رفع صورة",
-  id = ""
+  id = "",
+  inputId = ""
 }) => {
   const [image, setImage] = useState(initialImage);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +99,8 @@ const ImageUpload = ({
         onChange={handleFileChange}
         accept="image/*"
         style={{ display: "none" }}
+        id={inputId || `file-input-${containerId}`}
+        aria-label={label}
       />
 
       {error && <div className="error-message">{error}</div>}
