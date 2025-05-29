@@ -90,6 +90,7 @@
   overflow: auto; /* تمكين التمرير إذا كان المحتوى كبيرًا جدًا */
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .topup-form-header {
@@ -177,6 +178,10 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* إخفاء عنصر select مع الحفاظ على إمكانية الوصول */

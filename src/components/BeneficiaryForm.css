@@ -1,21 +1,32 @@
 /* BeneficiaryForm Styles */
 .beneficiary-form-container {
   width: 100%;
+  max-width: 100%;
   padding: 1.5rem;
   background-color: var(--card-bg);
   border-radius: 8px;
   box-shadow: 0 2px 8px var(--shadow-color);
   margin-bottom: 2rem;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .form-group {
   margin-bottom: 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .form-group.full-width {
@@ -150,9 +161,49 @@
   gap: 1.5rem;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
+  .beneficiary-form-container {
+    padding: var(--spacing-md);
+    overflow-x: hidden;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
   .form-row {
     grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .beneficiary-form-container {
+    padding: var(--spacing-sm);
+  }
+
+  .form-grid {
+    gap: var(--spacing-sm);
+  }
+
+  .form-row {
+    gap: var(--spacing-sm);
+  }
+
+  .form-section h3 {
+    font-size: 1rem;
   }
 }
 

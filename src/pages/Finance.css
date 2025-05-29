@@ -2,7 +2,10 @@
 .finance-container {
   padding: var(--spacing-md) var(--spacing-md);
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .page-header {
@@ -45,6 +48,10 @@
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-lg);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .summary-card {
@@ -295,6 +302,65 @@
 .payment-method-icon span {
   font-size: 0.8rem;
   color: var(--text-secondary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .finance-container {
+    padding: var(--spacing-sm);
+    overflow-x: hidden;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .header-actions button {
+    flex: 1;
+  }
+
+  .finance-summary {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .beneficiaries-selection {
+    max-height: 150px;
+  }
+
+  .transaction-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .finance-container {
+    padding: var(--spacing-xs);
+  }
+
+  .summary-card {
+    padding: var(--spacing-md);
+  }
+
+  .summary-amount {
+    font-size: 1.2rem;
+  }
+
+  .payment-method-icons {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .beneficiaries-selection {
+    max-height: 120px;
+  }
 }
 
 

@@ -1,6 +1,10 @@
 /* Home Page Styles */
 .home-container {
   padding: var(--spacing-md) 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .page-header {
@@ -37,6 +41,10 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .filter-group {
@@ -62,6 +70,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .loading-message,
@@ -283,9 +295,30 @@
   }
 }
 
+@media (max-width: 768px) {
+  .home-container {
+    overflow-x: hidden;
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .beneficiaries-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .header-content {
+    gap: 0.75rem;
+  }
+}
+
 @media (max-width: 576px) {
   .filters-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-xs);
   }
 
   .header-content {
@@ -296,6 +329,14 @@
 
   .header-text {
     width: 100%;
+  }
+
+  .beneficiary-card {
+    overflow: hidden;
+  }
+
+  .card-details {
+    overflow-x: auto;
   }
 }
 
