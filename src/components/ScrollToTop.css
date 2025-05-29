@@ -2,8 +2,8 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: var(--bg-color);
   color: var(--text-secondary-color);
@@ -12,7 +12,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   cursor: pointer;
   z-index: 999;
   transition: all 0.3s ease;
@@ -39,7 +39,7 @@
 
 /* Position relative to FAB */
 .fab-active .scroll-to-top-button {
-  right: 5.5rem;
+  right: 6rem;
   bottom: 2rem;
 }
 
@@ -48,13 +48,28 @@
   .scroll-to-top-button {
     bottom: 1.5rem;
     right: 1.5rem;
-    width: 45px;
-    height: 45px;
-    font-size: 1rem;
+    width: 55px;
+    height: 55px;
+    font-size: 1.3rem;
+  }
+
+  .fab-active .scroll-to-top-button {
+    right: 5rem;
+    bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scroll-to-top-button {
+    bottom: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
   }
 
   .fab-active .scroll-to-top-button {
     right: 4.5rem;
-    bottom: 1.5rem;
+    bottom: 1rem;
   }
 }

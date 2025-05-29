@@ -298,11 +298,39 @@
 @media (max-width: 768px) {
   .home-container {
     overflow-x: hidden;
+    padding: var(--spacing-sm) 0;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .page-header h1 {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  .page-header button {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  .filters-container {
+    margin-bottom: var(--spacing-md);
   }
 
   .filters-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-sm);
+  }
+
+  .filter-group input {
+    min-height: 44px;
+    font-size: 16px;
   }
 
   .beneficiaries-grid {
@@ -313,12 +341,30 @@
   .header-content {
     gap: 0.75rem;
   }
+
+  .add-form-container {
+    margin-bottom: var(--spacing-md);
+  }
 }
 
 @media (max-width: 576px) {
+  .home-container {
+    padding: var(--spacing-xs) 0;
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
   .filters-grid {
     grid-template-columns: 1fr;
     gap: var(--spacing-xs);
+  }
+
+  .filter-group input {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 1rem;
   }
 
   .header-content {
@@ -333,10 +379,28 @@
 
   .beneficiary-card {
     overflow: hidden;
+    margin-bottom: var(--spacing-sm);
   }
 
   .card-details {
     overflow-x: auto;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .card-actions button {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .filters-container .btn {
+    width: 100%;
+    min-height: 48px;
+    margin-top: var(--spacing-sm);
   }
 }
 

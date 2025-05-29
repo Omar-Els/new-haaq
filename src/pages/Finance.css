@@ -343,6 +343,11 @@
 @media (max-width: 480px) {
   .finance-container {
     padding: var(--spacing-xs);
+    margin-bottom: 80px; /* مساحة للأزرار الثابتة */
+  }
+
+  .page-header h1 {
+    font-size: 1.3rem;
   }
 
   .summary-card {
@@ -360,6 +365,29 @@
 
   .beneficiaries-selection {
     max-height: 120px;
+  }
+
+  .transaction-form input,
+  .transaction-form select,
+  .transaction-form textarea {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 1rem;
+  }
+
+  .transaction-actions {
+    position: sticky;
+    bottom: 0;
+    background-color: var(--card-bg);
+    padding: var(--spacing-md);
+    margin: 0 calc(-1 * var(--spacing-xs));
+    border-top: 1px solid var(--border-color);
+  }
+
+  .transaction-actions button {
+    width: 100%;
+    min-height: 48px;
+    margin-bottom: var(--spacing-xs);
   }
 }
 

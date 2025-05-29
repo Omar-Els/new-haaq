@@ -166,6 +166,7 @@
   .beneficiary-form-container {
     padding: var(--spacing-md);
     overflow-x: hidden;
+    min-height: 100vh;
   }
 
   .form-grid {
@@ -178,20 +179,55 @@
     gap: var(--spacing-md);
   }
 
+  .form-group {
+    margin-bottom: var(--spacing-md);
+    min-height: auto;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-height: 44px; /* ضمان حد أدنى للارتفاع للمس */
+    font-size: 16px; /* منع التكبير في iOS */
+    padding: 0.75rem;
+  }
+
   .form-actions {
     flex-direction: column;
     gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    position: sticky;
+    bottom: 0;
+    background-color: var(--card-bg);
+    padding: var(--spacing-md);
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    border-top: 1px solid var(--border-color);
   }
 
   .form-actions button {
     width: 100%;
     justify-content: center;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  /* تحسين رؤية العناصر */
+  .form-section {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+  }
+
+  .form-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-md);
   }
 }
 
 @media (max-width: 480px) {
   .beneficiary-form-container {
     padding: var(--spacing-sm);
+    margin-bottom: 80px; /* مساحة للأزرار الثابتة */
   }
 
   .form-grid {
@@ -202,8 +238,42 @@
     gap: var(--spacing-sm);
   }
 
+  .form-group {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 1rem;
+  }
+
   .form-section h3 {
     font-size: 1rem;
+  }
+
+  .form-actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+
+  /* تحسين المسافات للشاشات الصغيرة جداً */
+  .form-help-text {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
   }
 }
 
