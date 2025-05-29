@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import "./ImageUpload.css";
 
@@ -24,6 +24,19 @@ const ImageUpload = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
+
+  // Update image when initialImage prop changes
+  useEffect(() => {
+    setImage(initialImage);
+    // Clear any existing errors when image changes
+    if (error) {
+      setError("");
+    }
+    // Reset file input when initialImage changes
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [initialImage, error]);
 
   const handleClick = () => {
     fileInputRef.current.click();
@@ -69,6 +82,10 @@ const ImageUpload = ({
   const handleRemoveImage = () => {
     setImage("");
     onImageUpload("");
+    // Reset the file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const containerId = id || Math.random().toString(36).substring(7);

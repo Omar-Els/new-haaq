@@ -67,9 +67,23 @@ const BeneficiaryForm = ({
         ...beneficiary,
         income: beneficiary.income.toString(),
         familyMembers: beneficiary.familyMembers ? beneficiary.familyMembers.toString() : "1",
+        // Ensure image fields are properly set
+        spouseIdImage: beneficiary.spouseIdImage || "",
+        wifeIdImage: beneficiary.wifeIdImage || "",
       });
     }
   }, [beneficiary]);
+
+  // Clear image fields when marital status changes from married to something else
+  useEffect(() => {
+    if (formData.maritalStatus !== 'married') {
+      setFormData(prevData => ({
+        ...prevData,
+        spouseIdImage: "",
+        wifeIdImage: ""
+      }));
+    }
+  }, [formData.maritalStatus]);
 
   // Focus on specified field if provided
   useEffect(() => {
@@ -379,12 +393,13 @@ const BeneficiaryForm = ({
 
           {/* ID Images (only if married) */}
           {formData.maritalStatus === 'married' && (
-            <div className="form-section">
+            <motion.div className="form-section" variants={itemVariants}>
               <h3>صور البطاقات</h3>
               <div className="form-row">
                 <div className="form-group">
                   <label>صورة بطاقة الزوج</label>
                   <ImageUpload
+                    key={`spouse-${formData.maritalStatus}`}
                     initialImage={formData.spouseIdImage}
                     onImageUpload={(imageData) => handleImageUpload('spouseIdImage', imageData)}
                     label="اختر صورة بطاقة الزوج"
@@ -396,6 +411,7 @@ const BeneficiaryForm = ({
                 <div className="form-group">
                   <label>صورة بطاقة الزوجة</label>
                   <ImageUpload
+                    key={`wife-${formData.maritalStatus}`}
                     initialImage={formData.wifeIdImage}
                     onImageUpload={(imageData) => handleImageUpload('wifeIdImage', imageData)}
                     label="اختر صورة بطاقة الزوجة"
@@ -404,7 +420,7 @@ const BeneficiaryForm = ({
                   {formErrors.wifeIdImage && <div className="error-message">{formErrors.wifeIdImage}</div>}
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Children Manager */}
