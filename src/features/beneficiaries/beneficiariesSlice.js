@@ -110,8 +110,10 @@ export const addBeneficiary = createAsyncThunk(
   'beneficiaries/addBeneficiary',
   async (beneficiary, { rejectWithValue, dispatch }) => {
     try {
-      // Calculate priority based on income and family size
-      const priority = calculatePriority(beneficiary);
+      // Use provided priority or calculate it based on income and family size
+      const priority = beneficiary.priority !== undefined
+        ? beneficiary.priority
+        : calculatePriority(beneficiary);
 
       // Create new beneficiary with ID and priority
       const newBeneficiary = {
@@ -146,8 +148,10 @@ export const updateBeneficiary = createAsyncThunk(
   'beneficiaries/updateBeneficiary',
   async (beneficiary, { rejectWithValue, getState, dispatch }) => {
     try {
-      // Calculate priority based on income and family size
-      const priority = calculatePriority(beneficiary);
+      // Use provided priority or calculate it based on income and family size
+      const priority = beneficiary.priority !== undefined
+        ? beneficiary.priority
+        : calculatePriority(beneficiary);
 
       // Update beneficiary with new priority
       const updatedBeneficiary = {

@@ -35,6 +35,7 @@ const BeneficiaryForm = ({
     address: "",
     familyMembers: "1",
     maritalStatus: "single",
+    priority: "5", // Default medium priority
     profileImage: "",
     spouseIdImage: "",
     wifeIdImage: "",
@@ -54,6 +55,7 @@ const BeneficiaryForm = ({
     address: useRef(null),
     familyMembers: useRef(null),
     maritalStatus: useRef(null),
+    priority: useRef(null),
     profileImage: useRef(null),
     spouseIdImage: useRef(null),
     wifeIdImage: useRef(null),
@@ -69,6 +71,7 @@ const BeneficiaryForm = ({
         ...beneficiary,
         income: beneficiary.income.toString(),
         familyMembers: beneficiary.familyMembers ? beneficiary.familyMembers.toString() : "1",
+        priority: beneficiary.priority ? beneficiary.priority.toString() : "5",
         // Ensure image fields are properly set
         profileImage: beneficiary.profileImage || "",
         spouseIdImage: beneficiary.spouseIdImage || "",
@@ -209,10 +212,12 @@ const BeneficiaryForm = ({
     if (validateForm()) {
       setIsSubmitting(true);
 
-      // Convert income to number
+      // Convert income, familyMembers, and priority to numbers
       const submissionData = {
         ...formData,
         income: Number(formData.income),
+        familyMembers: Number(formData.familyMembers),
+        priority: Number(formData.priority),
       };
 
       // Dispatch action based on whether we're adding or editing
@@ -375,6 +380,50 @@ const BeneficiaryForm = ({
               <option value="divorced">مطلق</option>
               <option value="widowed">أرمل</option>
             </select>
+          </motion.div>
+
+          <motion.div className="form-group" variants={itemVariants}>
+            <label htmlFor="familyMembers">عدد أفراد الأسرة</label>
+            <select
+              id="familyMembers"
+              name="familyMembers"
+              value={formData.familyMembers}
+              onChange={handleChange}
+              ref={inputRefs.familyMembers}
+              autoComplete="off"
+              aria-label="اختر عدد أفراد الأسرة"
+            >
+              {[...Array(15)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+          </motion.div>
+
+          <motion.div className="form-group" variants={itemVariants}>
+            <label htmlFor="priority">الأولوية</label>
+            <select
+              id="priority"
+              name="priority"
+              value={formData.priority}
+              onChange={handleChange}
+              ref={inputRefs.priority}
+              autoComplete="off"
+              aria-label="اختر مستوى الأولوية"
+            >
+              <option value="1">1 - منخفضة جداً</option>
+              <option value="2">2 - منخفضة</option>
+              <option value="3">3 - أقل من المتوسط</option>
+              <option value="4">4 - أقل من المتوسط</option>
+              <option value="5">5 - متوسطة</option>
+              <option value="6">6 - أعلى من المتوسط</option>
+              <option value="7">7 - أعلى من المتوسط</option>
+              <option value="8">8 - عالية</option>
+              <option value="9">9 - عالية جداً</option>
+              <option value="10">10 - عاجلة</option>
+            </select>
+            <small className="form-help-text">يمكنك تعديل الأولوية حسب الحاجة (1 = منخفضة، 10 = عاجلة)</small>
           </motion.div>
 
           <motion.div className="form-group full-width" variants={itemVariants}>
