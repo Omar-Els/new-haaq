@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Helper function to generate unique IDs
+let notificationCounter = 0;
+const generateUniqueId = () => {
+  notificationCounter += 1;
+  return `notification-${Date.now()}-${notificationCounter}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
 // Helper functions for localStorage
 const getNotificationsFromStorage = () => {
   try {
@@ -55,9 +62,9 @@ const notificationsSlice = createSlice({
         enabled: true
       };
 
-      // Create the notification
+      // Create the notification with unique ID
       const newNotification = {
-        id: Date.now().toString(),
+        id: generateUniqueId(),
         timestamp: new Date().toISOString(),
         read: false,
         ...action.payload
@@ -125,7 +132,7 @@ export const fetchNotifications = () => async (dispatch) => {
     // إذا لم تكن هناك إشعارات محفوظة، أضف إشعار ترحيب افتراضي
     if (savedNotifications.length === 0) {
       const defaultNotification = {
-        id: '1',
+        id: generateUniqueId(),
         type: 'info',
         message: 'مرحبًا بك في دعوة الحق',
         timestamp: new Date().toISOString(),

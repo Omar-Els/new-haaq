@@ -7,14 +7,14 @@ import './ToastNotifications.css';
 
 /**
  * ToastNotifications Component
- * 
+ *
  * Displays toast notifications based on the notifications in the Redux store.
  * Respects user notification settings from the settings store.
  */
 const ToastNotifications = () => {
   const notifications = useSelector(selectAllNotifications);
   const [visibleToasts, setVisibleToasts] = useState([]);
-  
+
   // Get notification settings from window object (set by settingsSlice)
   const getNotificationSettings = () => {
     return window.notificationSettings || {
@@ -24,7 +24,7 @@ const ToastNotifications = () => {
       email: false
     };
   };
-  
+
   // Play notification sound if enabled
   const playNotificationSound = () => {
     const settings = getNotificationSettings();
@@ -34,14 +34,14 @@ const ToastNotifications = () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-        
+
         oscillator.type = 'sine';
         oscillator.frequency.value = 800;
         gainNode.gain.value = 0.1;
-        
+
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        
+
         oscillator.start();
         setTimeout(() => {
           oscillator.stop();
@@ -51,45 +51,52 @@ const ToastNotifications = () => {
       }
     }
   };
-  
+
   // Watch for new notifications
   useEffect(() => {
     const settings = getNotificationSettings();
-    
+
     // If notifications are disabled, don't show toasts
     if (!settings.enabled) {
       return;
     }
-    
+
     // Check for new notifications (unread and not already in visibleToasts)
     const newNotifications = notifications.filter(
-      notification => 
-        !notification.read && 
+      notification =>
+        !notification.read &&
         !visibleToasts.some(toast => toast.id === notification.id)
     );
-    
+
     if (newNotifications.length > 0) {
       // Add new notifications to visible toasts
-      setVisibleToasts(prev => [
-        ...prev,
-        ...newNotifications.map(notification => ({
-          ...notification,
-          toastId: `toast-${notification.id}`,
-          visible: true,
-          // Auto-dismiss after duration from settings
-          autoDismiss: setTimeout(() => {
-            dismissToast(notification.id);
-          }, settings.duration)
-        }))
-      ]);
-      
+      setVisibleToasts(prev => {
+        // Remove any existing toasts with the same notification IDs to prevent duplicates
+        const filteredPrev = prev.filter(existingToast =>
+          !newNotifications.some(newNotif => newNotif.id === existingToast.id)
+        );
+
+        return [
+          ...filteredPrev,
+          ...newNotifications.map((notification, index) => ({
+            ...notification,
+            toastId: `toast-${notification.id}-${Date.now()}-${index}`,
+            visible: true,
+            // Auto-dismiss after duration from settings
+            autoDismiss: setTimeout(() => {
+              dismissToast(notification.id);
+            }, settings.duration)
+          }))
+        ];
+      });
+
       // Play sound for the first new notification
       if (newNotifications.length > 0) {
         playNotificationSound();
       }
     }
   }, [notifications]);
-  
+
   // Clean up timeouts when component unmounts
   useEffect(() => {
     return () => {
@@ -100,23 +107,29 @@ const ToastNotifications = () => {
       });
     };
   }, [visibleToasts]);
-  
+
   // Dismiss a toast
   const dismissToast = (id) => {
-    setVisibleToasts(prev => 
-      prev.map(toast => 
-        toast.id === id 
-          ? { ...toast, visible: false } 
+    setVisibleToasts(prev => {
+      // Clear timeout for the dismissed toast
+      const toastToDismiss = prev.find(toast => toast.id === id);
+      if (toastToDismiss && toastToDismiss.autoDismiss) {
+        clearTimeout(toastToDismiss.autoDismiss);
+      }
+
+      return prev.map(toast =>
+        toast.id === id
+          ? { ...toast, visible: false }
           : toast
-      )
-    );
-    
+      );
+    });
+
     // Remove from array after animation completes
     setTimeout(() => {
       setVisibleToasts(prev => prev.filter(toast => toast.id !== id));
     }, 300);
   };
-  
+
   // Get icon based on notification type
   const getIcon = (type) => {
     switch (type) {
@@ -131,7 +144,7 @@ const ToastNotifications = () => {
         return <FaInfoCircle className="toast-icon info" />;
     }
   };
-  
+
   return (
     <div className="toast-container">
       <AnimatePresence>
@@ -148,8 +161,8 @@ const ToastNotifications = () => {
               {getIcon(toast.type)}
               <div className="toast-message">{toast.message}</div>
             </div>
-            <button 
-              className="toast-close" 
+            <button
+              className="toast-close"
               onClick={() => dismissToast(toast.id)}
               aria-label="إغلاق الإشعار"
             >
