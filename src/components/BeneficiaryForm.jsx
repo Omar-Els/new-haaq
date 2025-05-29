@@ -35,6 +35,7 @@ const BeneficiaryForm = ({
     address: "",
     familyMembers: "1",
     maritalStatus: "single",
+    profileImage: "",
     spouseIdImage: "",
     wifeIdImage: "",
     notes: "",
@@ -53,6 +54,7 @@ const BeneficiaryForm = ({
     address: useRef(null),
     familyMembers: useRef(null),
     maritalStatus: useRef(null),
+    profileImage: useRef(null),
     spouseIdImage: useRef(null),
     wifeIdImage: useRef(null),
     notes: useRef(null)
@@ -68,6 +70,7 @@ const BeneficiaryForm = ({
         income: beneficiary.income.toString(),
         familyMembers: beneficiary.familyMembers ? beneficiary.familyMembers.toString() : "1",
         // Ensure image fields are properly set
+        profileImage: beneficiary.profileImage || "",
         spouseIdImage: beneficiary.spouseIdImage || "",
         wifeIdImage: beneficiary.wifeIdImage || "",
       });
@@ -111,7 +114,7 @@ const BeneficiaryForm = ({
           }, 2000);
         }
         // For image upload fields
-        else if (focusField === 'spouseIdImage' || focusField === 'wifeIdImage') {
+        else if (focusField === 'profileImage' || focusField === 'spouseIdImage' || focusField === 'wifeIdImage') {
           // Find the container for the image upload
           const container = document.getElementById(`${focusField}-container`);
           if (container) {
@@ -194,16 +197,7 @@ const BeneficiaryForm = ({
       errors.familyMembers = "عدد أفراد الأسرة يجب أن يكون رقم موجب";
     }
 
-    // Validate ID images if married
-    if (formData.maritalStatus === 'married') {
-      if (!formData.spouseIdImage) {
-        errors.spouseIdImage = "صورة بطاقة الزوج مطلوبة";
-      }
-
-      if (!formData.wifeIdImage) {
-        errors.wifeIdImage = "صورة بطاقة الزوجة مطلوبة";
-      }
-    }
+    // Note: Image uploads are optional, so no validation required for images
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -391,13 +385,29 @@ const BeneficiaryForm = ({
             ></textarea>
           </motion.div>
 
+          {/* Profile Image */}
+          <motion.div className="form-group full-width" variants={itemVariants}>
+            <h3>صورة المستفيد</h3>
+            <div className="form-group">
+              <label>صورة شخصية للمستفيد (اختيارية)</label>
+              <ImageUpload
+                key={`profile-${formData.name}`}
+                initialImage={formData.profileImage}
+                onImageUpload={(imageData) => handleImageUpload('profileImage', imageData)}
+                label="اختر صورة المستفيد"
+                id="profileImage-container"
+              />
+              <small className="form-help-text">يمكنك رفع صورة شخصية للمستفيد (اختيارية)</small>
+            </div>
+          </motion.div>
+
           {/* ID Images (only if married) */}
           {formData.maritalStatus === 'married' && (
             <motion.div className="form-section" variants={itemVariants}>
-              <h3>صور البطاقات</h3>
+              <h3>صور البطاقات (اختيارية)</h3>
               <div className="form-row">
                 <div className="form-group">
-                  <label>صورة بطاقة الزوج</label>
+                  <label>صورة بطاقة الزوج (اختيارية)</label>
                   <ImageUpload
                     key={`spouse-${formData.maritalStatus}`}
                     initialImage={formData.spouseIdImage}
@@ -405,11 +415,11 @@ const BeneficiaryForm = ({
                     label="اختر صورة بطاقة الزوج"
                     id="spouseIdImage-container"
                   />
-                  {formErrors.spouseIdImage && <div className="error-message">{formErrors.spouseIdImage}</div>}
+                  <small className="form-help-text">يمكنك رفع صورة بطاقة الزوج (اختيارية)</small>
                 </div>
 
                 <div className="form-group">
-                  <label>صورة بطاقة الزوجة</label>
+                  <label>صورة بطاقة الزوجة (اختيارية)</label>
                   <ImageUpload
                     key={`wife-${formData.maritalStatus}`}
                     initialImage={formData.wifeIdImage}
@@ -417,7 +427,7 @@ const BeneficiaryForm = ({
                     label="اختر صورة بطاقة الزوجة"
                     id="wifeIdImage-container"
                   />
-                  {formErrors.wifeIdImage && <div className="error-message">{formErrors.wifeIdImage}</div>}
+                  <small className="form-help-text">يمكنك رفع صورة بطاقة الزوجة (اختيارية)</small>
                 </div>
               </div>
             </motion.div>

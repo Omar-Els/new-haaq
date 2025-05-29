@@ -77,15 +77,15 @@
   .form-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .form-group.full-width {
     grid-column: span 1;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .form-actions button {
     width: 100%;
     margin-bottom: 0.5rem;
@@ -114,9 +114,45 @@
 /* Image upload container highlight */
 #spouseIdImage-container.highlight-field .upload-btn,
 #wifeIdImage-container.highlight-field .upload-btn,
+#profileImage-container.highlight-field .upload-btn,
 #spouseIdImage-container.highlight-field .image-preview,
-#wifeIdImage-container.highlight-field .image-preview {
+#wifeIdImage-container.highlight-field .image-preview,
+#profileImage-container.highlight-field .image-preview {
   border-color: var(--primary-color) !important;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3) !important;
+}
+
+/* Form help text */
+.form-help-text {
+  display: block;
+  color: var(--text-secondary-color);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Form section styling */
+.form-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.form-section h3 {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
 }
 

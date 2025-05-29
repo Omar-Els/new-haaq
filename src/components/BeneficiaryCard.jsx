@@ -83,9 +83,22 @@ const BeneficiaryCard = ({ beneficiary }) => {
       whileHover="hover"
     >
       <div className="card-header">
-        <h3>{beneficiary.name}</h3>
-        <div className={`priority-badge ${getPriorityClass(beneficiary.priority)}`}>
-          الأولوية: {beneficiary.priority}
+        <div className="header-content">
+          {beneficiary.profileImage && (
+            <div className="profile-image-container">
+              <img
+                src={beneficiary.profileImage}
+                alt={`صورة ${beneficiary.name}`}
+                className="profile-image"
+              />
+            </div>
+          )}
+          <div className="header-text">
+            <h3>{beneficiary.name}</h3>
+            <div className={`priority-badge ${getPriorityClass(beneficiary.priority)}`}>
+              الأولوية: {beneficiary.priority}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -167,6 +180,17 @@ const BeneficiaryCard = ({ beneficiary }) => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {beneficiary.profileImage && (
+              <div className="image-row">
+                <span className="info-label">صورة المستفيد:</span>
+                <img
+                  src={beneficiary.profileImage}
+                  alt={`صورة ${beneficiary.name}`}
+                  className="profile-image-large"
+                />
               </div>
             )}
 
