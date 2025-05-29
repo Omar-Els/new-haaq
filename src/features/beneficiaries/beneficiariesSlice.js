@@ -217,7 +217,7 @@ const beneficiariesSlice = createSlice({
       };
 
       // Apply filters
-      state.filteredItems = state.items.filter(item => {
+      const filteredItems = state.items.filter(item => {
         const nameMatch = !state.filter.name ||
           item.name.toLowerCase().includes(state.filter.name.toLowerCase());
 
@@ -232,6 +232,13 @@ const beneficiariesSlice = createSlice({
 
         return nameMatch && nationalIdMatch && beneficiaryIdMatch && phoneMatch;
       });
+
+      // Sort filtered items by beneficiaryId
+      state.filteredItems = filteredItems.sort((a, b) => {
+        const aId = parseInt(a.beneficiaryId) || 0;
+        const bId = parseInt(b.beneficiaryId) || 0;
+        return aId - bId;
+      });
     },
     clearFilters: (state) => {
       state.filter = {
@@ -240,7 +247,12 @@ const beneficiariesSlice = createSlice({
         beneficiaryId: '',
         phone: ''
       };
-      state.filteredItems = state.items;
+      // Sort items by beneficiaryId when clearing filters
+      state.filteredItems = [...state.items].sort((a, b) => {
+        const aId = parseInt(a.beneficiaryId) || 0;
+        const bId = parseInt(b.beneficiaryId) || 0;
+        return aId - bId;
+      });
     }
   },
   extraReducers: (builder) => {
@@ -252,8 +264,14 @@ const beneficiariesSlice = createSlice({
       })
       .addCase(fetchBeneficiaries.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
-        state.filteredItems = action.payload;
+        // Sort items by beneficiaryId when fetching
+        const sortedItems = action.payload.sort((a, b) => {
+          const aId = parseInt(a.beneficiaryId) || 0;
+          const bId = parseInt(b.beneficiaryId) || 0;
+          return aId - bId;
+        });
+        state.items = sortedItems;
+        state.filteredItems = sortedItems;
       })
       .addCase(fetchBeneficiaries.rejected, (state, action) => {
         state.isLoading = false;
@@ -267,6 +285,12 @@ const beneficiariesSlice = createSlice({
       .addCase(addBeneficiary.fulfilled, (state, action) => {
         state.isLoading = false;
         state.items.push(action.payload);
+        // Sort items by beneficiaryId after adding new beneficiary
+        state.items.sort((a, b) => {
+          const aId = parseInt(a.beneficiaryId) || 0;
+          const bId = parseInt(b.beneficiaryId) || 0;
+          return aId - bId;
+        });
         state.filteredItems = state.items;
       })
       .addCase(addBeneficiary.rejected, (state, action) => {
@@ -284,6 +308,12 @@ const beneficiariesSlice = createSlice({
         if (index !== -1) {
           state.items[index] = action.payload;
         }
+        // Sort items by beneficiaryId after updating beneficiary
+        state.items.sort((a, b) => {
+          const aId = parseInt(a.beneficiaryId) || 0;
+          const bId = parseInt(b.beneficiaryId) || 0;
+          return aId - bId;
+        });
         state.filteredItems = state.items;
       })
       .addCase(updateBeneficiary.rejected, (state, action) => {
@@ -308,8 +338,27 @@ const beneficiariesSlice = createSlice({
 });
 
 export const { setFilter, clearFilters } = beneficiariesSlice.actions;
-export const selectAllBeneficiaries = (state) => state.beneficiaries.items;
-export const selectFilteredBeneficiaries = (state) => state.beneficiaries.filteredItems;
+
+// Selector for all beneficiaries sorted by beneficiaryId in ascending order
+export const selectAllBeneficiaries = (state) => {
+  return [...state.beneficiaries.items].sort((a, b) => {
+    // Convert beneficiaryId to number for proper numeric sorting
+    const aId = parseInt(a.beneficiaryId) || 0;
+    const bId = parseInt(b.beneficiaryId) || 0;
+    return aId - bId;
+  });
+};
+
+// Selector for filtered beneficiaries sorted by beneficiaryId in ascending order
+export const selectFilteredBeneficiaries = (state) => {
+  return [...state.beneficiaries.filteredItems].sort((a, b) => {
+    // Convert beneficiaryId to number for proper numeric sorting
+    const aId = parseInt(a.beneficiaryId) || 0;
+    const bId = parseInt(b.beneficiaryId) || 0;
+    return aId - bId;
+  });
+};
+
 export const selectBeneficiaryById = (state, id) =>
   state.beneficiaries.items.find(b => b.id === id);
 export const selectBeneficiariesLoading = (state) => state.beneficiaries.isLoading;
