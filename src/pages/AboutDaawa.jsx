@@ -7,7 +7,8 @@ import {
   FaEye, FaBullseye, FaLightbulb, FaAward, FaCalendarAlt, FaChartLine,
   FaExternalLinkAlt, FaDownload, FaShare, FaPrint, FaWhatsapp, FaTelegram,
   FaLinkedin, FaGlobe, FaNewspaper, FaVideo, FaImages, FaFileAlt,
-  FaDonate, FaVolunteer, FaHandshake, FaHistory, FaCertificate, FaStar
+  FaDonate, FaUserPlus, FaHandshake, FaHistory, FaCertificate, FaStar,
+  FaCheck
 } from 'react-icons/fa';
 import './AboutDaawa.css';
 
@@ -364,7 +365,7 @@ const AboutDaawa = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => alert('سيتم توجيهك لصفحة التطوع')}
             >
-              <FaVolunteer />
+              <FaUserPlus />
               <span>انضم كمتطوع</span>
             </motion.button>
             <motion.button
