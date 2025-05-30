@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { selectTheme } from './features/ui/themeSlice';
 import { selectIsAuthenticated, loginSuccess } from './features/auth/authSlice';
+import { fetchBeneficiaries } from './features/beneficiaries/beneficiariesSlice';
+import { fetchTransactions } from './features/finance/financeSlice';
 import { saveAppState, loadAppState } from './utils/stateManager';
 import { setupScrollManager, restoreScrollPosition } from './utils/scrollManager';
 import { getUserFromStorage } from './utils/firebase';
@@ -60,6 +62,25 @@ function App() {
       }
     }
   }, [isAuthenticated, dispatch]);
+
+  // تحميل البيانات من localStorage عند بدء التطبيق
+  useEffect(() => {
+    console.log('Loading data from localStorage...');
+
+    // تحميل بيانات المستفيدين
+    dispatch(fetchBeneficiaries()).then((result) => {
+      if (result.type === 'beneficiaries/fetchBeneficiaries/fulfilled') {
+        console.log('Beneficiaries loaded:', result.payload.length, 'items');
+      }
+    });
+
+    // تحميل بيانات المعاملات المالية
+    dispatch(fetchTransactions()).then((result) => {
+      if (result.type === 'finance/fetchTransactions/fulfilled') {
+        console.log('Transactions loaded:', result.payload.length, 'items');
+      }
+    });
+  }, [dispatch]);
 
   // Setup scroll position management
   useEffect(() => {
