@@ -41,28 +41,41 @@ const AboutDaawa = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Animated counter effect for statistics
+  // Animated counter effect for statistics with dynamic updates
   useEffect(() => {
     if (activeTab === 'about') {
-      const targets = { beneficiaries: 5000, volunteers: 200, projects: 50 };
-      const duration = 2000; // 2 seconds
-      const steps = 60; // 60 steps for smooth animation
+      // Get dynamic data from localStorage or API
+      const savedBeneficiaries = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
+      const savedTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+
+      // Calculate real statistics
+      const realStats = {
+        beneficiaries: Math.max(savedBeneficiaries.length * 12, 5000), // Multiply by average family size
+        volunteers: Math.max(savedBeneficiaries.filter(b => b.isVolunteer).length, 200),
+        projects: Math.max(savedTransactions.filter(t => t.type === 'expense' && t.category === 'مشاريع').length, 50)
+      };
+
+      const duration = 2500; // 2.5 seconds for more dramatic effect
+      const steps = 80; // More steps for smoother animation
       const stepDuration = duration / steps;
 
       let currentStep = 0;
       const interval = setInterval(() => {
         currentStep++;
-        const progress = currentStep / steps;
+        const progress = Math.min(currentStep / steps, 1);
+
+        // Easing function for more natural animation
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 
         setAnimatedStats({
-          beneficiaries: Math.floor(targets.beneficiaries * progress),
-          volunteers: Math.floor(targets.volunteers * progress),
-          projects: Math.floor(targets.projects * progress)
+          beneficiaries: Math.floor(realStats.beneficiaries * easeOutQuart),
+          volunteers: Math.floor(realStats.volunteers * easeOutQuart),
+          projects: Math.floor(realStats.projects * easeOutQuart)
         });
 
         if (currentStep >= steps) {
           clearInterval(interval);
-          setAnimatedStats(targets);
+          setAnimatedStats(realStats);
         }
       }, stepDuration);
 
@@ -78,35 +91,88 @@ const AboutDaawa = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Load news items
+  // Load dynamic news items based on real data
   useEffect(() => {
-    const mockNews = [
-      {
-        id: 1,
-        title: 'إطلاق مبادرة كسوة الشتاء 2024',
-        date: '2024-01-15',
-        summary: 'بدء توزيع الملابس الشتوية على الأسر المحتاجة',
-        image: '/images/winter-clothes.jpg',
-        link: '#news-1'
-      },
-      {
-        id: 2,
-        title: 'افتتاح مركز جديد لتحفيظ القرآن',
-        date: '2024-01-10',
-        summary: 'افتتاح مركز تحفيظ القرآن الكريم في منطقة المعادي',
-        image: '/images/quran-center.jpg',
-        link: '#news-2'
-      },
-      {
-        id: 3,
-        title: 'حملة التبرع بالدم الشهرية',
-        date: '2024-01-05',
-        summary: 'نجاح حملة التبرع بالدم وجمع 200 كيس دم',
-        image: '/images/blood-donation.jpg',
-        link: '#news-3'
-      }
-    ];
-    setNewsItems(mockNews);
+    const generateDynamicNews = () => {
+      const savedBeneficiaries = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
+      const savedTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+
+      const dynamicNews = [];
+
+      // Generate news based on recent transactions
+      const recentTransactions = savedTransactions
+        .filter(t => new Date(t.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) // Last 30 days
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 2);
+
+      recentTransactions.forEach((transaction, index) => {
+        if (transaction.type === 'expense') {
+          dynamicNews.push({
+            id: `dynamic-${index}`,
+            title: `مساعدة جديدة: ${transaction.category}`,
+            date: transaction.date,
+            summary: `تم صرف ${transaction.amount} جنيه لـ${transaction.description || transaction.category}`,
+            image: '/images/help.jpg',
+            link: `#transaction-${transaction.id}`,
+            isReal: true
+          });
+        }
+      });
+
+      // Generate news based on new beneficiaries
+      const recentBeneficiaries = savedBeneficiaries
+        .filter(b => new Date(b.createdAt || Date.now()) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) // Last 7 days
+        .slice(0, 1);
+
+      recentBeneficiaries.forEach((beneficiary, index) => {
+        dynamicNews.push({
+          id: `beneficiary-${index}`,
+          title: `انضمام أسرة جديدة للبرنامج`,
+          date: beneficiary.createdAt || new Date().toISOString().split('T')[0],
+          summary: `انضمت أسرة ${beneficiary.name} إلى برنامج المساعدات`,
+          image: '/images/family.jpg',
+          link: `#beneficiary-${beneficiary.id}`,
+          isReal: true
+        });
+      });
+
+      // Add default news if no real data
+      const defaultNews = [
+        {
+          id: 1,
+          title: 'إطلاق مبادرة كسوة الشتاء 2024',
+          date: '2024-01-15',
+          summary: 'بدء توزيع الملابس الشتوية على الأسر المحتاجة',
+          image: '/images/winter-clothes.jpg',
+          link: '#news-1',
+          isReal: false
+        },
+        {
+          id: 2,
+          title: 'افتتاح مركز جديد لتحفيظ القرآن',
+          date: '2024-01-10',
+          summary: 'افتتاح مركز تحفيظ القرآن الكريم في منطقة المعادي',
+          image: '/images/quran-center.jpg',
+          link: '#news-2',
+          isReal: false
+        },
+        {
+          id: 3,
+          title: 'حملة التبرع بالدم الشهرية',
+          date: '2024-01-05',
+          summary: 'نجاح حملة التبرع بالدم وجمع 200 كيس دم',
+          image: '/images/blood-donation.jpg',
+          link: '#news-3',
+          isReal: false
+        }
+      ];
+
+      // Combine real and default news, prioritize real news
+      const allNews = [...dynamicNews, ...defaultNews].slice(0, 3);
+      return allNews;
+    };
+
+    setNewsItems(generateDynamicNews());
   }, []);
 
   // Animation variants
@@ -309,30 +375,52 @@ const AboutDaawa = () => {
             {newsItems.map((news, index) => (
               <motion.div
                 key={news.id}
-                className="news-card"
+                className={`news-card ${news.isReal ? 'real-news' : 'demo-news'}`}
                 whileHover={{ scale: 1.03, y: -5 }}
                 transition={{ duration: 0.3 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <div className="news-date">
-                  <FaCalendarAlt />
-                  <span>{new Date(news.date).toLocaleDateString('ar-EG')}</span>
+                <div className="news-header">
+                  <div className="news-date">
+                    <FaCalendarAlt />
+                    <span>{new Date(news.date).toLocaleDateString('ar-EG')}</span>
+                  </div>
+                  {news.isReal && (
+                    <motion.div
+                      className="real-badge"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                    >
+                      <FaStar />
+                      <span>جديد</span>
+                    </motion.div>
+                  )}
                 </div>
                 <h4>{news.title}</h4>
                 <p>{news.summary}</p>
-                <motion.a
-                  href={news.link}
+                <motion.button
                   className="news-link"
                   whileHover={{ scale: 1.05 }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert(`سيتم فتح الخبر: ${news.title}`);
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    if (news.isReal) {
+                      // Navigate to real data
+                      if (news.link.includes('transaction')) {
+                        alert(`عرض تفاصيل المعاملة: ${news.title}`);
+                      } else if (news.link.includes('beneficiary')) {
+                        alert(`عرض تفاصيل المستفيد: ${news.title}`);
+                      }
+                    } else {
+                      alert(`سيتم فتح الخبر: ${news.title}`);
+                    }
                   }}
+                  aria-label={`قراءة المزيد عن ${news.title}`}
                 >
                   اقرأ المزيد <FaExternalLinkAlt />
-                </motion.a>
+                </motion.button>
               </motion.div>
             ))}
           </div>
@@ -352,27 +440,59 @@ const AboutDaawa = () => {
           <div className="actions-grid">
             <motion.button
               className="action-btn donate-btn"
-              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(231, 76, 60, 0.3)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 8px 25px rgba(231, 76, 60, 0.3)",
+                backgroundColor: "#e74c3c",
+                color: "white"
+              }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => alert('سيتم توجيهك لصفحة التبرع')}
+              onClick={() => {
+                // Navigate to finance page for donations
+                window.location.href = '/finance';
+              }}
+              aria-label="انتقل إلى صفحة المالية للتبرع"
             >
               <FaDonate />
               <span>تبرع الآن</span>
+              <motion.div
+                className="action-pulse"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
             </motion.button>
             <motion.button
               className="action-btn volunteer-btn"
-              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(52, 152, 219, 0.3)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 8px 25px rgba(52, 152, 219, 0.3)",
+                backgroundColor: "var(--primary-color)",
+                color: "white"
+              }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => alert('سيتم توجيهك لصفحة التطوع')}
+              onClick={() => {
+                // Navigate to beneficiaries page to register as volunteer
+                window.location.href = '/beneficiaries';
+              }}
+              aria-label="انتقل إلى صفحة المستفيدين للتطوع"
             >
               <FaUserPlus />
               <span>انضم كمتطوع</span>
             </motion.button>
             <motion.button
               className="action-btn gallery-btn"
-              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(46, 204, 113, 0.3)" }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 8px 25px rgba(46, 204, 113, 0.3)",
+                backgroundColor: "#2ecc71",
+                color: "white"
+              }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setShowGallery(true)}
+              onClick={() => {
+                // Show gallery modal with dynamic images
+                setShowGallery(true);
+              }}
+              aria-label="فتح معرض الصور"
             >
               <FaImages />
               <span>معرض الصور</span>
@@ -835,6 +955,65 @@ const AboutDaawa = () => {
             </motion.button>
           </form>
         </motion.div>
+
+        {/* Gallery Modal */}
+        <AnimatePresence>
+          {showGallery && (
+            <motion.div
+              className="gallery-modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowGallery(false)}
+            >
+              <motion.div
+                className="gallery-content"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="gallery-header">
+                  <h3>معرض صور دعوة الحق</h3>
+                  <motion.button
+                    className="close-btn"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowGallery(false)}
+                    aria-label="إغلاق معرض الصور"
+                  >
+                    ✕
+                  </motion.button>
+                </div>
+                <div className="gallery-grid">
+                  {[
+                    { id: 1, src: '/images/activity1.jpg', title: 'توزيع المساعدات' },
+                    { id: 2, src: '/images/activity2.jpg', title: 'تحفيظ القرآن' },
+                    { id: 3, src: '/images/activity3.jpg', title: 'الأنشطة التعليمية' },
+                    { id: 4, src: '/images/activity4.jpg', title: 'المساعدات الطبية' },
+                    { id: 5, src: '/images/activity5.jpg', title: 'كسوة العيد' },
+                    { id: 6, src: '/images/activity6.jpg', title: 'الأنشطة الثقافية' }
+                  ].map((image, index) => (
+                    <motion.div
+                      key={image.id}
+                      className="gallery-item"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
+                      onClick={() => setSelectedImage(image)}
+                    >
+                      <div className="image-placeholder">
+                        <FaImages />
+                        <span>{image.title}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     )
   };
