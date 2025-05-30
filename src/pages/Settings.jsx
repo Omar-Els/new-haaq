@@ -506,15 +506,19 @@ const Settings = () => {
                   </div>
 
                   <div className="setting-item">
-                    <div className="setting-label">مدة ظهور الإشعار (ثواني)</div>
+                    <div className="setting-label">
+                      <label htmlFor="notification-duration">مدة ظهور الإشعار (ثواني)</label>
+                    </div>
                     <div className="setting-control">
                       <div className="range-slider">
                         <input
                           type="range"
+                          id="notification-duration"
                           min="1"
                           max="10"
                           value={localSettings.notifications.notificationDuration}
                           onChange={(e) => handleSettingChange('notifications', 'notificationDuration', parseInt(e.target.value, 10))}
+                          aria-label="مدة ظهور الإشعار بالثواني"
                         />
                         <span className="range-value">{localSettings.notifications.notificationDuration} ثواني</span>
                       </div>
@@ -588,6 +592,7 @@ const Settings = () => {
 
               <div className="account-header">
                 <div className="avatar-container">
+                  <label htmlFor="avatar-upload" className="avatar-label">الصورة الشخصية</label>
                   <div
                     className="avatar-preview"
                     style={{
@@ -600,14 +605,17 @@ const Settings = () => {
                     <button
                       className="avatar-upload-btn"
                       onClick={() => avatarInputRef.current.click()}
+                      aria-label="تغيير الصورة الشخصية"
                     >
                       تغيير
                     </button>
                     <input
                       type="file"
+                      id="avatar-upload"
                       ref={avatarInputRef}
                       style={{ display: 'none' }}
                       accept="image/*"
+                      aria-label="رفع صورة شخصية"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         if (file) {
@@ -624,13 +632,18 @@ const Settings = () => {
 
                 <div className="account-info">
                   <div className="setting-item">
-                    <div className="setting-label">اسم العرض</div>
+                    <div className="setting-label">
+                      <label htmlFor="display-name">اسم العرض</label>
+                    </div>
                     <div className="setting-control">
                       <input
                         type="text"
+                        id="display-name"
                         value={localSettings.account.displayName}
                         onChange={(e) => handleSettingChange('account', 'displayName', e.target.value)}
                         placeholder="أدخل اسم العرض"
+                        autoComplete="name"
+                        aria-label="اسم العرض"
                       />
                     </div>
                   </div>
@@ -638,13 +651,18 @@ const Settings = () => {
               </div>
 
               <div className="setting-item">
-                <div className="setting-label">البريد الإلكتروني</div>
+                <div className="setting-label">
+                  <label htmlFor="account-email">البريد الإلكتروني</label>
+                </div>
                 <div className="setting-control">
                   <input
                     type="email"
+                    id="account-email"
                     value={localSettings.account.email}
                     onChange={(e) => handleSettingChange('account', 'email', e.target.value)}
                     placeholder="أدخل البريد الإلكتروني"
+                    autoComplete="email"
+                    aria-label="البريد الإلكتروني"
                   />
                 </div>
               </div>
@@ -751,15 +769,19 @@ const Settings = () => {
               {localSettings.privacy.autoLogout && (
                 <>
                   <div className="setting-item">
-                    <div className="setting-label">وقت تسجيل الخروج (دقائق)</div>
+                    <div className="setting-label">
+                      <label htmlFor="logout-time">وقت تسجيل الخروج (دقائق)</label>
+                    </div>
                     <div className="setting-control">
                       <div className="range-slider">
                         <input
                           type="range"
+                          id="logout-time"
                           min="1"
                           max="120"
                           value={localSettings.privacy.logoutTime}
                           onChange={(e) => handleSettingChange('privacy', 'logoutTime', e.target.value)}
+                          aria-label="وقت تسجيل الخروج التلقائي بالدقائق"
                         />
                         <span className="range-value">{localSettings.privacy.logoutTime} دقيقة</span>
                       </div>
@@ -849,15 +871,19 @@ const Settings = () => {
               {localSettings.data.autoSave && (
                 <>
                   <div className="setting-item">
-                    <div className="setting-label">فترة الحفظ التلقائي (دقائق)</div>
+                    <div className="setting-label">
+                      <label htmlFor="save-interval">فترة الحفظ التلقائي (دقائق)</label>
+                    </div>
                     <div className="setting-control">
                       <div className="range-slider">
                         <input
                           type="range"
+                          id="save-interval"
                           min="1"
                           max="60"
                           value={localSettings.data.saveInterval}
                           onChange={(e) => handleSettingChange('data', 'saveInterval', e.target.value)}
+                          aria-label="فترة الحفظ التلقائي بالدقائق"
                         />
                         <span className="range-value">{localSettings.data.saveInterval} دقيقة</span>
                       </div>

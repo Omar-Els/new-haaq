@@ -458,12 +458,13 @@ const Finance = () => {
 
               {newTransaction.type === 'expense' && (
                 <div className="form-group">
-                  <label htmlFor="beneficiaries-selection-btn">المستفيدين</label>
+                  <label>المستفيدين</label>
                   <button
                     type="button"
-                    id="beneficiaries-selection-btn"
                     className="btn btn-secondary"
                     onClick={toggleBeneficiarySelection}
+                    aria-label="إضافة أو إخفاء قائمة المستفيدين"
+                    aria-expanded={showBeneficiariesSelection}
                   >
                     {showBeneficiariesSelection ? "إخفاء المستفيدين" : "إضافة مستفيدين"}
                   </button>
