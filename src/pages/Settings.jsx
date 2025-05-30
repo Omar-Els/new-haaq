@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaSave, FaMoon, FaSun, FaLanguage, FaUserCog, FaBell, FaLock,
-  FaDatabase, FaUndo, FaPalette, FaFont, FaCheck, FaTimes, FaUser
+  FaDatabase, FaUndo, FaPalette, FaFont, FaCheck, FaTimes, FaUser,
+  FaFileExcel, FaFilePdf, FaFileCsv
 } from 'react-icons/fa';
 import { toggleTheme, selectTheme, setTheme } from '../features/ui/themeSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
@@ -886,7 +887,7 @@ const Settings = () => {
                       className={`export-format-option ${localSettings.data.exportFormat === 'csv' ? 'active' : ''}`}
                       onClick={() => handleSettingChange('data', 'exportFormat', 'csv')}
                     >
-                      <FaFileExcel />
+                      <FaFileCsv />
                       <span>CSV</span>
                     </button>
                     <button

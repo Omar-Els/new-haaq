@@ -30,24 +30,36 @@ const ToastNotifications = () => {
     const settings = getNotificationSettings();
     if (settings.enabled && settings.sound) {
       try {
-        // Create a simple beep sound
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+        // Check if AudioContext is supported and user has interacted with the page
+        if (window.AudioContext || window.webkitAudioContext) {
+          // Create a simple beep sound only after user interaction
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        oscillator.type = 'sine';
-        oscillator.frequency.value = 800;
-        gainNode.gain.value = 0.1;
+          // Check if AudioContext is allowed to start
+          if (audioContext.state === 'suspended') {
+            // Don't try to play sound if AudioContext is suspended
+            console.log('AudioContext is suspended, skipping sound');
+            return;
+          }
 
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
 
-        oscillator.start();
-        setTimeout(() => {
-          oscillator.stop();
-        }, 200);
+          oscillator.type = 'sine';
+          oscillator.frequency.value = 800;
+          gainNode.gain.value = 0.1;
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          oscillator.start();
+          setTimeout(() => {
+            oscillator.stop();
+            audioContext.close(); // Clean up AudioContext
+          }, 200);
+        }
       } catch (error) {
-        console.error('Error playing notification sound:', error);
+        console.log('Notification sound disabled due to browser policy:', error.message);
       }
     }
   };
@@ -90,9 +102,12 @@ const ToastNotifications = () => {
         ];
       });
 
-      // Play sound for the first new notification
+      // Play sound for the first new notification (only if user has interacted with page)
       if (newNotifications.length > 0) {
-        playNotificationSound();
+        // Add a small delay to ensure the notification is rendered first
+        setTimeout(() => {
+          playNotificationSound();
+        }, 100);
       }
     }
   }, [notifications]);
