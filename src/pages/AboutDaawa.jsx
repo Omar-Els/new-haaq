@@ -513,9 +513,16 @@ const AboutDaawa = () => {
               transition={{ duration: 0.3 }}
               style={{ '--activity-color': activity.color }}
             >
-              <div className="activity-header" onClick={() =>
-                setExpandedActivity(expandedActivity === activity.id ? null : activity.id)
-              }>
+              <motion.button
+                className="activity-header"
+                onClick={() =>
+                  setExpandedActivity(expandedActivity === activity.id ? null : activity.id)
+                }
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                aria-label={`${expandedActivity === activity.id ? 'إخفاء' : 'عرض'} تفاصيل ${activity.title}`}
+                aria-expanded={expandedActivity === activity.id}
+              >
                 <motion.div
                   className="activity-icon"
                   whileHover={{ rotate: 360 }}
@@ -531,7 +538,7 @@ const AboutDaawa = () => {
                 >
                   ▼
                 </motion.div>
-              </div>
+              </motion.button>
 
               <AnimatePresence>
                 <motion.div
@@ -587,33 +594,36 @@ const AboutDaawa = () => {
               <h3>معلومات الاتصال</h3>
             </div>
             <div className="contact-details">
-              <motion.div
+              <motion.button
                 className="contact-item clickable"
                 whileHover={{ scale: 1.02, backgroundColor: "rgba(52, 152, 219, 0.1)" }}
                 onClick={() => window.open('https://maps.google.com/?q=شارع الأزهر، القاهرة، مصر', '_blank')}
+                aria-label="فتح الموقع في خرائط جوجل"
               >
                 <FaMapMarkerAlt />
                 <span>شارع الأزهر، القاهرة، مصر</span>
                 <FaExternalLinkAlt className="external-icon" />
-              </motion.div>
-              <motion.div
+              </motion.button>
+              <motion.button
                 className="contact-item clickable"
                 whileHover={{ scale: 1.02, backgroundColor: "rgba(46, 204, 113, 0.1)" }}
                 onClick={() => window.open('tel:01234567890', '_self')}
+                aria-label="الاتصال بالرقم 01234567890"
               >
                 <FaPhone />
                 <span>01234567890</span>
                 <FaExternalLinkAlt className="external-icon" />
-              </motion.div>
-              <motion.div
+              </motion.button>
+              <motion.button
                 className="contact-item clickable"
                 whileHover={{ scale: 1.02, backgroundColor: "rgba(231, 76, 60, 0.1)" }}
                 onClick={() => window.open('mailto:info@daawa-elhaq.org', '_self')}
+                aria-label="إرسال بريد إلكتروني إلى info@daawa-elhaq.org"
               >
                 <FaEnvelope />
                 <span>info@daawa-elhaq.org</span>
                 <FaExternalLinkAlt className="external-icon" />
-              </motion.div>
+              </motion.button>
             </div>
           </motion.div>
 
@@ -849,6 +859,8 @@ const AboutDaawa = () => {
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowShareMenu(!showShareMenu)}
           title="مشاركة الصفحة"
+          aria-label="مشاركة الصفحة على وسائل التواصل الاجتماعي"
+          aria-expanded={showShareMenu}
         >
           <FaShare />
         </motion.button>
@@ -876,6 +888,7 @@ const AboutDaawa = () => {
                   whileHover={{ scale: 1.1, backgroundColor: item.color, color: 'white' }}
                   onClick={() => handleShare(item.platform)}
                   title={`مشاركة على ${item.platform}`}
+                  aria-label={`مشاركة الصفحة على ${item.platform}`}
                 >
                   <item.icon />
                 </motion.button>
@@ -890,6 +903,7 @@ const AboutDaawa = () => {
           whileTap={{ scale: 0.9 }}
           onClick={handlePrint}
           title="طباعة الصفحة"
+          aria-label="طباعة محتوى الصفحة"
         >
           <FaPrint />
         </motion.button>
@@ -900,6 +914,7 @@ const AboutDaawa = () => {
           whileTap={{ scale: 0.9 }}
           onClick={handleDownload}
           title="تحميل كـ PDF"
+          aria-label="تحميل الصفحة كملف PDF"
         >
           <FaDownload />
         </motion.button>
@@ -911,7 +926,7 @@ const AboutDaawa = () => {
       </motion.div>
 
       <motion.div className="tabs-container" variants={itemVariants}>
-        <div className="tabs">
+        <div className="tabs" role="tablist" aria-label="أقسام صفحة عن دعوة الحق">
           {[
             { id: 'about', label: 'من نحن', icon: FaUsers },
             { id: 'mission', label: 'رسالتنا ورؤيتنا', icon: FaBullseye },
@@ -920,11 +935,15 @@ const AboutDaawa = () => {
           ].map((tab) => (
             <motion.button
               key={tab.id}
+              id={`tab-${tab.id}`}
               className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              aria-label={`انتقل إلى تبويب ${tab.label}`}
+              aria-selected={activeTab === tab.id}
+              role="tab"
             >
               <tab.icon className="tab-icon" />
               <span>{tab.label}</span>
@@ -943,6 +962,8 @@ const AboutDaawa = () => {
           <motion.div
             key={activeTab}
             className="tab-content"
+            role="tabpanel"
+            aria-labelledby={`tab-${activeTab}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}

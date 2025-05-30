@@ -706,6 +706,22 @@
   transition: all 0.3s ease;
   border-radius: 8px;
   position: relative;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+.contact-item.clickable:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 .external-icon {
@@ -934,4 +950,39 @@
     gap: 0.5rem;
     text-align: center;
   }
+}
+
+/* Activity Header Button */
+.activity-header {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  color: inherit;
+  border-radius: var(--border-radius);
+}
+
+.activity-header:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.activity-header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.expand-icon {
+  font-size: 1.2rem;
+  color: var(--text-secondary-color);
+  transition: all 0.3s ease;
 }
