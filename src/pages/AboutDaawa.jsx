@@ -4,7 +4,10 @@ import {
   FaQuran, FaMosque, FaHandHoldingHeart, FaUsers, FaBookOpen, FaChalkboardTeacher,
   FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebook, FaTwitter,
   FaInstagram, FaYoutube, FaHeart, FaGift, FaGraduationCap, FaHandsHelping,
-  FaEye, FaBullseye, FaLightbulb, FaAward, FaCalendarAlt, FaChartLine
+  FaEye, FaBullseye, FaLightbulb, FaAward, FaCalendarAlt, FaChartLine,
+  FaExternalLinkAlt, FaDownload, FaShare, FaPrint, FaWhatsapp, FaTelegram,
+  FaLinkedin, FaGlobe, FaNewspaper, FaVideo, FaImages, FaFileAlt,
+  FaDonate, FaVolunteer, FaHandshake, FaHistory, FaCertificate, FaStar
 } from 'react-icons/fa';
 import './AboutDaawa.css';
 
@@ -23,6 +26,19 @@ const AboutDaawa = () => {
   });
   const [hoveredCard, setHoveredCard] = useState(null);
   const [expandedActivity, setExpandedActivity] = useState(null);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [newsItems, setNewsItems] = useState([]);
+  const [showGallery, setShowGallery] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Animated counter effect for statistics
   useEffect(() => {
@@ -53,6 +69,45 @@ const AboutDaawa = () => {
     }
   }, [activeTab]);
 
+  // Update current time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Load news items
+  useEffect(() => {
+    const mockNews = [
+      {
+        id: 1,
+        title: 'إطلاق مبادرة كسوة الشتاء 2024',
+        date: '2024-01-15',
+        summary: 'بدء توزيع الملابس الشتوية على الأسر المحتاجة',
+        image: '/images/winter-clothes.jpg',
+        link: '#news-1'
+      },
+      {
+        id: 2,
+        title: 'افتتاح مركز جديد لتحفيظ القرآن',
+        date: '2024-01-10',
+        summary: 'افتتاح مركز تحفيظ القرآن الكريم في منطقة المعادي',
+        image: '/images/quran-center.jpg',
+        link: '#news-2'
+      },
+      {
+        id: 3,
+        title: 'حملة التبرع بالدم الشهرية',
+        date: '2024-01-05',
+        summary: 'نجاح حملة التبرع بالدم وجمع 200 كيس دم',
+        image: '/images/blood-donation.jpg',
+        link: '#news-3'
+      }
+    ];
+    setNewsItems(mockNews);
+  }, []);
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -67,6 +122,80 @@ const AboutDaawa = () => {
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1 }
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setSubmitMessage('تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.');
+      setContactForm({ name: '', email: '', subject: '', message: '' });
+      setIsSubmitting(false);
+
+      // Clear message after 5 seconds
+      setTimeout(() => setSubmitMessage(''), 5000);
+    }, 2000);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Share functionality
+  const handleShare = (platform) => {
+    const url = window.location.href;
+    const title = 'دعوة الحق - مؤسسة خيرية';
+    const text = 'تعرف على مؤسسة دعوة الحق وأنشطتها الخيرية والدعوية';
+
+    const shareUrls = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`,
+      telegram: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
+    };
+
+    if (shareUrls[platform]) {
+      window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+    }
+    setShowShareMenu(false);
+  };
+
+  // Print page
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Download page as PDF (mock function)
+  const handleDownload = () => {
+    alert('سيتم إضافة ميزة تحميل PDF قريباً');
+  };
+
+  // Format time for display
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('ar-EG', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  // Check if organization is currently open
+  const isOpen = () => {
+    const day = currentTime.getDay();
+    const hour = currentTime.getHours();
+
+    // Friday is closed (day 5), Saturday to Thursday 9-17
+    if (day === 5) return false;
+    return hour >= 9 && hour < 17;
   };
 
   // Content for each tab
@@ -163,6 +292,92 @@ const AboutDaawa = () => {
             <div className="stat-description">تم تنفيذها بنجاح</div>
           </motion.div>
         </div>
+
+        {/* Latest News Section */}
+        <motion.div
+          className="news-section"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="section-header">
+            <FaNewspaper className="section-icon" />
+            <h3>آخر الأخبار</h3>
+          </div>
+          <div className="news-grid">
+            {newsItems.map((news, index) => (
+              <motion.div
+                key={news.id}
+                className="news-card"
+                whileHover={{ scale: 1.03, y: -5 }}
+                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="news-date">
+                  <FaCalendarAlt />
+                  <span>{new Date(news.date).toLocaleDateString('ar-EG')}</span>
+                </div>
+                <h4>{news.title}</h4>
+                <p>{news.summary}</p>
+                <motion.a
+                  href={news.link}
+                  className="news-link"
+                  whileHover={{ scale: 1.05 }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert(`سيتم فتح الخبر: ${news.title}`);
+                  }}
+                >
+                  اقرأ المزيد <FaExternalLinkAlt />
+                </motion.a>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div
+          className="quick-actions"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <div className="section-header">
+            <FaHandshake className="section-icon" />
+            <h3>كيف يمكنك المساعدة</h3>
+          </div>
+          <div className="actions-grid">
+            <motion.button
+              className="action-btn donate-btn"
+              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(231, 76, 60, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => alert('سيتم توجيهك لصفحة التبرع')}
+            >
+              <FaDonate />
+              <span>تبرع الآن</span>
+            </motion.button>
+            <motion.button
+              className="action-btn volunteer-btn"
+              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(52, 152, 219, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => alert('سيتم توجيهك لصفحة التطوع')}
+            >
+              <FaVolunteer />
+              <span>انضم كمتطوع</span>
+            </motion.button>
+            <motion.button
+              className="action-btn gallery-btn"
+              whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(46, 204, 113, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowGallery(true)}
+            >
+              <FaImages />
+              <span>معرض الصور</span>
+            </motion.button>
+          </div>
+        </motion.div>
       </motion.div>
     ),
     mission: (
@@ -371,18 +586,33 @@ const AboutDaawa = () => {
               <h3>معلومات الاتصال</h3>
             </div>
             <div className="contact-details">
-              <div className="contact-item">
+              <motion.div
+                className="contact-item clickable"
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(52, 152, 219, 0.1)" }}
+                onClick={() => window.open('https://maps.google.com/?q=شارع الأزهر، القاهرة، مصر', '_blank')}
+              >
                 <FaMapMarkerAlt />
                 <span>شارع الأزهر، القاهرة، مصر</span>
-              </div>
-              <div className="contact-item">
+                <FaExternalLinkAlt className="external-icon" />
+              </motion.div>
+              <motion.div
+                className="contact-item clickable"
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(46, 204, 113, 0.1)" }}
+                onClick={() => window.open('tel:01234567890', '_self')}
+              >
                 <FaPhone />
                 <span>01234567890</span>
-              </div>
-              <div className="contact-item">
+                <FaExternalLinkAlt className="external-icon" />
+              </motion.div>
+              <motion.div
+                className="contact-item clickable"
+                whileHover={{ scale: 1.02, backgroundColor: "rgba(231, 76, 60, 0.1)" }}
+                onClick={() => window.open('mailto:info@daawa-elhaq.org', '_self')}
+              >
                 <FaEnvelope />
                 <span>info@daawa-elhaq.org</span>
-              </div>
+                <FaExternalLinkAlt className="external-icon" />
+              </motion.div>
             </div>
           </motion.div>
 
@@ -396,6 +626,16 @@ const AboutDaawa = () => {
               <h3>ساعات العمل</h3>
             </div>
             <div className="working-hours">
+              <div className="current-status">
+                <div className={`status-indicator ${isOpen() ? 'open' : 'closed'}`}>
+                  <div className="status-dot"></div>
+                  <span>{isOpen() ? 'مفتوح الآن' : 'مغلق الآن'}</span>
+                </div>
+                <div className="current-time">
+                  <FaClock />
+                  <span>{formatTime(currentTime)}</span>
+                </div>
+              </div>
               <div className="hour-item">
                 <span className="days">السبت - الخميس</span>
                 <span className="time">9:00 ص - 5:00 م</span>
@@ -417,26 +657,76 @@ const AboutDaawa = () => {
           <h3>تابعنا على وسائل التواصل الاجتماعي</h3>
           <div className="social-icons">
             {[
-              { icon: FaFacebook, name: 'فيسبوك', color: '#1877f2', url: '#' },
-              { icon: FaTwitter, name: 'تويتر', color: '#1da1f2', url: '#' },
-              { icon: FaInstagram, name: 'انستغرام', color: '#e4405f', url: '#' },
-              { icon: FaYoutube, name: 'يوتيوب', color: '#ff0000', url: '#' }
+              {
+                icon: FaFacebook,
+                name: 'فيسبوك',
+                color: '#1877f2',
+                url: 'https://facebook.com/daawa.elhaq',
+                followers: '15K'
+              },
+              {
+                icon: FaTwitter,
+                name: 'تويتر',
+                color: '#1da1f2',
+                url: 'https://twitter.com/daawa_elhaq',
+                followers: '8K'
+              },
+              {
+                icon: FaInstagram,
+                name: 'انستغرام',
+                color: '#e4405f',
+                url: 'https://instagram.com/daawa.elhaq',
+                followers: '12K'
+              },
+              {
+                icon: FaYoutube,
+                name: 'يوتيوب',
+                color: '#ff0000',
+                url: 'https://youtube.com/@daawa-elhaq',
+                followers: '25K'
+              },
+              {
+                icon: FaWhatsapp,
+                name: 'واتساب',
+                color: '#25d366',
+                url: 'https://wa.me/201234567890',
+                followers: 'مباشر'
+              },
+              {
+                icon: FaTelegram,
+                name: 'تليجرام',
+                color: '#0088cc',
+                url: 'https://t.me/daawa_elhaq',
+                followers: '5K'
+              }
             ].map((social, index) => (
               <motion.a
                 key={index}
                 href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="social-icon"
                 whileHover={{
                   scale: 1.1,
                   backgroundColor: social.color,
-                  color: 'white'
+                  color: 'white',
+                  boxShadow: `0 8px 25px ${social.color}40`
                 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ duration: 0.2 }}
                 style={{ '--social-color': social.color }}
+                onClick={(e) => {
+                  // For demo purposes, show alert instead of opening real links
+                  e.preventDefault();
+                  alert(`سيتم فتح ${social.name}: ${social.url}`);
+                }}
               >
                 <social.icon />
-                <span>{social.name}</span>
+                <div className="social-info">
+                  <span className="social-name">{social.name}</span>
+                  <span className="social-followers">{social.followers}</span>
+                </div>
+                <FaExternalLinkAlt className="external-icon" />
               </motion.a>
             ))}
           </div>
@@ -449,20 +739,88 @@ const AboutDaawa = () => {
           transition={{ delay: 0.5 }}
         >
           <h3>أرسل لنا رسالة</h3>
-          <form className="contact-form">
+          {submitMessage && (
+            <motion.div
+              className="submit-message success"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              <FaCheck />
+              <span>{submitMessage}</span>
+            </motion.div>
+          )}
+          <form className="contact-form" onSubmit={handleContactSubmit}>
             <div className="form-row">
-              <input type="text" placeholder="الاسم" required />
-              <input type="email" placeholder="البريد الإلكتروني" required />
+              <div className="form-group">
+                <label htmlFor="contact-name">الاسم</label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="name"
+                  value={contactForm.name}
+                  onChange={handleInputChange}
+                  placeholder="أدخل اسمك الكامل"
+                  required
+                  autoComplete="name"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="contact-email">البريد الإلكتروني</label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="email"
+                  value={contactForm.email}
+                  onChange={handleInputChange}
+                  placeholder="أدخل بريدك الإلكتروني"
+                  required
+                  autoComplete="email"
+                />
+              </div>
             </div>
-            <input type="text" placeholder="الموضوع" required />
-            <textarea placeholder="الرسالة" rows="4" required></textarea>
+            <div className="form-group">
+              <label htmlFor="contact-subject">الموضوع</label>
+              <input
+                type="text"
+                id="contact-subject"
+                name="subject"
+                value={contactForm.subject}
+                onChange={handleInputChange}
+                placeholder="موضوع الرسالة"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="contact-message">الرسالة</label>
+              <textarea
+                id="contact-message"
+                name="message"
+                value={contactForm.message}
+                onChange={handleInputChange}
+                placeholder="اكتب رسالتك هنا..."
+                rows="4"
+                required
+              ></textarea>
+            </div>
             <motion.button
               type="submit"
               className="submit-btn"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              disabled={isSubmitting}
+              whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
+              whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
             >
-              إرسال الرسالة
+              {isSubmitting ? (
+                <>
+                  <div className="spinner"></div>
+                  جاري الإرسال...
+                </>
+              ) : (
+                <>
+                  <FaEnvelope />
+                  إرسال الرسالة
+                </>
+              )}
             </motion.button>
           </form>
         </motion.div>
@@ -477,8 +835,78 @@ const AboutDaawa = () => {
       initial="hidden"
       animate="visible"
     >
+      {/* Floating Action Toolbar */}
+      <motion.div
+        className="floating-toolbar"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1 }}
+      >
+        <motion.button
+          className="toolbar-btn share-btn"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowShareMenu(!showShareMenu)}
+          title="مشاركة الصفحة"
+        >
+          <FaShare />
+        </motion.button>
+
+        <AnimatePresence>
+          {showShareMenu && (
+            <motion.div
+              className="share-menu"
+              initial={{ opacity: 0, scale: 0.8, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {[
+                { platform: 'facebook', icon: FaFacebook, color: '#1877f2' },
+                { platform: 'twitter', icon: FaTwitter, color: '#1da1f2' },
+                { platform: 'whatsapp', icon: FaWhatsapp, color: '#25d366' },
+                { platform: 'telegram', icon: FaTelegram, color: '#0088cc' },
+                { platform: 'linkedin', icon: FaLinkedin, color: '#0077b5' }
+              ].map((item) => (
+                <motion.button
+                  key={item.platform}
+                  className="share-option"
+                  style={{ '--share-color': item.color }}
+                  whileHover={{ scale: 1.1, backgroundColor: item.color, color: 'white' }}
+                  onClick={() => handleShare(item.platform)}
+                  title={`مشاركة على ${item.platform}`}
+                >
+                  <item.icon />
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          className="toolbar-btn print-btn"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handlePrint}
+          title="طباعة الصفحة"
+        >
+          <FaPrint />
+        </motion.button>
+
+        <motion.button
+          className="toolbar-btn download-btn"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleDownload}
+          title="تحميل كـ PDF"
+        >
+          <FaDownload />
+        </motion.button>
+      </motion.div>
+
       <motion.div className="page-header" variants={itemVariants}>
         <h1>عن دعوة الحق</h1>
+        <p>تعرف على مؤسستنا ورسالتها وأنشطتها المتنوعة</p>
       </motion.div>
 
       <motion.div className="tabs-container" variants={itemVariants}>
