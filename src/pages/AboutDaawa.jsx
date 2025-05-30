@@ -41,22 +41,42 @@ const AboutDaawa = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  // Animated counter effect for statistics with dynamic updates
+  // Animated counter effect for statistics with REAL dynamic updates
   useEffect(() => {
     if (activeTab === 'about') {
-      // Get dynamic data from localStorage or API
+      // Get REAL data from localStorage
       const savedBeneficiaries = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const savedTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
 
-      // Calculate real statistics
+      console.log('📊 البيانات المحفوظة:', {
+        beneficiaries: savedBeneficiaries.length,
+        transactions: savedTransactions.length
+      });
+
+      // Calculate REAL statistics from actual data
+      const realBeneficiariesCount = savedBeneficiaries.length;
+      const realVolunteersCount = savedBeneficiaries.filter(b =>
+        b.notes && b.notes.includes('متطوع')
+      ).length;
+      const realProjectsCount = savedTransactions.filter(t =>
+        t.type === 'expense' && (
+          t.category === 'مشاريع' ||
+          t.category === 'مشروع' ||
+          t.description?.includes('مشروع')
+        )
+      ).length;
+
+      // Use real data or minimum display values
       const realStats = {
-        beneficiaries: Math.max(savedBeneficiaries.length * 12, 5000), // Multiply by average family size
-        volunteers: Math.max(savedBeneficiaries.filter(b => b.isVolunteer).length, 200),
-        projects: Math.max(savedTransactions.filter(t => t.type === 'expense' && t.category === 'مشاريع').length, 50)
+        beneficiaries: realBeneficiariesCount > 0 ? realBeneficiariesCount : 0,
+        volunteers: realVolunteersCount > 0 ? realVolunteersCount : 0,
+        projects: realProjectsCount > 0 ? realProjectsCount : 0
       };
 
-      const duration = 2500; // 2.5 seconds for more dramatic effect
-      const steps = 80; // More steps for smoother animation
+      console.log('📈 الإحصائيات الحقيقية:', realStats);
+
+      const duration = 2000;
+      const steps = 60;
       const stepDuration = duration / steps;
 
       let currentStep = 0;
@@ -64,7 +84,7 @@ const AboutDaawa = () => {
         currentStep++;
         const progress = Math.min(currentStep / steps, 1);
 
-        // Easing function for more natural animation
+        // Easing function for natural animation
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
 
         setAnimatedStats({
@@ -91,88 +111,107 @@ const AboutDaawa = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Load dynamic news items based on real data
+  // Load REAL dynamic news items based on actual data
   useEffect(() => {
-    const generateDynamicNews = () => {
+    const generateRealNews = () => {
       const savedBeneficiaries = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
       const savedTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
 
-      const dynamicNews = [];
+      console.log('📰 توليد الأخبار من البيانات الحقيقية...');
 
-      // Generate news based on recent transactions
+      const realNews = [];
+
+      // أخبار المعاملات المالية الحديثة
       const recentTransactions = savedTransactions
-        .filter(t => new Date(t.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) // Last 30 days
+        .filter(t => {
+          const transactionDate = new Date(t.date);
+          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+          return transactionDate > thirtyDaysAgo;
+        })
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 2);
 
       recentTransactions.forEach((transaction, index) => {
-        if (transaction.type === 'expense') {
-          dynamicNews.push({
-            id: `dynamic-${index}`,
-            title: `مساعدة جديدة: ${transaction.category}`,
-            date: transaction.date,
-            summary: `تم صرف ${transaction.amount} جنيه لـ${transaction.description || transaction.category}`,
-            image: '/images/help.jpg',
-            link: `#transaction-${transaction.id}`,
-            isReal: true
-          });
-        }
-      });
+        const newsTitle = transaction.type === 'expense'
+          ? `مساعدة مالية: ${transaction.category}`
+          : `تبرع جديد: ${transaction.category}`;
 
-      // Generate news based on new beneficiaries
-      const recentBeneficiaries = savedBeneficiaries
-        .filter(b => new Date(b.createdAt || Date.now()) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) // Last 7 days
-        .slice(0, 1);
+        const newsSummary = transaction.type === 'expense'
+          ? `تم صرف ${transaction.amount} جنيه مصري لـ ${transaction.description || transaction.category}`
+          : `تم استلام تبرع بقيمة ${transaction.amount} جنيه مصري`;
 
-      recentBeneficiaries.forEach((beneficiary, index) => {
-        dynamicNews.push({
-          id: `beneficiary-${index}`,
-          title: `انضمام أسرة جديدة للبرنامج`,
-          date: beneficiary.createdAt || new Date().toISOString().split('T')[0],
-          summary: `انضمت أسرة ${beneficiary.name} إلى برنامج المساعدات`,
-          image: '/images/family.jpg',
-          link: `#beneficiary-${beneficiary.id}`,
-          isReal: true
+        realNews.push({
+          id: `real-transaction-${transaction.id}`,
+          title: newsTitle,
+          date: transaction.date,
+          summary: newsSummary,
+          amount: transaction.amount,
+          category: transaction.category,
+          isReal: true,
+          type: 'transaction',
+          data: transaction
         });
       });
 
-      // Add default news if no real data
+      // أخبار المستفيدين الجدد
+      const recentBeneficiaries = savedBeneficiaries
+        .filter(b => {
+          const createdDate = new Date(b.createdAt || b.registrationDate || Date.now());
+          const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+          return createdDate > sevenDaysAgo;
+        })
+        .slice(0, 2);
+
+      recentBeneficiaries.forEach((beneficiary, index) => {
+        realNews.push({
+          id: `real-beneficiary-${beneficiary.id}`,
+          title: `انضمام أسرة جديدة: ${beneficiary.name}`,
+          date: beneficiary.createdAt || beneficiary.registrationDate || new Date().toISOString().split('T')[0],
+          summary: `انضمت أسرة ${beneficiary.name} من ${beneficiary.address || 'القاهرة'} إلى برنامج المساعدات`,
+          familySize: beneficiary.familySize || 'غير محدد',
+          isReal: true,
+          type: 'beneficiary',
+          data: beneficiary
+        });
+      });
+
+      // أخبار افتراضية إذا لم توجد بيانات حقيقية
       const defaultNews = [
         {
-          id: 1,
-          title: 'إطلاق مبادرة كسوة الشتاء 2024',
-          date: '2024-01-15',
-          summary: 'بدء توزيع الملابس الشتوية على الأسر المحتاجة',
-          image: '/images/winter-clothes.jpg',
-          link: '#news-1',
-          isReal: false
+          id: 'default-1',
+          title: 'مرحباً بك في نظام دعوة الحق',
+          date: new Date().toISOString().split('T')[0],
+          summary: 'ابدأ بإضافة مستفيدين ومعاملات مالية لرؤية الأخبار الحقيقية هنا',
+          isReal: false,
+          type: 'welcome'
         },
         {
-          id: 2,
-          title: 'افتتاح مركز جديد لتحفيظ القرآن',
-          date: '2024-01-10',
-          summary: 'افتتاح مركز تحفيظ القرآن الكريم في منطقة المعادي',
-          image: '/images/quran-center.jpg',
-          link: '#news-2',
-          isReal: false
-        },
-        {
-          id: 3,
-          title: 'حملة التبرع بالدم الشهرية',
-          date: '2024-01-05',
-          summary: 'نجاح حملة التبرع بالدم وجمع 200 كيس دم',
-          image: '/images/blood-donation.jpg',
-          link: '#news-3',
-          isReal: false
+          id: 'default-2',
+          title: 'كيفية استخدام النظام',
+          date: new Date().toISOString().split('T')[0],
+          summary: 'انتقل إلى صفحة المستفيدين لإضافة أسر جديدة، أو صفحة المالية لإدارة التبرعات',
+          isReal: false,
+          type: 'guide'
         }
       ];
 
-      // Combine real and default news, prioritize real news
-      const allNews = [...dynamicNews, ...defaultNews].slice(0, 3);
+      // إعطاء الأولوية للأخبار الحقيقية
+      const allNews = realNews.length > 0
+        ? [...realNews, ...defaultNews].slice(0, 3)
+        : defaultNews.slice(0, 3);
+
+      console.log('📰 تم توليد الأخبار:', allNews);
       return allNews;
     };
 
-    setNewsItems(generateDynamicNews());
+    setNewsItems(generateRealNews());
+
+    // تحديث الأخبار كل دقيقة
+    const newsInterval = setInterval(() => {
+      setNewsItems(generateRealNews());
+    }, 60000);
+
+    return () => clearInterval(newsInterval);
   }, []);
 
   // Animation variants
@@ -407,19 +446,36 @@ const AboutDaawa = () => {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => {
                     if (news.isReal) {
-                      // Navigate to real data
-                      if (news.link.includes('transaction')) {
-                        alert(`عرض تفاصيل المعاملة: ${news.title}`);
-                      } else if (news.link.includes('beneficiary')) {
-                        alert(`عرض تفاصيل المستفيد: ${news.title}`);
+                      if (news.type === 'transaction') {
+                        // Navigate to finance page and highlight the transaction
+                        localStorage.setItem('highlightTransaction', news.data.id);
+                        window.location.href = '/finance';
+                      } else if (news.type === 'beneficiary') {
+                        // Navigate to beneficiaries page and highlight the beneficiary
+                        localStorage.setItem('highlightBeneficiary', news.data.id);
+                        window.location.href = '/beneficiaries';
                       }
                     } else {
-                      alert(`سيتم فتح الخبر: ${news.title}`);
+                      if (news.type === 'welcome') {
+                        // Show welcome modal with instructions
+                        alert('مرحباً بك! ابدأ بإضافة بيانات حقيقية لرؤية الأخبار التفاعلية');
+                      } else if (news.type === 'guide') {
+                        // Show guide modal
+                        alert('دليل الاستخدام:\n1. اذهب لصفحة المستفيدين لإضافة أسر\n2. اذهب لصفحة المالية لإدارة التبرعات\n3. ستظهر الأخبار الحقيقية هنا تلقائياً');
+                      }
                     }
                   }}
                   aria-label={`قراءة المزيد عن ${news.title}`}
                 >
-                  اقرأ المزيد <FaExternalLinkAlt />
+                  {news.isReal ? (
+                    <>
+                      عرض التفاصيل <FaExternalLinkAlt />
+                    </>
+                  ) : (
+                    <>
+                      اقرأ المزيد <FaExternalLinkAlt />
+                    </>
+                  )}
                 </motion.button>
               </motion.div>
             ))}
@@ -986,29 +1042,118 @@ const AboutDaawa = () => {
                   </motion.button>
                 </div>
                 <div className="gallery-grid">
-                  {[
-                    { id: 1, src: '/images/activity1.jpg', title: 'توزيع المساعدات' },
-                    { id: 2, src: '/images/activity2.jpg', title: 'تحفيظ القرآن' },
-                    { id: 3, src: '/images/activity3.jpg', title: 'الأنشطة التعليمية' },
-                    { id: 4, src: '/images/activity4.jpg', title: 'المساعدات الطبية' },
-                    { id: 5, src: '/images/activity5.jpg', title: 'كسوة العيد' },
-                    { id: 6, src: '/images/activity6.jpg', title: 'الأنشطة الثقافية' }
-                  ].map((image, index) => (
-                    <motion.div
-                      key={image.id}
-                      className="gallery-item"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ scale: 1.05 }}
-                      onClick={() => setSelectedImage(image)}
-                    >
-                      <div className="image-placeholder">
-                        <FaImages />
-                        <span>{image.title}</span>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {(() => {
+                    // Generate dynamic gallery based on real data
+                    const savedBeneficiaries = JSON.parse(localStorage.getItem('beneficiaries') || '[]');
+                    const savedTransactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+
+                    const dynamicGallery = [];
+
+                    // Add images based on beneficiaries
+                    if (savedBeneficiaries.length > 0) {
+                      dynamicGallery.push({
+                        id: 'real-beneficiaries',
+                        title: `${savedBeneficiaries.length} أسرة مستفيدة`,
+                        description: 'صور الأسر المستفيدة من برامجنا',
+                        icon: FaUsers,
+                        color: '#3498db',
+                        isReal: true,
+                        data: savedBeneficiaries
+                      });
+                    }
+
+                    // Add images based on transactions
+                    const expenseTransactions = savedTransactions.filter(t => t.type === 'expense');
+                    if (expenseTransactions.length > 0) {
+                      dynamicGallery.push({
+                        id: 'real-expenses',
+                        title: `${expenseTransactions.length} مساعدة مالية`,
+                        description: 'صور توزيع المساعدات المالية',
+                        icon: FaDonate,
+                        color: '#e74c3c',
+                        isReal: true,
+                        data: expenseTransactions
+                      });
+                    }
+
+                    // Add default gallery items
+                    const defaultGallery = [
+                      {
+                        id: 'default-1',
+                        title: 'توزيع المساعدات',
+                        description: 'صور توزيع المساعدات على الأسر المحتاجة',
+                        icon: FaHandHoldingHeart,
+                        color: '#2ecc71',
+                        isReal: false
+                      },
+                      {
+                        id: 'default-2',
+                        title: 'تحفيظ القرآن',
+                        description: 'صور حلقات تحفيظ القرآن الكريم',
+                        icon: FaQuran,
+                        color: '#9b59b6',
+                        isReal: false
+                      },
+                      {
+                        id: 'default-3',
+                        title: 'الأنشطة التعليمية',
+                        description: 'صور الدورات التعليمية والتدريبية',
+                        icon: FaGraduationCap,
+                        color: '#f39c12',
+                        isReal: false
+                      },
+                      {
+                        id: 'default-4',
+                        title: 'المساعدات الطبية',
+                        description: 'صور تقديم المساعدات الطبية',
+                        icon: FaHeart,
+                        color: '#e67e22',
+                        isReal: false
+                      }
+                    ];
+
+                    const allGallery = [...dynamicGallery, ...defaultGallery].slice(0, 6);
+
+                    return allGallery.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        className={`gallery-item ${item.isReal ? 'real-gallery-item' : 'default-gallery-item'}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        onClick={() => {
+                          if (item.isReal) {
+                            if (item.id === 'real-beneficiaries') {
+                              alert(`عرض تفاصيل ${item.data.length} أسرة مستفيدة`);
+                              // يمكن فتح modal مع تفاصيل المستفيدين
+                            } else if (item.id === 'real-expenses') {
+                              alert(`عرض تفاصيل ${item.data.length} مساعدة مالية`);
+                              // يمكن فتح modal مع تفاصيل المساعدات
+                            }
+                          } else {
+                            alert(`معرض ${item.title} - ${item.description}`);
+                          }
+                        }}
+                      >
+                        <div className="gallery-content" style={{ '--item-color': item.color }}>
+                          <div className="gallery-icon">
+                            <item.icon />
+                          </div>
+                          <div className="gallery-info">
+                            <h4>{item.title}</h4>
+                            <p>{item.description}</p>
+                            {item.isReal && (
+                              <div className="real-indicator">
+                                <FaStar />
+                                <span>بيانات حقيقية</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ));
+                  })()}
                 </div>
               </motion.div>
             </motion.div>
