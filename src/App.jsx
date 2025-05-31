@@ -14,6 +14,7 @@ import Navbar from './components/Navbar';
 import FloatingActionButton from './components/FloatingActionButton';
 import ScrollToTop from './components/ScrollToTop';
 import ToastNotifications from './components/ToastNotifications';
+import StorageAlert from './components/StorageAlert';
 import AppRoutes from './routes';
 import './App.css';
 
@@ -70,6 +71,14 @@ function App() {
 
     // فحص ومراقبة مساحة التخزين
     console.log('🚀 بدء مراقبة مساحة التخزين...');
+
+    // فحص فوري وتنظيف إذا لزم الأمر
+    const storageInfo = StorageManager.getStorageInfo();
+    if (storageInfo && storageInfo.usagePercentage > 85) {
+      console.warn('⚠️ مساحة التخزين ممتلئة، بدء التنظيف التلقائي...');
+      StorageManager.performEmergencyCleanup();
+    }
+
     StorageManager.displayStorageInfo();
     StorageManager.startStorageMonitoring();
 
@@ -205,6 +214,7 @@ function App() {
       {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
       <FloatingActionButton />
       <ToastNotifications />
+      <StorageAlert />
     </div>
   );
 }
