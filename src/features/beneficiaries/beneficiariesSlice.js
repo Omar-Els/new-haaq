@@ -300,26 +300,105 @@ export const fetchBeneficiaries = createAsyncThunk(
   'beneficiaries/fetchBeneficiaries',
   async (_, { rejectWithValue, dispatch }) => {
     try {
-      // In a real app, this would be an API call
-      // For now, we'll use storage (IndexedDB or localStorage)
-      const beneficiaries = await getBeneficiariesFromStorage();
+      console.log('🔄 بدء تحميل بيانات المستفيدين...');
+
+      // محاولة تحميل من IndexedDB أولاً
+      let beneficiaries = [];
+      let usingIndexedDB = false;
+
+      try {
+        beneficiaries = await getFromIndexedDB('beneficiaries');
+        if (Array.isArray(beneficiaries) && beneficiaries.length > 0) {
+          console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد من IndexedDB`);
+          usingIndexedDB = true;
+
+          // دمج الصور مع البيانات
+          beneficiaries = await Promise.all(
+            beneficiaries.map(async (beneficiary) => {
+              try {
+                const images = await dbManager.getBeneficiaryImages(beneficiary.id);
+                const imageData = {};
+
+                if (Array.isArray(images)) {
+                  images.forEach(img => {
+                    imageData[img.type] = img.data;
+                  });
+                }
+
+                return { ...beneficiary, ...imageData };
+              } catch (imageError) {
+                console.warn(`⚠️ خطأ في تحميل صور المستفيد ${beneficiary.id}:`, imageError);
+                return beneficiary;
+              }
+            })
+          );
+        }
+      } catch (indexedDBError) {
+        console.warn('⚠️ IndexedDB غير متاح، التبديل إلى localStorage:', indexedDBError);
+      }
+
+      // إذا لم نجد بيانات في IndexedDB، جرب localStorage
+      if (!usingIndexedDB) {
+        try {
+          const localData = localStorage.getItem('beneficiaries');
+          if (localData) {
+            const parsed = JSON.parse(localData);
+            if (Array.isArray(parsed)) {
+              beneficiaries = parsed;
+              console.log(`📊 تم تحميل ${beneficiaries.length} مستفيد من localStorage`);
+
+              // اقتراح الترحيل إلى IndexedDB
+              if (beneficiaries.length > 0) {
+                console.log('💡 يُنصح بالترحيل إلى IndexedDB للحصول على مساحة أكبر');
+
+                // ترحيل تلقائي في الخلفية
+                setTimeout(async () => {
+                  try {
+                    console.log('🔄 بدء الترحيل التلقائي إلى IndexedDB...');
+                    await saveBeneficiariesToStorage(beneficiaries);
+                    console.log('✅ تم الترحيل التلقائي بنجاح');
+
+                    // إشعار المستخدم بنجاح الترحيل
+                    dispatch(addNotification({
+                      type: 'success',
+                      message: `تم ترحيل ${beneficiaries.length} مستفيد إلى IndexedDB بنجاح! الآن لديك مساحة تخزين أكبر.`,
+                      duration: 8000
+                    }));
+                  } catch (migrationError) {
+                    console.warn('⚠️ فشل في الترحيل التلقائي:', migrationError);
+
+                    // إشعار المستخدم بفشل الترحيل
+                    dispatch(addNotification({
+                      type: 'warning',
+                      message: 'فشل في الترحيل التلقائي. يمكنك المحاولة يدوياً من الإعدادات.',
+                      duration: 6000
+                    }));
+                  }
+                }, 2000);
+              }
+            }
+          }
+        } catch (localStorageError) {
+          console.error('❌ خطأ في تحميل البيانات من localStorage:', localStorageError);
+        }
+      }
 
       // تأكد من أن beneficiaries مصفوفة
       if (Array.isArray(beneficiaries)) {
         // Check each beneficiary for missing fields
         beneficiaries.forEach(beneficiary => {
           checkForMissingFields(beneficiary, dispatch);
-          // Check specifically for missing ID images
           checkForMissingIDImages(beneficiary, dispatch);
         });
+
+        console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد بنجاح`);
+        return beneficiaries;
       } else {
-        console.warn('البيانات المسترجعة ليست مصفوفة:', beneficiaries);
+        console.warn('⚠️ البيانات المسترجعة ليست مصفوفة:', beneficiaries);
         return [];
       }
-
-      return beneficiaries;
     } catch (error) {
-      console.error('خطأ في جلب بيانات المستفيدين:', error);
+      console.error('❌ خطأ في جلب بيانات المستفيدين:', error);
       return rejectWithValue(error.message);
     }
   }

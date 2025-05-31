@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { addNotification } from '../notifications/notificationsSlice';
+import { saveToIndexedDB, getFromIndexedDB } from '../../utils/indexedDBManager';
 
-// Helper functions for localStorage
+// Helper functions for storage (IndexedDB or localStorage)
 const getTransactionsFromStorage = () => {
   try {
     const transactions = localStorage.getItem('transactions');
@@ -86,13 +88,78 @@ const saveTransactionsToStorage = (transactions) => {
 // Async thunks
 export const fetchTransactions = createAsyncThunk(
   'finance/fetchTransactions',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
-      // In a real app, this would be an API call
-      // For now, we'll use localStorage
-      const transactions = getTransactionsFromStorage();
+      console.log('🔄 بدء تحميل المعاملات المالية...');
+
+      // محاولة تحميل من IndexedDB أولاً
+      let transactions = [];
+      let usingIndexedDB = false;
+
+      try {
+        transactions = await getFromIndexedDB('transactions');
+        if (Array.isArray(transactions) && transactions.length > 0) {
+          console.log(`✅ تم تحميل ${transactions.length} معاملة من IndexedDB`);
+          usingIndexedDB = true;
+        }
+      } catch (indexedDBError) {
+        console.warn('⚠️ IndexedDB غير متاح للمعاملات، التبديل إلى localStorage:', indexedDBError);
+      }
+
+      // إذا لم نجد بيانات في IndexedDB، جرب localStorage
+      if (!usingIndexedDB) {
+        try {
+          const localData = localStorage.getItem('transactions');
+          if (localData) {
+            const parsed = JSON.parse(localData);
+            if (Array.isArray(parsed)) {
+              transactions = parsed;
+              console.log(`📊 تم تحميل ${transactions.length} معاملة من localStorage`);
+
+              // ترحيل تلقائي إلى IndexedDB
+              if (transactions.length > 0) {
+                console.log('💡 ترحيل المعاملات إلى IndexedDB...');
+
+                setTimeout(async () => {
+                  try {
+                    await saveToIndexedDB('transactions', transactions);
+                    console.log('✅ تم ترحيل المعاملات إلى IndexedDB بنجاح');
+
+                    // إشعار المستخدم بنجاح الترحيل
+                    dispatch(addNotification({
+                      type: 'success',
+                      message: `تم ترحيل ${transactions.length} معاملة مالية إلى IndexedDB بنجاح!`,
+                      duration: 6000
+                    }));
+                  } catch (migrationError) {
+                    console.warn('⚠️ فشل في ترحيل المعاملات:', migrationError);
+
+                    // إشعار المستخدم بفشل الترحيل
+                    dispatch(addNotification({
+                      type: 'warning',
+                      message: 'فشل في ترحيل المعاملات المالية. يمكنك المحاولة يدوياً من الإعدادات.',
+                      duration: 6000
+                    }));
+                  }
+                }, 1000);
+              }
+            }
+          }
+        } catch (localStorageError) {
+          console.error('❌ خطأ في تحميل المعاملات من localStorage:', localStorageError);
+        }
+      }
+
+      // تأكد من أن transactions مصفوفة
+      if (!Array.isArray(transactions)) {
+        console.warn('⚠️ المعاملات المسترجعة ليست مصفوفة:', transactions);
+        return [];
+      }
+
+      console.log(`✅ تم تحميل ${transactions.length} معاملة مالية بنجاح`);
       return transactions;
     } catch (error) {
+      console.error('❌ خطأ في جلب المعاملات المالية:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -113,8 +180,14 @@ export const addTransaction = createAsyncThunk(
       const currentTransactions = getState().finance.transactions;
       const updatedTransactions = [newTransaction, ...currentTransactions];
 
-      // Save to localStorage
-      saveTransactionsToStorage(updatedTransactions);
+      // Save to IndexedDB first, then localStorage as backup
+      try {
+        await saveToIndexedDB('transactions', updatedTransactions);
+        console.log('✅ تم حفظ المعاملة في IndexedDB');
+      } catch (indexedDBError) {
+        console.warn('⚠️ فشل في حفظ المعاملة في IndexedDB، استخدام localStorage:', indexedDBError);
+        saveTransactionsToStorage(updatedTransactions);
+      }
 
       return newTransaction;
     } catch (error) {

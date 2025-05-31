@@ -53,9 +53,45 @@ const StorageAlert = () => {
     }
   };
 
-  const handleMigrateToIndexedDB = () => {
-    // توجيه المستخدم لصفحة الإعدادات
-    window.location.href = '/settings';
+  const handleMigrateToIndexedDB = async () => {
+    if (confirm(
+      'هل تريد ترحيل جميع البيانات إلى IndexedDB الآن؟\n\n' +
+      'المزايا:\n' +
+      '• مساحة تخزين أكبر بكثير (عدة جيجابايت)\n' +
+      '• أداء أفضل مع البيانات الكبيرة\n' +
+      '• إدارة أفضل للصور والملفات\n' +
+      '• لا مزيد من مشاكل امتلاء المساحة\n\n' +
+      'سيتم الاحتفاظ بنسخة احتياطية من البيانات الحالية.'
+    )) {
+      setIsCleaning(true);
+
+      try {
+        // استيراد أدوات الترحيل
+        const { migrateData } = await import('../utils/indexedDBManager');
+
+        // تنفيذ الترحيل
+        const success = await migrateData();
+
+        if (success) {
+          alert('تم ترحيل البيانات إلى IndexedDB بنجاح!\n\nالآن لديك مساحة تخزين أكبر بكثير.');
+
+          // إخفاء التنبيه
+          setShowAlert(false);
+
+          // إعادة تحميل الصفحة لتطبيق التغييرات
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          alert('فشل في ترحيل البيانات. تحقق من دعم المتصفح لـ IndexedDB.');
+        }
+      } catch (error) {
+        console.error('خطأ في الترحيل:', error);
+        alert('حدث خطأ أثناء الترحيل: ' + error.message);
+      } finally {
+        setIsCleaning(false);
+      }
+    }
   };
 
   const handleDismiss = () => {
