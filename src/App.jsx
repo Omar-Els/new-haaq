@@ -7,6 +7,7 @@ import { fetchBeneficiaries } from './features/beneficiaries/beneficiariesSlice'
 import { fetchTransactions } from './features/finance/financeSlice';
 import { saveAppState, loadAppState } from './utils/stateManager';
 import { setupScrollManager, restoreScrollPosition } from './utils/scrollManager';
+import { StorageManager } from './utils/storageManager';
 import { getUserFromStorage } from './utils/firebase';
 import { store } from './app/store';
 import Navbar from './components/Navbar';
@@ -66,6 +67,11 @@ function App() {
   // تحميل البيانات من localStorage عند بدء التطبيق
   useEffect(() => {
     console.log('Loading data from localStorage...');
+
+    // فحص ومراقبة مساحة التخزين
+    console.log('🚀 بدء مراقبة مساحة التخزين...');
+    StorageManager.displayStorageInfo();
+    StorageManager.startStorageMonitoring();
 
     // تحميل بيانات المستفيدين
     dispatch(fetchBeneficiaries()).then((result) => {

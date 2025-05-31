@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaSave, FaMoon, FaSun, FaLanguage, FaUserCog, FaBell, FaLock,
   FaDatabase, FaUndo, FaPalette, FaFont, FaCheck, FaTimes, FaUser,
-  FaFileExcel, FaFilePdf, FaFileCsv
+  FaFileExcel, FaFilePdf, FaFileCsv, FaTrash, FaDownload, FaHdd
 } from 'react-icons/fa';
 import { toggleTheme, selectTheme, setTheme } from '../features/ui/themeSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
@@ -18,6 +18,7 @@ import {
   selectPrivacySettings,
   selectDataSettings
 } from '../features/settings/settingsSlice';
+import { StorageManager } from '../utils/storageManager';
 import './Settings.css';
 
 /**
@@ -43,6 +44,8 @@ const Settings = () => {
   const [previewSettings, setPreviewSettings] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [storageInfo, setStorageInfo] = useState(null);
+  const [isCleaningStorage, setIsCleaningStorage] = useState(false);
 
   // مراجع للعناصر
   const colorPickerRef = useRef(null);
@@ -67,6 +70,22 @@ const Settings = () => {
       data: { ...dataSettings }
     });
   }, [appearanceSettings, notificationSettings, accountSettings, privacySettings, dataSettings]);
+
+  // تحديث معلومات التخزين عند فتح تبويب البيانات
+  useEffect(() => {
+    if (activeTab === 'data') {
+      const updateStorageInfo = () => {
+        const info = StorageManager.getStorageInfo();
+        setStorageInfo(info);
+      };
+
+      updateStorageInfo();
+
+      // تحديث كل 5 ثوان
+      const interval = setInterval(updateStorageInfo, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [activeTab]);
 
   // التحقق من وجود تغييرات
   useEffect(() => {
@@ -236,6 +255,83 @@ const Settings = () => {
       type: 'info',
       message: 'تم إلغاء التغييرات'
     }));
+  };
+
+  // تنظيف التخزين
+  const handleCleanupStorage = async () => {
+    setIsCleaningStorage(true);
+
+    try {
+      const beforeInfo = StorageManager.getStorageInfo();
+      StorageManager.cleanupStorage();
+      StorageManager.compressLargeData();
+      const afterInfo = StorageManager.getStorageInfo();
+
+      if (beforeInfo && afterInfo) {
+        const savedMB = ((beforeInfo.used - afterInfo.used) / 1024 / 1024).toFixed(2);
+        dispatch(addNotification({
+          type: 'success',
+          message: `تم تنظيف التخزين بنجاح! تم توفير ${savedMB} MB`
+        }));
+      } else {
+        dispatch(addNotification({
+          type: 'success',
+          message: 'تم تنظيف التخزين بنجاح!'
+        }));
+      }
+
+      // تحديث معلومات التخزين
+      setStorageInfo(StorageManager.getStorageInfo());
+    } catch (error) {
+      dispatch(addNotification({
+        type: 'error',
+        message: 'حدث خطأ أثناء تنظيف التخزين'
+      }));
+    } finally {
+      setIsCleaningStorage(false);
+    }
+  };
+
+  // تنظيف شامل مع النسخ الاحتياطي
+  const handleFullCleanup = async () => {
+    if (confirm('هل أنت متأكد من التنظيف الشامل؟ سيتم تصدير نسخة احتياطية أولاً.')) {
+      setIsCleaningStorage(true);
+
+      try {
+        const result = StorageManager.performFullCleanup();
+
+        dispatch(addNotification({
+          type: 'success',
+          message: 'تم التنظيف الشامل بنجاح! تم تصدير نسخة احتياطية.'
+        }));
+
+        // تحديث معلومات التخزين
+        setStorageInfo(result);
+      } catch (error) {
+        dispatch(addNotification({
+          type: 'error',
+          message: 'حدث خطأ أثناء التنظيف الشامل'
+        }));
+      } finally {
+        setIsCleaningStorage(false);
+      }
+    }
+  };
+
+  // تصدير البيانات
+  const handleExportData = () => {
+    try {
+      StorageManager.exportDataBeforeCleanup();
+      dispatch(addNotification({
+        type: 'success',
+        message: 'تم تصدير البيانات بنجاح!'
+      }));
+    } catch (error) {
+      dispatch(addNotification({
+        type: 'error',
+        message: 'حدث خطأ أثناء تصدير البيانات'
+      }));
+    }
   };
 
   // Animation variants

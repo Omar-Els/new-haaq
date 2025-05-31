@@ -2,15 +2,131 @@ import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
 
-// Get beneficiaries from localStorage
-const getBeneficiariesFromStorage = () => {
-  const beneficiaries = localStorage.getItem('beneficiaries');
-  return beneficiaries ? JSON.parse(beneficiaries) : [];
+// Compress data by removing unnecessary fields for storage
+const compressDataForStorage = (beneficiaries) => {
+  return beneficiaries.map(b => {
+    // Keep only essential fields, remove large data like images
+    const compressed = {
+      id: b.id,
+      name: b.name,
+      nationalId: b.nationalId,
+      beneficiaryId: b.beneficiaryId,
+      phone: b.phone,
+      address: b.address,
+      income: b.income,
+      familyMembers: b.familyMembers,
+      maritalStatus: b.maritalStatus,
+      priority: b.priority,
+      createdAt: b.createdAt,
+      updatedAt: b.updatedAt,
+      monthlySupport: b.monthlySupport || [],
+      initiatives: b.initiatives || [],
+      notes: b.notes
+    };
+
+    // Only include image fields if they exist and are small
+    if (b.spouseIdImage && b.spouseIdImage.length < 50000) { // Less than 50KB
+      compressed.spouseIdImage = b.spouseIdImage;
+    }
+    if (b.wifeIdImage && b.wifeIdImage.length < 50000) { // Less than 50KB
+      compressed.wifeIdImage = b.wifeIdImage;
+    }
+
+    return compressed;
+  });
 };
 
-// Save beneficiaries to localStorage
+// Get beneficiaries from localStorage with error handling
+const getBeneficiariesFromStorage = () => {
+  try {
+    const beneficiaries = localStorage.getItem('beneficiaries');
+    if (!beneficiaries) return [];
+
+    const parsed = JSON.parse(beneficiaries);
+    console.log(`📊 تم تحميل ${parsed.length} مستفيد من localStorage`);
+    return parsed;
+  } catch (error) {
+    console.error('❌ خطأ في تحميل بيانات المستفيدين:', error);
+    // Try to recover by clearing corrupted data
+    localStorage.removeItem('beneficiaries');
+    return [];
+  }
+};
+
+// Save beneficiaries to localStorage with compression and error handling
 const saveBeneficiariesToStorage = (beneficiaries) => {
-  localStorage.setItem('beneficiaries', JSON.stringify(beneficiaries));
+  try {
+    // Compress data before saving
+    const compressedData = compressDataForStorage(beneficiaries);
+    const dataString = JSON.stringify(compressedData);
+
+    // Check size before saving
+    const sizeInMB = (dataString.length / 1024 / 1024).toFixed(2);
+    console.log(`💾 حفظ ${beneficiaries.length} مستفيد (${sizeInMB} MB)`);
+
+    // If data is too large, keep only recent beneficiaries
+    if (dataString.length > 4 * 1024 * 1024) { // 4MB limit
+      console.warn('⚠️ البيانات كبيرة جداً، سيتم الاحتفاظ بآخر 100 مستفيد فقط');
+      const recentBeneficiaries = beneficiaries
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        .slice(0, 100);
+
+      const compressedRecent = compressDataForStorage(recentBeneficiaries);
+      localStorage.setItem('beneficiaries', JSON.stringify(compressedRecent));
+
+      // Save older data to a backup key
+      const olderBeneficiaries = beneficiaries.slice(100);
+      if (olderBeneficiaries.length > 0) {
+        try {
+          localStorage.setItem('beneficiaries_backup', JSON.stringify(compressDataForStorage(olderBeneficiaries)));
+        } catch (backupError) {
+          console.warn('⚠️ لا يمكن حفظ البيانات القديمة');
+        }
+      }
+    } else {
+      localStorage.setItem('beneficiaries', dataString);
+    }
+
+    console.log('✅ تم حفظ البيانات بنجاح');
+  } catch (error) {
+    console.error('❌ خطأ في حفظ بيانات المستفيدين:', error);
+
+    if (error.name === 'QuotaExceededError') {
+      // Clear some space and try again with reduced data
+      console.warn('🧹 تنظيف localStorage لتوفير مساحة...');
+
+      // Clear old notifications and other non-essential data
+      localStorage.removeItem('notifications');
+      localStorage.removeItem('ui');
+      localStorage.removeItem('beneficiaries_backup');
+
+      // Try saving with only essential data
+      try {
+        const essentialData = beneficiaries.slice(0, 50).map(b => ({
+          id: b.id,
+          name: b.name,
+          nationalId: b.nationalId,
+          beneficiaryId: b.beneficiaryId,
+          phone: b.phone,
+          address: b.address,
+          income: b.income,
+          familyMembers: b.familyMembers,
+          maritalStatus: b.maritalStatus,
+          priority: b.priority,
+          createdAt: b.createdAt
+        }));
+
+        localStorage.setItem('beneficiaries', JSON.stringify(essentialData));
+        console.log('✅ تم حفظ البيانات الأساسية فقط');
+
+        // Show user notification
+        alert('تم حفظ آخر 50 مستفيد فقط بسبب امتلاء مساحة التخزين. يُنصح بتصدير البيانات.');
+      } catch (finalError) {
+        console.error('❌ فشل في حفظ البيانات نهائياً:', finalError);
+        alert('خطأ: لا يمكن حفظ البيانات. مساحة التخزين ممتلئة.');
+      }
+    }
+  }
 };
 
 // Check for missing fields and create notifications

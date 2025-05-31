@@ -18,9 +18,68 @@ const getTransactionsFromStorage = () => {
 
 const saveTransactionsToStorage = (transactions) => {
   try {
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    const dataString = JSON.stringify(transactions);
+
+    // Check size before saving
+    const sizeInMB = (dataString.length / 1024 / 1024).toFixed(2);
+    console.log(`💾 حفظ ${transactions.length} معاملة مالية (${sizeInMB} MB)`);
+
+    // If data is too large, keep only recent transactions
+    if (dataString.length > 2 * 1024 * 1024) { // 2MB limit for transactions
+      console.warn('⚠️ المعاملات المالية كبيرة جداً، سيتم الاحتفاظ بآخر 500 معاملة فقط');
+      const recentTransactions = transactions
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 500);
+
+      localStorage.setItem('transactions', JSON.stringify(recentTransactions));
+
+      // Save older transactions to backup
+      const olderTransactions = transactions.slice(500);
+      if (olderTransactions.length > 0) {
+        try {
+          localStorage.setItem('transactions_backup', JSON.stringify(olderTransactions));
+        } catch (backupError) {
+          console.warn('⚠️ لا يمكن حفظ المعاملات القديمة');
+        }
+      }
+    } else {
+      localStorage.setItem('transactions', dataString);
+    }
+
+    console.log('✅ تم حفظ المعاملات المالية بنجاح');
   } catch (error) {
-    console.error('Error saving transactions to storage:', error);
+    console.error('❌ خطأ في حفظ المعاملات المالية:', error);
+
+    if (error.name === 'QuotaExceededError') {
+      console.warn('🧹 تنظيف localStorage لتوفير مساحة للمعاملات...');
+
+      // Clear non-essential data
+      localStorage.removeItem('transactions_backup');
+      localStorage.removeItem('notifications');
+
+      // Try saving with only recent essential transactions
+      try {
+        const essentialTransactions = transactions
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 200)
+          .map(t => ({
+            id: t.id,
+            type: t.type,
+            amount: t.amount,
+            category: t.category,
+            description: t.description,
+            date: t.date
+          }));
+
+        localStorage.setItem('transactions', JSON.stringify(essentialTransactions));
+        console.log('✅ تم حفظ آخر 200 معاملة أساسية فقط');
+
+        alert('تم حفظ آخر 200 معاملة مالية فقط بسبب امتلاء مساحة التخزين.');
+      } catch (finalError) {
+        console.error('❌ فشل في حفظ المعاملات نهائياً:', finalError);
+        alert('خطأ: لا يمكن حفظ المعاملات المالية. مساحة التخزين ممتلئة.');
+      }
+    }
   }
 };
 
