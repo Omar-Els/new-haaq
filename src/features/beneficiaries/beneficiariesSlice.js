@@ -43,20 +43,27 @@ const getBeneficiariesFromStorage = async () => {
     // محاولة استخدام IndexedDB أولاً
     try {
       const beneficiaries = await getFromIndexedDB('beneficiaries');
-      if (beneficiaries && beneficiaries.length > 0) {
+      if (Array.isArray(beneficiaries) && beneficiaries.length > 0) {
         console.log(`📊 تم تحميل ${beneficiaries.length} مستفيد من IndexedDB`);
 
         // دمج الصور مع البيانات الأساسية
         const beneficiariesWithImages = await Promise.all(
           beneficiaries.map(async (beneficiary) => {
-            const images = await dbManager.getBeneficiaryImages(beneficiary.id);
-            const imageData = {};
+            try {
+              const images = await dbManager.getBeneficiaryImages(beneficiary.id);
+              const imageData = {};
 
-            images.forEach(img => {
-              imageData[img.type] = img.data;
-            });
+              if (Array.isArray(images)) {
+                images.forEach(img => {
+                  imageData[img.type] = img.data;
+                });
+              }
 
-            return { ...beneficiary, ...imageData };
+              return { ...beneficiary, ...imageData };
+            } catch (imageError) {
+              console.warn(`⚠️ خطأ في تحميل صور المستفيد ${beneficiary.id}:`, imageError);
+              return beneficiary; // إرجاع البيانات بدون صور
+            }
           })
         );
 
@@ -67,22 +74,40 @@ const getBeneficiariesFromStorage = async () => {
     }
 
     // العودة إلى localStorage كبديل
-    const beneficiaries = localStorage.getItem('beneficiaries');
-    if (!beneficiaries) return [];
+    const beneficiariesData = localStorage.getItem('beneficiaries');
+    if (!beneficiariesData) {
+      console.log('📊 لا توجد بيانات مستفيدين محفوظة');
+      return [];
+    }
 
-    const parsed = JSON.parse(beneficiaries);
-    console.log(`📊 تم تحميل ${parsed.length} مستفيد من localStorage`);
-    return parsed;
+    const parsed = JSON.parse(beneficiariesData);
+    if (Array.isArray(parsed)) {
+      console.log(`📊 تم تحميل ${parsed.length} مستفيد من localStorage`);
+      return parsed;
+    } else {
+      console.warn('⚠️ البيانات المحفوظة في localStorage ليست مصفوفة:', parsed);
+      return [];
+    }
   } catch (error) {
     console.error('❌ خطأ في تحميل بيانات المستفيدين:', error);
     // Try to recover by clearing corrupted data
-    localStorage.removeItem('beneficiaries');
+    try {
+      localStorage.removeItem('beneficiaries');
+      console.log('🧹 تم مسح البيانات التالفة');
+    } catch (clearError) {
+      console.error('❌ خطأ في مسح البيانات التالفة:', clearError);
+    }
     return [];
   }
 };
 
 // Save beneficiaries to storage (IndexedDB or localStorage)
 const saveBeneficiariesToStorage = async (beneficiaries) => {
+  // تأكد من أن beneficiaries مصفوفة
+  if (!Array.isArray(beneficiaries)) {
+    console.error('❌ البيانات المرسلة للحفظ ليست مصفوفة:', beneficiaries);
+    return;
+  }
   try {
     // محاولة استخدام IndexedDB أولاً
     try {
@@ -276,18 +301,25 @@ export const fetchBeneficiaries = createAsyncThunk(
   async (_, { rejectWithValue, dispatch }) => {
     try {
       // In a real app, this would be an API call
-      // For now, we'll use localStorage
-      const beneficiaries = getBeneficiariesFromStorage();
+      // For now, we'll use storage (IndexedDB or localStorage)
+      const beneficiaries = await getBeneficiariesFromStorage();
 
-      // Check each beneficiary for missing fields
-      beneficiaries.forEach(beneficiary => {
-        checkForMissingFields(beneficiary, dispatch);
-        // Check specifically for missing ID images
-        checkForMissingIDImages(beneficiary, dispatch);
-      });
+      // تأكد من أن beneficiaries مصفوفة
+      if (Array.isArray(beneficiaries)) {
+        // Check each beneficiary for missing fields
+        beneficiaries.forEach(beneficiary => {
+          checkForMissingFields(beneficiary, dispatch);
+          // Check specifically for missing ID images
+          checkForMissingIDImages(beneficiary, dispatch);
+        });
+      } else {
+        console.warn('البيانات المسترجعة ليست مصفوفة:', beneficiaries);
+        return [];
+      }
 
       return beneficiaries;
     } catch (error) {
+      console.error('خطأ في جلب بيانات المستفيدين:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -318,11 +350,12 @@ export const addBeneficiary = createAsyncThunk(
       checkForMissingIDImages(newBeneficiary, dispatch);
 
       // Get current beneficiaries and add the new one
-      const currentBeneficiaries = getBeneficiariesFromStorage();
-      const updatedBeneficiaries = [...currentBeneficiaries, newBeneficiary];
+      const currentBeneficiaries = await getBeneficiariesFromStorage();
+      const beneficiariesArray = Array.isArray(currentBeneficiaries) ? currentBeneficiaries : [];
+      const updatedBeneficiaries = [...beneficiariesArray, newBeneficiary];
 
-      // Save to localStorage
-      localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+      // Save to storage (IndexedDB or localStorage)
+      await saveBeneficiariesToStorage(updatedBeneficiaries);
 
       return newBeneficiary;
     } catch (error) {
@@ -349,12 +382,13 @@ export const updateBeneficiary = createAsyncThunk(
 
       // Get current beneficiaries and update the specified one
       const currentBeneficiaries = getState().beneficiaries.items;
-      const updatedBeneficiaries = currentBeneficiaries.map(b =>
+      const beneficiariesArray = Array.isArray(currentBeneficiaries) ? currentBeneficiaries : [];
+      const updatedBeneficiaries = beneficiariesArray.map(b =>
         b.id === updatedBeneficiary.id ? updatedBeneficiary : b
       );
 
-      // Save to localStorage
-      localStorage.setItem('beneficiaries', JSON.stringify(updatedBeneficiaries));
+      // Save to storage (IndexedDB or localStorage)
+      await saveBeneficiariesToStorage(updatedBeneficiaries);
 
       // Check for missing fields and create notifications
       checkForMissingFields(updatedBeneficiary, dispatch);
@@ -374,10 +408,11 @@ export const deleteBeneficiary = createAsyncThunk(
     try {
       // Get current beneficiaries and remove the specified one
       const currentBeneficiaries = getState().beneficiaries.items;
-      const updatedBeneficiaries = currentBeneficiaries.filter(b => b.id !== id);
+      const beneficiariesArray = Array.isArray(currentBeneficiaries) ? currentBeneficiaries : [];
+      const updatedBeneficiaries = beneficiariesArray.filter(b => b.id !== id);
 
-      // Save to localStorage
-      saveBeneficiariesToStorage(updatedBeneficiaries);
+      // Save to storage (IndexedDB or localStorage)
+      await saveBeneficiariesToStorage(updatedBeneficiaries);
 
       return id;
     } catch (error) {
