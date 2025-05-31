@@ -19,6 +19,7 @@ import {
   selectDataSettings
 } from '../features/settings/settingsSlice';
 import { StorageManager } from '../utils/storageManager';
+import { dbManager, getDatabaseInfo, migrateData } from '../utils/indexedDBManager';
 import './Settings.css';
 
 /**
@@ -46,6 +47,8 @@ const Settings = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [storageInfo, setStorageInfo] = useState(null);
   const [isCleaningStorage, setIsCleaningStorage] = useState(false);
+  const [databaseInfo, setDatabaseInfo] = useState(null);
+  const [isMigrating, setIsMigrating] = useState(false);
 
   // مراجع للعناصر
   const colorPickerRef = useRef(null);
@@ -74,9 +77,19 @@ const Settings = () => {
   // تحديث معلومات التخزين عند فتح تبويب البيانات
   useEffect(() => {
     if (activeTab === 'data') {
-      const updateStorageInfo = () => {
+      const updateStorageInfo = async () => {
+        // معلومات localStorage
         const info = StorageManager.getStorageInfo();
         setStorageInfo(info);
+
+        // معلومات IndexedDB
+        try {
+          const dbInfo = await getDatabaseInfo();
+          setDatabaseInfo(dbInfo);
+        } catch (error) {
+          console.warn('لا يمكن الحصول على معلومات IndexedDB:', error);
+          setDatabaseInfo(null);
+        }
       };
 
       updateStorageInfo();
@@ -331,6 +344,76 @@ const Settings = () => {
         type: 'error',
         message: 'حدث خطأ أثناء تصدير البيانات'
       }));
+    }
+  };
+
+  // ترحيل البيانات إلى IndexedDB
+  const handleMigrateToIndexedDB = async () => {
+    if (confirm(
+      'هل تريد ترحيل جميع البيانات من localStorage إلى IndexedDB؟\n\n' +
+      'المزايا:\n' +
+      '• مساحة تخزين أكبر بكثير (عدة جيجابايت)\n' +
+      '• أداء أفضل مع البيانات الكبيرة\n' +
+      '• إدارة أفضل للصور والملفات\n' +
+      '• لا مزيد من مشاكل امتلاء المساحة\n\n' +
+      'سيتم الاحتفاظ بنسخة احتياطية من البيانات الحالية.'
+    )) {
+      setIsMigrating(true);
+
+      try {
+        // تصدير نسخة احتياطية أولاً
+        StorageManager.exportDataBeforeCleanup();
+
+        // ترحيل البيانات
+        const success = await migrateData();
+
+        if (success) {
+          dispatch(addNotification({
+            type: 'success',
+            message: 'تم ترحيل البيانات إلى IndexedDB بنجاح! الآن لديك مساحة تخزين أكبر.'
+          }));
+
+          // تحديث معلومات التخزين
+          const dbInfo = await getDatabaseInfo();
+          setDatabaseInfo(dbInfo);
+
+          // اقتراح مسح localStorage بعد الترحيل الناجح
+          setTimeout(() => {
+            if (confirm(
+              'تم الترحيل بنجاح!\n\n' +
+              'هل تريد مسح البيانات القديمة من localStorage لتوفير مساحة؟\n' +
+              '(البيانات محفوظة بأمان في IndexedDB)'
+            )) {
+              localStorage.removeItem('beneficiaries');
+              localStorage.removeItem('transactions');
+              localStorage.removeItem('beneficiaries_backup');
+              localStorage.removeItem('transactions_backup');
+
+              dispatch(addNotification({
+                type: 'info',
+                message: 'تم مسح البيانات القديمة من localStorage'
+              }));
+
+              // تحديث معلومات localStorage
+              const info = StorageManager.getStorageInfo();
+              setStorageInfo(info);
+            }
+          }, 2000);
+        } else {
+          dispatch(addNotification({
+            type: 'error',
+            message: 'فشل في ترحيل البيانات. تحقق من دعم المتصفح لـ IndexedDB.'
+          }));
+        }
+      } catch (error) {
+        console.error('خطأ في الترحيل:', error);
+        dispatch(addNotification({
+          type: 'error',
+          message: 'حدث خطأ أثناء ترحيل البيانات: ' + error.message
+        }));
+      } finally {
+        setIsMigrating(false);
+      }
     }
   };
 

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
+import { dbManager, saveToIndexedDB, getFromIndexedDB, deleteFromIndexedDB } from '../../utils/indexedDBManager';
 
 // Compress data by removing unnecessary fields for storage
 const compressDataForStorage = (beneficiaries) => {
@@ -36,9 +37,36 @@ const compressDataForStorage = (beneficiaries) => {
   });
 };
 
-// Get beneficiaries from localStorage with error handling
-const getBeneficiariesFromStorage = () => {
+// Get beneficiaries from storage (IndexedDB or localStorage)
+const getBeneficiariesFromStorage = async () => {
   try {
+    // محاولة استخدام IndexedDB أولاً
+    try {
+      const beneficiaries = await getFromIndexedDB('beneficiaries');
+      if (beneficiaries && beneficiaries.length > 0) {
+        console.log(`📊 تم تحميل ${beneficiaries.length} مستفيد من IndexedDB`);
+
+        // دمج الصور مع البيانات الأساسية
+        const beneficiariesWithImages = await Promise.all(
+          beneficiaries.map(async (beneficiary) => {
+            const images = await dbManager.getBeneficiaryImages(beneficiary.id);
+            const imageData = {};
+
+            images.forEach(img => {
+              imageData[img.type] = img.data;
+            });
+
+            return { ...beneficiary, ...imageData };
+          })
+        );
+
+        return beneficiariesWithImages;
+      }
+    } catch (indexedDBError) {
+      console.warn('⚠️ IndexedDB غير متاح، التبديل إلى localStorage:', indexedDBError);
+    }
+
+    // العودة إلى localStorage كبديل
     const beneficiaries = localStorage.getItem('beneficiaries');
     if (!beneficiaries) return [];
 
@@ -53,16 +81,64 @@ const getBeneficiariesFromStorage = () => {
   }
 };
 
-// Save beneficiaries to localStorage with compression and error handling
-const saveBeneficiariesToStorage = (beneficiaries) => {
+// Save beneficiaries to storage (IndexedDB or localStorage)
+const saveBeneficiariesToStorage = async (beneficiaries) => {
   try {
-    // Compress data before saving
+    // محاولة استخدام IndexedDB أولاً
+    try {
+      console.log(`💾 حفظ ${beneficiaries.length} مستفيد في IndexedDB...`);
+
+      // فصل الصور عن البيانات الأساسية
+      const beneficiariesData = [];
+      const imagesData = [];
+
+      beneficiaries.forEach(beneficiary => {
+        const { spouseIdImage, wifeIdImage, ...basicData } = beneficiary;
+
+        beneficiariesData.push(basicData);
+
+        if (spouseIdImage) {
+          imagesData.push({
+            id: `${beneficiary.id}_spouse`,
+            beneficiaryId: beneficiary.id,
+            type: 'spouseIdImage',
+            data: spouseIdImage,
+            createdAt: new Date().toISOString()
+          });
+        }
+
+        if (wifeIdImage) {
+          imagesData.push({
+            id: `${beneficiary.id}_wife`,
+            beneficiaryId: beneficiary.id,
+            type: 'wifeIdImage',
+            data: wifeIdImage,
+            createdAt: new Date().toISOString()
+          });
+        }
+      });
+
+      // حفظ البيانات الأساسية
+      await saveToIndexedDB('beneficiaries', beneficiariesData);
+
+      // حفظ الصور إذا وجدت
+      if (imagesData.length > 0) {
+        await saveToIndexedDB('images', imagesData);
+      }
+
+      console.log(`✅ تم حفظ ${beneficiariesData.length} مستفيد و ${imagesData.length} صورة في IndexedDB`);
+      return;
+    } catch (indexedDBError) {
+      console.warn('⚠️ فشل في حفظ البيانات في IndexedDB، التبديل إلى localStorage:', indexedDBError);
+    }
+
+    // العودة إلى localStorage كبديل
     const compressedData = compressDataForStorage(beneficiaries);
     const dataString = JSON.stringify(compressedData);
 
     // Check size before saving
     const sizeInMB = (dataString.length / 1024 / 1024).toFixed(2);
-    console.log(`💾 حفظ ${beneficiaries.length} مستفيد (${sizeInMB} MB)`);
+    console.log(`💾 حفظ ${beneficiaries.length} مستفيد في localStorage (${sizeInMB} MB)`);
 
     // If data is too large, keep only recent beneficiaries
     if (dataString.length > 4 * 1024 * 1024) { // 4MB limit
@@ -74,34 +150,35 @@ const saveBeneficiariesToStorage = (beneficiaries) => {
       const compressedRecent = compressDataForStorage(recentBeneficiaries);
       localStorage.setItem('beneficiaries', JSON.stringify(compressedRecent));
 
-      // Save older data to a backup key
-      const olderBeneficiaries = beneficiaries.slice(100);
-      if (olderBeneficiaries.length > 0) {
-        try {
-          localStorage.setItem('beneficiaries_backup', JSON.stringify(compressDataForStorage(olderBeneficiaries)));
-        } catch (backupError) {
-          console.warn('⚠️ لا يمكن حفظ البيانات القديمة');
-        }
-      }
+      // Show migration suggestion
+      alert('مساحة localStorage ممتلئة! يُنصح بالترحيل إلى IndexedDB للحصول على مساحة أكبر.');
     } else {
       localStorage.setItem('beneficiaries', dataString);
     }
 
-    console.log('✅ تم حفظ البيانات بنجاح');
+    console.log('✅ تم حفظ البيانات في localStorage');
   } catch (error) {
     console.error('❌ خطأ في حفظ بيانات المستفيدين:', error);
 
     if (error.name === 'QuotaExceededError') {
-      // Clear some space and try again with reduced data
-      console.warn('🧹 تنظيف localStorage لتوفير مساحة...');
+      // عرض خيار الترحيل إلى IndexedDB
+      const migrate = confirm(
+        'مساحة التخزين ممتلئة!\n\n' +
+        'هل تريد الترحيل إلى IndexedDB للحصول على مساحة أكبر؟\n' +
+        '(IndexedDB يوفر مساحة تخزين أكبر بكثير من localStorage)'
+      );
 
-      // Clear old notifications and other non-essential data
-      localStorage.removeItem('notifications');
-      localStorage.removeItem('ui');
-      localStorage.removeItem('beneficiaries_backup');
-
-      // Try saving with only essential data
-      try {
+      if (migrate) {
+        try {
+          await dbManager.migrateFromLocalStorage();
+          await saveBeneficiariesToStorage(beneficiaries);
+          alert('تم الترحيل بنجاح! الآن لديك مساحة تخزين أكبر.');
+        } catch (migrationError) {
+          console.error('❌ فشل في الترحيل:', migrationError);
+          alert('فشل في الترحيل. سيتم حفظ البيانات الأساسية فقط.');
+        }
+      } else {
+        // حفظ البيانات الأساسية فقط
         const essentialData = beneficiaries.slice(0, 50).map(b => ({
           id: b.id,
           name: b.name,
@@ -117,13 +194,7 @@ const saveBeneficiariesToStorage = (beneficiaries) => {
         }));
 
         localStorage.setItem('beneficiaries', JSON.stringify(essentialData));
-        console.log('✅ تم حفظ البيانات الأساسية فقط');
-
-        // Show user notification
-        alert('تم حفظ آخر 50 مستفيد فقط بسبب امتلاء مساحة التخزين. يُنصح بتصدير البيانات.');
-      } catch (finalError) {
-        console.error('❌ فشل في حفظ البيانات نهائياً:', finalError);
-        alert('خطأ: لا يمكن حفظ البيانات. مساحة التخزين ممتلئة.');
+        alert('تم حفظ آخر 50 مستفيد فقط. يُنصح بالترحيل إلى IndexedDB.');
       }
     }
   }
