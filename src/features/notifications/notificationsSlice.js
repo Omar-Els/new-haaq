@@ -30,12 +30,12 @@ const saveNotificationsToStorage = (notifications) => {
   }
 };
 
-// استرجاع الإشعارات من التخزين المحلي عند بدء التطبيق
-const savedNotifications = getNotificationsFromStorage();
+// لا نحمل الإشعارات من localStorage لتوفير المساحة
+// const savedNotifications = getNotificationsFromStorage();
 
-// Initial state with notifications from localStorage
+// Initial state - بدء بإشعارات فارغة
 const initialState = {
-  notifications: savedNotifications,
+  notifications: [], // بدء فارغ لتوفير المساحة
   isLoading: false,
   error: null
 };
@@ -62,31 +62,54 @@ const notificationsSlice = createSlice({
         enabled: true
       };
 
-      // Create the notification with unique ID
+      // إذا كانت الإشعارات معطلة، لا تضيف شيئاً
+      if (!notificationSettings.enabled) {
+        console.log('🔕 الإشعارات معطلة');
+        return;
+      }
+
+      const payload = action.payload;
+      const message = payload.message || '';
+      const type = payload.type || 'info';
+
+      // منع الإشعارات المتكررة (نفس الرسالة خلال آخر 30 ثانية)
+      const now = new Date();
+      const thirtySecondsAgo = new Date(now.getTime() - 30000);
+
+      const isDuplicate = state.notifications.some(notification =>
+        notification.message === message &&
+        notification.type === type &&
+        new Date(notification.timestamp) > thirtySecondsAgo
+      );
+
+      if (isDuplicate) {
+        console.log('🔄 تم تجاهل إشعار مكرر:', message);
+        return;
+      }
+
+      // تحديد الحد الأقصى للإشعارات (50 إشعار)
+      const MAX_NOTIFICATIONS = 50;
+      if (state.notifications.length >= MAX_NOTIFICATIONS) {
+        // حذف أقدم الإشعارات
+        state.notifications = state.notifications.slice(0, MAX_NOTIFICATIONS - 1);
+        console.log('🧹 تم حذف الإشعارات القديمة للحفاظ على المساحة');
+      }
+
+      // إنشاء الإشعار الجديد
       const newNotification = {
         id: generateUniqueId(),
-        timestamp: new Date().toISOString(),
+        timestamp: now.toISOString(),
         read: false,
-        ...action.payload
+        ...payload
       };
 
-      // Only add notification if notifications are enabled
-      if (notificationSettings.enabled) {
-        state.notifications.unshift(newNotification);
+      // إضافة الإشعار في المقدمة
+      state.notifications.unshift(newNotification);
 
-        // حفظ الإشعارات في التخزين المحلي
-        saveNotificationsToStorage(state.notifications);
+      // حذف الإشعارات من localStorage (لا نحفظها لتوفير المساحة)
+      // saveNotificationsToStorage(state.notifications);
 
-        // If email notifications are enabled and it's an important notification
-        if (notificationSettings.email &&
-            (newNotification.type === 'error' || newNotification.important)) {
-          // This would be where you'd send an email notification
-          // For now, just log it
-          console.log('Would send email notification:', newNotification);
-        }
-      } else {
-        console.log('Notification suppressed due to user settings:', newNotification);
-      }
+      console.log(`📢 تم إضافة إشعار جديد: ${message}`);
     },
     markAsRead: (state, action) => {
       const notification = state.notifications.find(n => n.id === action.payload);
@@ -105,8 +128,42 @@ const notificationsSlice = createSlice({
     },
     deleteNotification: (state, action) => {
       state.notifications = state.notifications.filter(n => n.id !== action.payload);
-      // حفظ الإشعارات في التخزين المحلي
-      saveNotificationsToStorage(state.notifications);
+      console.log('🗑️ تم حذف إشعار');
+    },
+
+    // تنظيف جميع الإشعارات
+    clearAllNotifications: (state) => {
+      state.notifications = [];
+      console.log('🧹 تم مسح جميع الإشعارات');
+    },
+
+    // تنظيف الإشعارات القديمة (أكثر من ساعة)
+    clearOldNotifications: (state) => {
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+      const initialCount = state.notifications.length;
+
+      state.notifications = state.notifications.filter(notification =>
+        new Date(notification.timestamp) > oneHourAgo
+      );
+
+      const removedCount = initialCount - state.notifications.length;
+      if (removedCount > 0) {
+        console.log(`🧹 تم حذف ${removedCount} إشعار قديم`);
+      }
+    },
+
+    // تنظيف الإشعارات المقروءة
+    clearReadNotifications: (state) => {
+      const initialCount = state.notifications.length;
+
+      state.notifications = state.notifications.filter(notification =>
+        !notification.read
+      );
+
+      const removedCount = initialCount - state.notifications.length;
+      if (removedCount > 0) {
+        console.log(`🧹 تم حذف ${removedCount} إشعار مقروء`);
+      }
     }
   }
 });
@@ -118,7 +175,10 @@ export const {
   addNotification,
   markAsRead,
   markAllAsRead,
-  deleteNotification
+  deleteNotification,
+  clearAllNotifications,
+  clearOldNotifications,
+  clearReadNotifications
 } = notificationsSlice.actions;
 
 // Thunk for fetching notifications

@@ -21,6 +21,7 @@ import {
 import { StorageManager } from '../utils/storageManager';
 import { dbManager, getDatabaseInfo, migrateData } from '../utils/indexedDBManager';
 import DataCleanupButton from '../components/DataCleanupButton';
+import NotificationCleanup from '../components/NotificationCleanup';
 import './Settings.css';
 
 /**
@@ -763,6 +764,9 @@ const Settings = () => {
                   </button>
                 </div>
               </div>
+
+              {/* مكون تنظيف الإشعارات */}
+              <NotificationCleanup />
             </div>
           )}
 

@@ -5,6 +5,7 @@ import { selectTheme } from './features/ui/themeSlice';
 import { selectIsAuthenticated, loginSuccess } from './features/auth/authSlice';
 import { fetchBeneficiaries } from './features/beneficiaries/beneficiariesSlice';
 import { fetchTransactions } from './features/finance/financeSlice';
+import { clearOldNotifications } from './features/notifications/notificationsSlice';
 import { saveAppState, loadAppState } from './utils/stateManager';
 import { setupScrollManager, restoreScrollPosition } from './utils/scrollManager';
 import { StorageManager } from './utils/storageManager';
@@ -81,6 +82,21 @@ function App() {
 
     StorageManager.displayStorageInfo();
     StorageManager.startStorageMonitoring();
+
+    // تنظيف دوري للإشعارات القديمة (كل 30 دقيقة)
+    const cleanupInterval = setInterval(() => {
+      console.log('🧹 تنظيف دوري للإشعارات القديمة...');
+      dispatch(clearOldNotifications());
+    }, 30 * 60 * 1000); // 30 دقيقة
+
+    // تنظيف فوري للإشعارات القديمة عند بدء التطبيق
+    setTimeout(() => {
+      dispatch(clearOldNotifications());
+    }, 5000); // بعد 5 ثوان من بدء التطبيق
+
+    return () => {
+      clearInterval(cleanupInterval);
+    };
 
     // تحميل بيانات المستفيدين
     dispatch(fetchBeneficiaries()).then((result) => {
