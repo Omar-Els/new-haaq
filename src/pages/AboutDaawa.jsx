@@ -42,6 +42,11 @@ const AboutDaawa = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // تتبع التبويب النشط
+  useEffect(() => {
+    console.log('التبويب النشط:', activeTab);
+  }, [activeTab]);
+
   // Animated counter effect for statistics with REAL dynamic updates
   useEffect(() => {
     if (activeTab === 'about') {
@@ -530,10 +535,9 @@ const AboutDaawa = () => {
                 key={news.id}
                 className={`news-card ${news.isReal ? 'real-news' : 'demo-news'}`}
                 whileHover={{ scale: 1.03, y: -5 }}
-                transition={{ duration: 0.3 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
               >
                 <div className="news-header">
                   <div className="news-date">
