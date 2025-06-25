@@ -525,19 +525,28 @@ const beneficiariesSlice = createSlice({
         ...action.payload
       };
 
+      // تأكد من أن items مصفوفة قبل التصفية
+      if (!Array.isArray(state.items)) {
+        console.warn('⚠️ state.items ليس مصفوفة في setFilter');
+        state.items = [];
+        state.filteredItems = [];
+        return;
+      }
+
       // Apply filters
       state.filteredItems = state.items.filter(item => {
+        // تأكد من وجود الحقول المطلوبة
         const nameMatch = !state.filter.name ||
-          item.name.toLowerCase().includes(state.filter.name.toLowerCase());
+          (item.name && item.name.toLowerCase().includes(state.filter.name.toLowerCase()));
 
         const nationalIdMatch = !state.filter.nationalId ||
-          item.nationalId.includes(state.filter.nationalId);
+          (item.nationalId && item.nationalId.includes(state.filter.nationalId));
 
         const beneficiaryIdMatch = !state.filter.beneficiaryId ||
-          item.beneficiaryId.includes(state.filter.beneficiaryId);
+          (item.beneficiaryId && item.beneficiaryId.includes(state.filter.beneficiaryId));
 
         const phoneMatch = !state.filter.phone ||
-          item.phone.includes(state.filter.phone);
+          (item.phone && item.phone.includes(state.filter.phone));
 
         return nameMatch && nationalIdMatch && beneficiaryIdMatch && phoneMatch;
       });
@@ -549,7 +558,15 @@ const beneficiariesSlice = createSlice({
         beneficiaryId: '',
         phone: ''
       };
-      state.filteredItems = state.items;
+
+      // تأكد من أن items مصفوفة
+      if (Array.isArray(state.items)) {
+        state.filteredItems = [...state.items];
+      } else {
+        console.warn('⚠️ state.items ليس مصفوفة في clearFilters');
+        state.items = [];
+        state.filteredItems = [];
+      }
     }
   },
   extraReducers: (builder) => {
@@ -561,8 +578,26 @@ const beneficiariesSlice = createSlice({
       })
       .addCase(fetchBeneficiaries.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
-        state.filteredItems = action.payload;
+
+        // تأكد من أن البيانات في الشكل الصحيح
+        const payload = action.payload;
+        let beneficiariesData = [];
+
+        if (Array.isArray(payload)) {
+          // إذا كان payload مصفوفة مباشرة
+          beneficiariesData = payload;
+        } else if (payload && Array.isArray(payload.data)) {
+          // إذا كان payload object يحتوي على data
+          beneficiariesData = payload.data;
+        } else {
+          console.warn('⚠️ بيانات المستفيدين في شكل غير متوقع:', payload);
+          beneficiariesData = [];
+        }
+
+        state.items = beneficiariesData;
+        state.filteredItems = beneficiariesData;
+
+        console.log(`✅ تم تحديث state بـ ${beneficiariesData.length} مستفيد`);
       })
       .addCase(fetchBeneficiaries.rejected, (state, action) => {
         state.isLoading = false;
@@ -575,8 +610,19 @@ const beneficiariesSlice = createSlice({
       })
       .addCase(addBeneficiary.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items.push(action.payload);
-        state.filteredItems = state.items;
+
+        // تأكد من أن items مصفوفة
+        if (!Array.isArray(state.items)) {
+          console.warn('⚠️ state.items ليس مصفوفة، إعادة تهيئة');
+          state.items = [];
+        }
+
+        // إضافة المستفيد الجديد
+        if (action.payload) {
+          state.items.unshift(action.payload); // إضافة في المقدمة
+          state.filteredItems = [...state.items]; // نسخ جديدة
+          console.log(`✅ تم إضافة مستفيد جديد: ${action.payload.name}`);
+        }
       })
       .addCase(addBeneficiary.rejected, (state, action) => {
         state.isLoading = false;
@@ -618,16 +664,29 @@ const beneficiariesSlice = createSlice({
 
 export const { setFilter, clearFilters } = beneficiariesSlice.actions;
 
-// Basic selectors
-const selectBeneficiariesItems = (state) => state.beneficiaries.items;
-const selectBeneficiariesFilteredItems = (state) => state.beneficiaries.filteredItems;
+// Basic selectors with safety checks
+const selectBeneficiariesItems = (state) => {
+  const items = state.beneficiaries?.items;
+  return Array.isArray(items) ? items : [];
+};
+
+const selectBeneficiariesFilteredItems = (state) => {
+  const filteredItems = state.beneficiaries?.filteredItems;
+  return Array.isArray(filteredItems) ? filteredItems : [];
+};
 
 // Helper function for sorting beneficiaries
 const sortBeneficiariesByIdAsc = (beneficiaries) => {
+  // تأكد من أن beneficiaries مصفوفة صالحة
+  if (!Array.isArray(beneficiaries)) {
+    console.warn('⚠️ beneficiaries ليس مصفوفة:', beneficiaries);
+    return [];
+  }
+
   return [...beneficiaries].sort((a, b) => {
     // Convert beneficiaryId to number for proper numeric sorting
-    const aId = parseInt(a.beneficiaryId) || 0;
-    const bId = parseInt(b.beneficiaryId) || 0;
+    const aId = parseInt(a.beneficiaryId) || parseInt(a.id) || 0;
+    const bId = parseInt(b.beneficiaryId) || parseInt(b.id) || 0;
     return aId - bId;
   });
 };
