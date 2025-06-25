@@ -1412,8 +1412,15 @@ const AboutDaawa = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
+            style={{ minHeight: '400px' }}
           >
-            {tabContent[activeTab]}
+            {tabContent[activeTab] || (
+              <div style={{ padding: '2rem', textAlign: 'center', color: '#e74c3c' }}>
+                <h3>خطأ في تحميل المحتوى</h3>
+                <p>التبويب النشط: {activeTab}</p>
+                <p>المحتوى متاح: {tabContent[activeTab] ? 'نعم' : 'لا'}</p>
+              </div>
+            )}
 
             {/* مكون تفاعلي مصغر لكل تبويب */}
             <div style={{ marginTop: '2rem', textAlign: 'center' }}>
