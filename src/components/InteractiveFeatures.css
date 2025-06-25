@@ -1,0 +1,380 @@
+.interactive-features {
+  position: relative;
+  z-index: 10;
+}
+
+.interactive-features.floating {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  border: 1px solid #e1e8ed;
+}
+
+.interactive-features.inline {
+  display: inline-block;
+  margin: 1rem 0;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.interactive-features.sidebar {
+  position: sticky;
+  top: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.features-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e1e8ed;
+  border-radius: 25px;
+  background: white;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn svg {
+  font-size: 1.1rem;
+}
+
+.action-btn span {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* أزرار محددة */
+.like-btn {
+  border-color: #e74c3c;
+  color: #e74c3c;
+}
+
+.like-btn:hover,
+.like-btn.active {
+  background: #e74c3c;
+  color: white;
+  border-color: #e74c3c;
+}
+
+.share-btn {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.share-btn:hover {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.bookmark-btn {
+  border-color: #f39c12;
+  color: #f39c12;
+}
+
+.bookmark-btn:hover,
+.bookmark-btn.active {
+  background: #f39c12;
+  color: white;
+  border-color: #f39c12;
+}
+
+.comment-btn {
+  border-color: #2ecc71;
+  color: #2ecc71;
+}
+
+.comment-btn:hover {
+  background: #2ecc71;
+  color: white;
+  border-color: #2ecc71;
+}
+
+.view-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 25px;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.view-count svg {
+  font-size: 1.1rem;
+}
+
+/* قائمة المشاركة */
+.share-menu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  min-width: 200px;
+  border: 1px solid #e1e8ed;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #2c3e50;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.share-option:hover {
+  background: #f8f9fa;
+  transform: translateX(-2px);
+}
+
+.share-option.facebook:hover {
+  background: #1877f2;
+  color: white;
+}
+
+.share-option.twitter:hover {
+  background: #1da1f2;
+  color: white;
+}
+
+.share-option.whatsapp:hover {
+  background: #25d366;
+  color: white;
+}
+
+.share-option.copy:hover {
+  background: #6c757d;
+  color: white;
+}
+
+/* صندوق التعليقات */
+.comment-box {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid #e1e8ed;
+  overflow: hidden;
+}
+
+.comment-input textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.comment-input textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.comment-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: flex-end;
+}
+
+.comment-actions .btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.comment-actions .btn-primary {
+  background: #3498db;
+  color: white;
+}
+
+.comment-actions .btn-primary:hover {
+  background: #2980b9;
+}
+
+.comment-actions .btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.comment-actions .btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* قائمة التعليقات */
+.comments-list {
+  margin-top: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  background: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e1e8ed;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.comment-text {
+  color: #34495e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.comment-time {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  .interactive-features.floating {
+    bottom: 1rem;
+    right: 1rem;
+    left: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .main-actions {
+    gap: 0.5rem;
+  }
+  
+  .action-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .action-btn svg {
+    font-size: 1rem;
+  }
+  
+  .share-menu {
+    right: auto;
+    left: 0;
+    min-width: 150px;
+  }
+  
+  .comment-box {
+    padding: 0.75rem;
+  }
+}
+
+/* الوضع المظلم */
+@media (prefers-color-scheme: dark) {
+  .interactive-features.floating,
+  .interactive-features.sidebar {
+    background: #2c3e50;
+    border-color: #34495e;
+  }
+  
+  .action-btn {
+    background: #34495e;
+    border-color: #4a5f7a;
+    color: #ecf0f1;
+  }
+  
+  .view-count {
+    background: #34495e;
+    color: #bdc3c7;
+  }
+  
+  .share-menu {
+    background: #2c3e50;
+    border-color: #34495e;
+  }
+  
+  .share-option {
+    color: #ecf0f1;
+  }
+  
+  .share-option:hover {
+    background: #34495e;
+  }
+  
+  .comment-box {
+    background: #34495e;
+    border-color: #4a5f7a;
+  }
+  
+  .comment-input textarea {
+    background: #2c3e50;
+    border-color: #4a5f7a;
+    color: #ecf0f1;
+  }
+  
+  .comment-item {
+    background: #2c3e50;
+    border-color: #4a5f7a;
+  }
+  
+  .comment-author {
+    color: #ecf0f1;
+  }
+  
+  .comment-text {
+    color: #bdc3c7;
+  }
+}

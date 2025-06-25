@@ -10,6 +10,7 @@ import {
   FaDonate, FaUserPlus, FaHandshake, FaHistory, FaCertificate, FaStar,
   FaCheck, FaRocket, FaChevronDown
 } from 'react-icons/fa';
+import InteractiveFeatures from '../components/InteractiveFeatures';
 import './AboutDaawa.css';
 
 /**
@@ -1412,9 +1413,35 @@ const AboutDaawa = () => {
             transition={{ duration: 0.3 }}
           >
             {tabContent[activeTab]}
+
+            {/* مكون تفاعلي مصغر لكل تبويب */}
+            <InteractiveFeatures
+              contentId={`tab-${activeTab}`}
+              title={`تبويب ${activeTab === 'about' ? 'من نحن' :
+                      activeTab === 'mission' ? 'رسالتنا ورؤيتنا' :
+                      activeTab === 'activities' ? 'أنشطتنا' : 'تواصل معنا'}`}
+              position="inline"
+              showLike={true}
+              showShare={true}
+              showBookmark={false}
+              showComment={true}
+              showView={false}
+            />
           </motion.div>
         </AnimatePresence>
       </motion.div>
+
+      {/* المكون التفاعلي */}
+      <InteractiveFeatures
+        contentId="about-daawa"
+        title="صفحة عن دعوة الحق"
+        position="floating"
+        showLike={true}
+        showShare={true}
+        showBookmark={true}
+        showComment={true}
+        showView={true}
+      />
     </motion.div>
   );
 };
