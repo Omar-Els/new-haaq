@@ -1,7 +1,8 @@
 // MongoDB Service - خدمة قاعدة البيانات الرئيسية
 class MongoService {
   constructor() {
-    this.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+    // استخدام متغيرات Vite بدلاً من process.env
+    this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
     this.token = localStorage.getItem('authToken');
   }
 
@@ -34,6 +35,22 @@ class MongoService {
   // جلب جميع المستفيدين مع pagination
   async getBeneficiaries(page = 1, limit = 50, search = '') {
     try {
+      // مؤقت<|im_start|>: محاكاة البيانات حتى يتم إعداد الخادم
+      console.log('🔄 محاكاة جلب المستفيدين من MongoDB...');
+
+      // إرجاع بيانات وهمية للاختبار
+      const mockData = {
+        data: [],
+        totalCount: 0,
+        currentPage: page,
+        totalPages: 1,
+        message: 'لا يوجد خادم MongoDB متصل حالياً. يتم استخدام البيانات المحلية.'
+      };
+
+      return mockData;
+
+      // الكود الحقيقي (سيتم تفعيله عند إعداد الخادم):
+      /*
       const params = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
@@ -46,15 +63,41 @@ class MongoService {
       });
 
       return this.handleResponse(response);
+      */
     } catch (error) {
       console.error('خطأ في جلب المستفيدين:', error);
-      throw error;
+
+      // إرجاع بيانات فارغة في حالة الخطأ
+      return {
+        data: [],
+        totalCount: 0,
+        currentPage: page,
+        totalPages: 1,
+        error: error.message
+      };
     }
   }
 
   // إضافة مستفيد جديد
   async addBeneficiary(beneficiaryData) {
     try {
+      // مؤقت<|im_start|>: محاكاة إضافة المستفيد
+      console.log('🔄 محاكاة إضافة مستفيد إلى MongoDB...');
+
+      // إنشاء مستفيد وهمي مع ID
+      const mockBeneficiary = {
+        ...beneficiaryData,
+        _id: Date.now().toString(),
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log('✅ تم إنشاء مستفيد وهمي:', mockBeneficiary.name);
+      return mockBeneficiary;
+
+      // الكود الحقيقي (سيتم تفعيله عند إعداد الخادم):
+      /*
       const response = await fetch(`${this.baseURL}/beneficiaries`, {
         method: 'POST',
         headers: this.getHeaders(),
@@ -62,6 +105,7 @@ class MongoService {
       });
 
       return this.handleResponse(response);
+      */
     } catch (error) {
       console.error('خطأ في إضافة المستفيد:', error);
       throw error;

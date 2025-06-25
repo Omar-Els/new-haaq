@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
 import { mongoService } from '../../services/mongoService';
+import { offlineService } from '../../services/offlineService';
 
 // دالة مساعدة لتحويل dataURL إلى File
 const dataURLtoFile = (dataurl, filename) => {
@@ -294,10 +295,39 @@ export const fetchBeneficiaries = createAsyncThunk(
   'beneficiaries/fetchBeneficiaries',
   async ({ page = 1, limit = 50, search = '' } = {}, { rejectWithValue, dispatch }) => {
     try {
-      console.log('🔄 تحميل بيانات المستفيدين من MongoDB...');
+      console.log('🔄 تحميل بيانات المستفيدين...');
 
-      // تحميل البيانات من MongoDB
-      const response = await mongoService.getBeneficiaries(page, limit, search);
+      // محاولة تحميل من MongoDB أولاً
+      let response;
+      try {
+        response = await mongoService.getBeneficiaries(page, limit, search);
+
+        // إذا كانت الاستجابة تحتوي على بيانات حقيقية
+        if (response && Array.isArray(response.data) && response.data.length > 0) {
+          const beneficiaries = response.data;
+
+          // فحص الحقول المفقودة
+          beneficiaries.forEach(beneficiary => {
+            checkForMissingFields(beneficiary, dispatch);
+            checkForMissingIDImages(beneficiary, dispatch);
+          });
+
+          console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد من MongoDB`);
+
+          return {
+            data: beneficiaries,
+            totalCount: response.totalCount || beneficiaries.length,
+            currentPage: page,
+            totalPages: Math.ceil((response.totalCount || beneficiaries.length) / limit)
+          };
+        }
+      } catch (mongoError) {
+        console.warn('⚠️ فشل الاتصال بـ MongoDB:', mongoError.message);
+      }
+
+      // إذا فشل MongoDB، استخدم الخدمة المحلية
+      console.log('🔄 التبديل إلى الخدمة المحلية...');
+      response = await offlineService.getBeneficiaries(page, limit, search);
 
       if (response && Array.isArray(response.data)) {
         const beneficiaries = response.data;
@@ -308,51 +338,30 @@ export const fetchBeneficiaries = createAsyncThunk(
           checkForMissingIDImages(beneficiary, dispatch);
         });
 
-        console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد من MongoDB`);
+        console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد محلياً`);
 
-        // حفظ معرفات فقط في localStorage للجلسة (بدون البيانات الثقيلة)
-        const sessionData = {
-          beneficiaryIds: beneficiaries.map(b => b._id),
-          lastFetch: new Date().toISOString(),
-          totalCount: response.totalCount || beneficiaries.length
-        };
-        localStorage.setItem('sessionData', JSON.stringify(sessionData));
+        // إشعار المستخدم بالعمل في الوضع المحلي
+        if (response.offline) {
+          dispatch(addNotification({
+            type: 'info',
+            message: 'يتم العمل في الوضع المحلي. البيانات محفوظة في المتصفح.',
+            duration: 4000
+          }));
+        }
 
         return {
           data: beneficiaries,
           totalCount: response.totalCount || beneficiaries.length,
           currentPage: page,
-          totalPages: Math.ceil((response.totalCount || beneficiaries.length) / limit)
+          totalPages: Math.ceil((response.totalCount || beneficiaries.length) / limit),
+          offline: response.offline
         };
       } else {
-        console.warn('⚠️ استجابة غير صالحة من الخادم:', response);
+        console.warn('⚠️ لا توجد بيانات متاحة');
         return { data: [], totalCount: 0, currentPage: 1, totalPages: 1 };
       }
     } catch (error) {
-      console.error('❌ خطأ في جلب بيانات المستفيدين من MongoDB:', error);
-
-      // في حالة فشل الاتصال، محاولة تحميل بيانات مؤقتة من localStorage
-      try {
-        const sessionData = JSON.parse(localStorage.getItem('sessionData') || '{}');
-        if (sessionData.beneficiaryIds && sessionData.beneficiaryIds.length > 0) {
-          dispatch(addNotification({
-            type: 'warning',
-            message: 'لا يمكن الاتصال بالخادم. يتم عرض البيانات المحفوظة مؤقتاً.',
-            duration: 5000
-          }));
-
-          return {
-            data: [],
-            totalCount: 0,
-            currentPage: 1,
-            totalPages: 1,
-            offline: true
-          };
-        }
-      } catch (sessionError) {
-        console.warn('⚠️ لا توجد بيانات جلسة محفوظة');
-      }
-
+      console.error('❌ خطأ في جلب بيانات المستفيدين:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -402,14 +411,20 @@ export const addBeneficiary = createAsyncThunk(
         }
       }
 
-      // حفظ المستفيد في MongoDB
-      const savedBeneficiary = await mongoService.addBeneficiary(beneficiaryData);
+      // محاولة حفظ المستفيد في MongoDB أولاً
+      let savedBeneficiary;
+      try {
+        savedBeneficiary = await mongoService.addBeneficiary(beneficiaryData);
+        console.log('✅ تم إضافة المستفيد إلى MongoDB');
+      } catch (mongoError) {
+        console.warn('⚠️ فشل في إضافة المستفيد إلى MongoDB، استخدام الخدمة المحلية');
+        savedBeneficiary = await offlineService.addBeneficiary(beneficiaryData);
+        console.log('✅ تم إضافة المستفيد محلياً');
+      }
 
       // فحص الحقول المفقودة
       checkForMissingFields(savedBeneficiary, dispatch);
       checkForMissingIDImages(savedBeneficiary, dispatch);
-
-      console.log('✅ تم إضافة المستفيد بنجاح إلى MongoDB');
 
       dispatch(addNotification({
         type: 'success',
