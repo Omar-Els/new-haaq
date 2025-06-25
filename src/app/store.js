@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
+import rolesReducer from '../features/auth/rolesSlice';
 import beneficiariesReducer from '../features/beneficiaries/beneficiariesSlice';
 import initiativesReducer from '../features/initiatives/initiativesSlice';
 import notificationsReducer from '../features/notifications/notificationsSlice';
@@ -10,6 +11,7 @@ import settingsReducer from '../features/settings/settingsSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    roles: rolesReducer,
     beneficiaries: beneficiariesReducer,
     initiatives: initiativesReducer,
     notifications: notificationsReducer,

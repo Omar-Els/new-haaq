@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaSave, FaMoon, FaSun, FaLanguage, FaUserCog, FaBell, FaLock,
   FaDatabase, FaUndo, FaPalette, FaFont, FaCheck, FaTimes, FaUser,
-  FaFileExcel, FaFilePdf, FaFileCsv, FaTrash, FaDownload, FaHdd
+  FaFileExcel, FaFilePdf, FaFileCsv, FaTrash, FaDownload, FaHdd,
+  FaShieldAlt, FaUserShield
 } from 'react-icons/fa';
 import { toggleTheme, selectTheme, setTheme } from '../features/ui/themeSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
@@ -22,6 +23,7 @@ import { StorageManager } from '../utils/storageManager';
 import { dbManager, getDatabaseInfo, migrateData } from '../utils/indexedDBManager';
 import DataCleanupButton from '../components/DataCleanupButton';
 import NotificationCleanup from '../components/NotificationCleanup';
+import RoleSwitcher from '../components/RoleSwitcher';
 import './Settings.css';
 
 /**
@@ -514,6 +516,12 @@ const Settings = () => {
             onClick={() => setActiveTab('data')}
           >
             <FaDatabase /> البيانات
+          </button>
+          <button
+            className={`settings-tab ${activeTab === 'security' ? 'active' : ''}`}
+            onClick={() => setActiveTab('security')}
+          >
+            <FaShieldAlt /> الأمان والصلاحيات
           </button>
 
           <div className="settings-actions-sidebar">
@@ -1167,6 +1175,55 @@ const Settings = () => {
                       <div className={`status-value ${localSettings.data.backupData ? 'active' : 'inactive'}`}>
                         {localSettings.data.backupData ? 'مفعل' : 'غير مفعل'}
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* تبويب الأمان والصلاحيات */}
+          {activeTab === 'security' && (
+            <div className="settings-section">
+              <div className="section-header">
+                <FaShieldAlt className="section-icon" />
+                <h2>الأمان والصلاحيات</h2>
+                <p>إدارة أدوار المستخدمين والصلاحيات (للاختبار)</p>
+              </div>
+
+              {/* مكون تبديل الأدوار */}
+              <RoleSwitcher />
+
+              <div className="setting-preview">
+                <h3>معلومات الأمان</h3>
+                <div className="security-info">
+                  <div className="info-card">
+                    <div className="info-icon">
+                      <FaShieldAlt />
+                    </div>
+                    <div className="info-content">
+                      <h4>حماية البيانات</h4>
+                      <p>جميع البيانات محمية ومشفرة محلياً في متصفحك</p>
+                    </div>
+                  </div>
+
+                  <div className="info-card">
+                    <div className="info-icon">
+                      <FaLock />
+                    </div>
+                    <div className="info-content">
+                      <h4>الخصوصية</h4>
+                      <p>لا يتم مشاركة أي بيانات مع أطراف خارجية</p>
+                    </div>
+                  </div>
+
+                  <div className="info-card">
+                    <div className="info-icon">
+                      <FaUserShield />
+                    </div>
+                    <div className="info-content">
+                      <h4>التحكم في الوصول</h4>
+                      <p>نظام صلاحيات متقدم لحماية العمليات الحساسة</p>
                     </div>
                   </div>
                 </div>

@@ -27,6 +27,7 @@ const AboutDaawa = () => {
   });
   const [hoveredCard, setHoveredCard] = useState(null);
   const [expandedActivity, setExpandedActivity] = useState(null);
+  const [expandedSection, setExpandedSection] = useState(null);
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
@@ -304,6 +305,62 @@ const AboutDaawa = () => {
     return hour >= 9 && hour < 17;
   };
 
+  // بيانات الأقسام القابلة للتوسيع
+  const expandableSections = {
+    history: {
+      title: 'تاريخ المؤسسة',
+      icon: FaHistory,
+      color: '#3498db',
+      content: [
+        '2010: تأسيس المؤسسة على يد مجموعة من المتطوعين',
+        '2012: افتتاح أول مركز لتحفيظ القرآن الكريم',
+        '2015: إطلاق برنامج كفالة الأيتام',
+        '2018: توسيع الأنشطة لتشمل المساعدات الطبية',
+        '2020: تطوير نظام إلكتروني لإدارة المستفيدين',
+        '2023: الوصول إلى 5000+ مستفيد'
+      ]
+    },
+    achievements: {
+      title: 'إنجازاتنا',
+      icon: FaAward,
+      color: '#f39c12',
+      content: [
+        '🏆 جائزة أفضل مؤسسة خيرية محلية 2022',
+        '📜 شهادة الجودة في الخدمات الاجتماعية',
+        '🎯 نسبة رضا المستفيدين 98%',
+        '💰 شفافية مالية 100% في التقارير',
+        '👥 شبكة من 200+ متطوع نشط',
+        '🌟 تقييم 5 نجوم من الجهات الرقابية'
+      ]
+    },
+    values: {
+      title: 'قيمنا ومبادئنا',
+      icon: FaStar,
+      color: '#e74c3c',
+      content: [
+        '🤝 الشفافية والمصداقية في جميع أعمالنا',
+        '❤️ الرحمة والعطف مع جميع المستفيدين',
+        '⚖️ العدالة في توزيع المساعدات',
+        '🎯 الكفاءة والفعالية في الأداء',
+        '🤲 التعاون والعمل الجماعي',
+        '📚 التطوير المستمر والتعلم'
+      ]
+    },
+    future: {
+      title: 'خططنا المستقبلية',
+      icon: FaRocket,
+      color: '#2ecc71',
+      content: [
+        '🏥 إنشاء مركز طبي متخصص للمحتاجين',
+        '🏫 افتتاح مدرسة لتعليم الأطفال المحتاجين',
+        '💻 تطوير تطبيق جوال للمتبرعين',
+        '🌍 توسيع الأنشطة لتشمل مناطق جديدة',
+        '🤝 شراكات مع مؤسسات دولية',
+        '📈 مضاعفة عدد المستفيدين خلال 5 سنوات'
+      ]
+    }
+  };
+
   // Content for each tab
   const tabContent = {
     about: (
@@ -316,6 +373,63 @@ const AboutDaawa = () => {
           تأسست دعوة الحق في عام 2010 على يد مجموعة من المتطوعين المخلصين الذين يؤمنون بأهمية العمل الخيري والدعوي في خدمة المجتمع.
           منذ ذلك الحين، نمت المؤسسة لتصبح واحدة من أهم المؤسسات الخيرية في المنطقة، مع شبكة واسعة من المتطوعين والداعمين.
         </p>
+
+        {/* الأقسام القابلة للتوسيع */}
+        <div className="expandable-sections">
+          {Object.entries(expandableSections).map(([key, section]) => (
+            <motion.div
+              key={key}
+              className="expandable-section"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <motion.button
+                className="section-header"
+                onClick={() => setExpandedSection(expandedSection === key ? null : key)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                style={{ borderLeftColor: section.color }}
+              >
+                <div className="section-title">
+                  <section.icon style={{ color: section.color }} />
+                  <span>{section.title}</span>
+                </div>
+                <motion.div
+                  animate={{ rotate: expandedSection === key ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FaChevronDown />
+                </motion.div>
+              </motion.button>
+
+              <AnimatePresence>
+                {expandedSection === key && (
+                  <motion.div
+                    className="section-content"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ul>
+                      {section.content.map((item, index) => (
+                        <motion.li
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          {item}
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+        </div>
         <div className="stats-container">
           <motion.div
             className="stat-card"
