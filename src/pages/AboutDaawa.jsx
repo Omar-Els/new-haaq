@@ -8,7 +8,7 @@ import {
   FaExternalLinkAlt, FaDownload, FaShare, FaPrint, FaWhatsapp, FaTelegram,
   FaLinkedin, FaGlobe, FaNewspaper, FaVideo, FaImages, FaFileAlt,
   FaDonate, FaUserPlus, FaHandshake, FaHistory, FaCertificate, FaStar,
-  FaCheck
+  FaCheck, FaRocket, FaChevronDown
 } from 'react-icons/fa';
 import './AboutDaawa.css';
 
