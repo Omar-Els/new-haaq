@@ -1,40 +1,34 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
-import { dbManager, saveToIndexedDB, getFromIndexedDB, deleteFromIndexedDB } from '../../utils/indexedDBManager';
+import { mongoService } from '../../services/mongoService';
 
-// Compress data by removing unnecessary fields for storage
-const compressDataForStorage = (beneficiaries) => {
-  return beneficiaries.map(b => {
-    // Keep only essential fields, remove large data like images
-    const compressed = {
-      id: b.id,
-      name: b.name,
-      nationalId: b.nationalId,
-      beneficiaryId: b.beneficiaryId,
-      phone: b.phone,
-      address: b.address,
-      income: b.income,
-      familyMembers: b.familyMembers,
-      maritalStatus: b.maritalStatus,
-      priority: b.priority,
-      createdAt: b.createdAt,
-      updatedAt: b.updatedAt,
-      monthlySupport: b.monthlySupport || [],
-      initiatives: b.initiatives || [],
-      notes: b.notes
+// دالة مساعدة لتحويل dataURL إلى File
+const dataURLtoFile = (dataurl, filename) => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
+// حفظ معرفات المستفيدين فقط في localStorage للجلسة
+const saveSessionData = (beneficiaries) => {
+  try {
+    const sessionData = {
+      beneficiaryIds: beneficiaries.map(b => b._id || b.id),
+      lastFetch: new Date().toISOString(),
+      count: beneficiaries.length
     };
-
-    // Only include image fields if they exist and are small
-    if (b.spouseIdImage && b.spouseIdImage.length < 50000) { // Less than 50KB
-      compressed.spouseIdImage = b.spouseIdImage;
-    }
-    if (b.wifeIdImage && b.wifeIdImage.length < 50000) { // Less than 50KB
-      compressed.wifeIdImage = b.wifeIdImage;
-    }
-
-    return compressed;
-  });
+    localStorage.setItem('sessionData', JSON.stringify(sessionData));
+    console.log(`💾 تم حفظ معرفات ${beneficiaries.length} مستفيد في الجلسة`);
+  } catch (error) {
+    console.warn('⚠️ فشل في حفظ بيانات الجلسة:', error);
+  }
 };
 
 // Get beneficiaries from storage (IndexedDB or localStorage)
@@ -298,107 +292,67 @@ const checkForMissingIDImages = (beneficiary, dispatch) => {
 // Async thunks
 export const fetchBeneficiaries = createAsyncThunk(
   'beneficiaries/fetchBeneficiaries',
-  async (_, { rejectWithValue, dispatch }) => {
+  async ({ page = 1, limit = 50, search = '' } = {}, { rejectWithValue, dispatch }) => {
     try {
-      console.log('🔄 بدء تحميل بيانات المستفيدين...');
+      console.log('🔄 تحميل بيانات المستفيدين من MongoDB...');
 
-      // محاولة تحميل من IndexedDB أولاً
-      let beneficiaries = [];
-      let usingIndexedDB = false;
+      // تحميل البيانات من MongoDB
+      const response = await mongoService.getBeneficiaries(page, limit, search);
 
-      try {
-        beneficiaries = await getFromIndexedDB('beneficiaries');
-        if (Array.isArray(beneficiaries) && beneficiaries.length > 0) {
-          console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد من IndexedDB`);
-          usingIndexedDB = true;
+      if (response && Array.isArray(response.data)) {
+        const beneficiaries = response.data;
 
-          // دمج الصور مع البيانات
-          beneficiaries = await Promise.all(
-            beneficiaries.map(async (beneficiary) => {
-              try {
-                const images = await dbManager.getBeneficiaryImages(beneficiary.id);
-                const imageData = {};
-
-                if (Array.isArray(images)) {
-                  images.forEach(img => {
-                    imageData[img.type] = img.data;
-                  });
-                }
-
-                return { ...beneficiary, ...imageData };
-              } catch (imageError) {
-                console.warn(`⚠️ خطأ في تحميل صور المستفيد ${beneficiary.id}:`, imageError);
-                return beneficiary;
-              }
-            })
-          );
-        }
-      } catch (indexedDBError) {
-        console.warn('⚠️ IndexedDB غير متاح، التبديل إلى localStorage:', indexedDBError);
-      }
-
-      // إذا لم نجد بيانات في IndexedDB، جرب localStorage
-      if (!usingIndexedDB) {
-        try {
-          const localData = localStorage.getItem('beneficiaries');
-          if (localData) {
-            const parsed = JSON.parse(localData);
-            if (Array.isArray(parsed)) {
-              beneficiaries = parsed;
-              console.log(`📊 تم تحميل ${beneficiaries.length} مستفيد من localStorage`);
-
-              // اقتراح الترحيل إلى IndexedDB
-              if (beneficiaries.length > 0) {
-                console.log('💡 يُنصح بالترحيل إلى IndexedDB للحصول على مساحة أكبر');
-
-                // ترحيل تلقائي في الخلفية
-                setTimeout(async () => {
-                  try {
-                    console.log('🔄 بدء الترحيل التلقائي إلى IndexedDB...');
-                    await saveBeneficiariesToStorage(beneficiaries);
-                    console.log('✅ تم الترحيل التلقائي بنجاح');
-
-                    // إشعار المستخدم بنجاح الترحيل
-                    dispatch(addNotification({
-                      type: 'success',
-                      message: `تم ترحيل ${beneficiaries.length} مستفيد إلى IndexedDB بنجاح! الآن لديك مساحة تخزين أكبر.`,
-                      duration: 8000
-                    }));
-                  } catch (migrationError) {
-                    console.warn('⚠️ فشل في الترحيل التلقائي:', migrationError);
-
-                    // إشعار المستخدم بفشل الترحيل
-                    dispatch(addNotification({
-                      type: 'warning',
-                      message: 'فشل في الترحيل التلقائي. يمكنك المحاولة يدوياً من الإعدادات.',
-                      duration: 6000
-                    }));
-                  }
-                }, 2000);
-              }
-            }
-          }
-        } catch (localStorageError) {
-          console.error('❌ خطأ في تحميل البيانات من localStorage:', localStorageError);
-        }
-      }
-
-      // تأكد من أن beneficiaries مصفوفة
-      if (Array.isArray(beneficiaries)) {
-        // Check each beneficiary for missing fields
+        // فحص الحقول المفقودة
         beneficiaries.forEach(beneficiary => {
           checkForMissingFields(beneficiary, dispatch);
           checkForMissingIDImages(beneficiary, dispatch);
         });
 
-        console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد بنجاح`);
-        return beneficiaries;
+        console.log(`✅ تم تحميل ${beneficiaries.length} مستفيد من MongoDB`);
+
+        // حفظ معرفات فقط في localStorage للجلسة (بدون البيانات الثقيلة)
+        const sessionData = {
+          beneficiaryIds: beneficiaries.map(b => b._id),
+          lastFetch: new Date().toISOString(),
+          totalCount: response.totalCount || beneficiaries.length
+        };
+        localStorage.setItem('sessionData', JSON.stringify(sessionData));
+
+        return {
+          data: beneficiaries,
+          totalCount: response.totalCount || beneficiaries.length,
+          currentPage: page,
+          totalPages: Math.ceil((response.totalCount || beneficiaries.length) / limit)
+        };
       } else {
-        console.warn('⚠️ البيانات المسترجعة ليست مصفوفة:', beneficiaries);
-        return [];
+        console.warn('⚠️ استجابة غير صالحة من الخادم:', response);
+        return { data: [], totalCount: 0, currentPage: 1, totalPages: 1 };
       }
     } catch (error) {
-      console.error('❌ خطأ في جلب بيانات المستفيدين:', error);
+      console.error('❌ خطأ في جلب بيانات المستفيدين من MongoDB:', error);
+
+      // في حالة فشل الاتصال، محاولة تحميل بيانات مؤقتة من localStorage
+      try {
+        const sessionData = JSON.parse(localStorage.getItem('sessionData') || '{}');
+        if (sessionData.beneficiaryIds && sessionData.beneficiaryIds.length > 0) {
+          dispatch(addNotification({
+            type: 'warning',
+            message: 'لا يمكن الاتصال بالخادم. يتم عرض البيانات المحفوظة مؤقتاً.',
+            duration: 5000
+          }));
+
+          return {
+            data: [],
+            totalCount: 0,
+            currentPage: 1,
+            totalPages: 1,
+            offline: true
+          };
+        }
+      } catch (sessionError) {
+        console.warn('⚠️ لا توجد بيانات جلسة محفوظة');
+      }
+
       return rejectWithValue(error.message);
     }
   }
@@ -408,36 +362,71 @@ export const addBeneficiary = createAsyncThunk(
   'beneficiaries/addBeneficiary',
   async (beneficiary, { rejectWithValue, dispatch }) => {
     try {
-      // Use provided priority or calculate it based on income and family size
+      console.log('🔄 إضافة مستفيد جديد إلى MongoDB...');
+
+      // إعداد بيانات المستفيد
       const priority = beneficiary.priority !== undefined
         ? beneficiary.priority
         : calculatePriority(beneficiary);
 
-      // Create new beneficiary with ID and priority
-      const newBeneficiary = {
+      const beneficiaryData = {
         ...beneficiary,
-        id: Date.now().toString(),
+        beneficiaryId: `BEN-${Date.now()}`,
         priority,
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         monthlySupport: [],
         initiatives: []
       };
 
-      // Check for missing fields and create notifications
-      checkForMissingFields(newBeneficiary, dispatch);
-      // Check specifically for missing ID images
-      checkForMissingIDImages(newBeneficiary, dispatch);
+      // رفع الصور إلى MongoDB إذا وجدت
+      if (beneficiary.spouseIdImage) {
+        try {
+          const imageFile = dataURLtoFile(beneficiary.spouseIdImage, 'spouse-id.jpg');
+          const uploadResult = await mongoService.uploadFile(imageFile, 'spouseId', beneficiaryData.beneficiaryId);
+          beneficiaryData.spouseIdImageUrl = uploadResult.fileUrl;
+          delete beneficiaryData.spouseIdImage; // حذف البيانات المحلية
+        } catch (uploadError) {
+          console.warn('⚠️ فشل في رفع صورة هوية الزوج:', uploadError);
+        }
+      }
 
-      // Get current beneficiaries and add the new one
-      const currentBeneficiaries = await getBeneficiariesFromStorage();
-      const beneficiariesArray = Array.isArray(currentBeneficiaries) ? currentBeneficiaries : [];
-      const updatedBeneficiaries = [...beneficiariesArray, newBeneficiary];
+      if (beneficiary.wifeIdImage) {
+        try {
+          const imageFile = dataURLtoFile(beneficiary.wifeIdImage, 'wife-id.jpg');
+          const uploadResult = await mongoService.uploadFile(imageFile, 'wifeId', beneficiaryData.beneficiaryId);
+          beneficiaryData.wifeIdImageUrl = uploadResult.fileUrl;
+          delete beneficiaryData.wifeIdImage; // حذف البيانات المحلية
+        } catch (uploadError) {
+          console.warn('⚠️ فشل في رفع صورة هوية الزوجة:', uploadError);
+        }
+      }
 
-      // Save to storage (IndexedDB or localStorage)
-      await saveBeneficiariesToStorage(updatedBeneficiaries);
+      // حفظ المستفيد في MongoDB
+      const savedBeneficiary = await mongoService.addBeneficiary(beneficiaryData);
 
-      return newBeneficiary;
+      // فحص الحقول المفقودة
+      checkForMissingFields(savedBeneficiary, dispatch);
+      checkForMissingIDImages(savedBeneficiary, dispatch);
+
+      console.log('✅ تم إضافة المستفيد بنجاح إلى MongoDB');
+
+      dispatch(addNotification({
+        type: 'success',
+        message: `تم إضافة المستفيد ${savedBeneficiary.name} بنجاح`,
+        duration: 5000
+      }));
+
+      return savedBeneficiary;
     } catch (error) {
+      console.error('❌ خطأ في إضافة المستفيد:', error);
+
+      dispatch(addNotification({
+        type: 'error',
+        message: `فشل في إضافة المستفيد: ${error.message}`,
+        duration: 5000
+      }));
+
       return rejectWithValue(error.message);
     }
   }

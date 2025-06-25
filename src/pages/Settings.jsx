@@ -20,6 +20,7 @@ import {
 } from '../features/settings/settingsSlice';
 import { StorageManager } from '../utils/storageManager';
 import { dbManager, getDatabaseInfo, migrateData } from '../utils/indexedDBManager';
+import DataCleanupButton from '../components/DataCleanupButton';
 import './Settings.css';
 
 /**
@@ -1129,6 +1130,9 @@ const Settings = () => {
                   </p>
                 </div>
               )}
+
+              {/* زر تنظيف البيانات المحلية */}
+              <DataCleanupButton />
 
               <div className="setting-preview">
                 <h3>إدارة البيانات</h3>
