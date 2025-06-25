@@ -230,7 +230,8 @@ function App() {
       {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
       <FloatingActionButton />
       <ToastNotifications />
-      <StorageAlert />
+      {/* تم تعطيل StorageAlert لأن لدينا نظام أفضل في الإعدادات */}
+      {/* <StorageAlert /> */}
     </div>
   );
 }
