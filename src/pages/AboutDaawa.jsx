@@ -46,6 +46,7 @@ const AboutDaawa = () => {
   // تتبع التبويب النشط
   useEffect(() => {
     console.log('التبويب النشط:', activeTab);
+    console.log('محتوى التبويب متاح:', !!tabContent[activeTab]);
   }, [activeTab]);
 
   // Animated counter effect for statistics with REAL dynamic updates
@@ -1415,33 +1416,25 @@ const AboutDaawa = () => {
             {tabContent[activeTab]}
 
             {/* مكون تفاعلي مصغر لكل تبويب */}
-            <InteractiveFeatures
-              contentId={`tab-${activeTab}`}
-              title={`تبويب ${activeTab === 'about' ? 'من نحن' :
-                      activeTab === 'mission' ? 'رسالتنا ورؤيتنا' :
-                      activeTab === 'activities' ? 'أنشطتنا' : 'تواصل معنا'}`}
-              position="inline"
-              showLike={true}
-              showShare={true}
-              showBookmark={false}
-              showComment={true}
-              showView={false}
-            />
+            <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+              <InteractiveFeatures
+                contentId={`tab-${activeTab}`}
+                title={`تبويب ${activeTab === 'about' ? 'من نحن' :
+                        activeTab === 'mission' ? 'رسالتنا ورؤيتنا' :
+                        activeTab === 'activities' ? 'أنشطتنا' : 'تواصل معنا'}`}
+                position="inline"
+                showLike={true}
+                showShare={false}
+                showBookmark={false}
+                showComment={false}
+                showView={true}
+              />
+            </div>
           </motion.div>
         </AnimatePresence>
       </motion.div>
 
-      {/* المكون التفاعلي */}
-      <InteractiveFeatures
-        contentId="about-daawa"
-        title="صفحة عن دعوة الحق"
-        position="floating"
-        showLike={true}
-        showShare={true}
-        showBookmark={true}
-        showComment={true}
-        showView={true}
-      />
+
     </motion.div>
   );
 };
