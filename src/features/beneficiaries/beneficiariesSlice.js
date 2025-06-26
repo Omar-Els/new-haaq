@@ -3,6 +3,7 @@ import { calculatePriority } from '../../utils/helpers';
 import { addNotification } from '../notifications/notificationsSlice';
 import { mongoService } from '../../services/mongoService';
 import { offlineService } from '../../services/offlineService';
+import cloudSync from '../../services/cloudSync';
 
 // دالة مساعدة لتحويل dataURL إلى File
 const dataURLtoFile = (dataurl, filename) => {
@@ -177,6 +178,9 @@ const saveBeneficiariesToStorage = async (beneficiaries) => {
     }
 
     console.log('✅ تم حفظ البيانات في localStorage');
+
+    // تحديد للمزامنة السحابية
+    cloudSync.markForSync('beneficiaries');
   } catch (error) {
     console.error('❌ خطأ في حفظ بيانات المستفيدين:', error);
 

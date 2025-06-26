@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import ThemeToggle from './ThemeToggle';
+import SyncIndicator from './SyncIndicator';
+import BackupManager from './BackupManager';
 import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
 
@@ -18,6 +20,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 990);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [showBackupManager, setShowBackupManager] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -258,6 +261,10 @@ const Navbar = () => {
             </>
           )}
 
+          <li className="sync-indicator-container">
+            <SyncIndicator onClick={() => setShowBackupManager(true)} />
+          </li>
+
           <li className="theme-toggle-container">
             <ThemeToggle />
           </li>
@@ -269,6 +276,12 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* Backup Manager Modal */}
+      <BackupManager
+        isOpen={showBackupManager}
+        onClose={() => setShowBackupManager(false)}
+      />
     </nav>
   );
 };

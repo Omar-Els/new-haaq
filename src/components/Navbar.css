@@ -95,6 +95,10 @@
   color: #c0392b;
 }
 
+.sync-indicator-container {
+  margin-right: 1rem;
+}
+
 .theme-toggle-container {
   margin-right: 1rem;
 }
@@ -239,6 +243,13 @@
     gap: 0.5rem;
   }
   
+  .sync-indicator-container {
+    margin: 1rem 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
   .theme-toggle-container {
     margin: 1rem 2rem;
     width: 100%;

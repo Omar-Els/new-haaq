@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import cloudSync from '../../services/cloudSync';
 
 /**
  * Volunteers Slice
@@ -35,6 +36,8 @@ const volunteersSlice = createSlice({
       // حفظ في localStorage
       try {
         localStorage.setItem('volunteers', JSON.stringify(state.volunteers));
+        // تحديد للمزامنة السحابية
+        cloudSync.markForSync('volunteers');
       } catch (error) {
         console.error('خطأ في حفظ المتطوعين:', error);
       }
@@ -114,6 +117,8 @@ const volunteersSlice = createSlice({
     saveVolunteers: (state) => {
       try {
         localStorage.setItem('volunteers', JSON.stringify(state.volunteers));
+        // تحديد للمزامنة السحابية
+        cloudSync.markForSync('volunteers');
       } catch (error) {
         console.error('خطأ في حفظ المتطوعين:', error);
         state.error = 'فشل في حفظ بيانات المتطوعين';
