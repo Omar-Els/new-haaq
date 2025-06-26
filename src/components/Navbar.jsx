@@ -142,6 +142,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
+                  المستفيدون
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/finance" className="nav-link" onClick={closeMenu}>
                   الماليات
                 </Link>
@@ -162,6 +167,11 @@ const Navbar = () => {
 
               {isMobileView ? (
                 <>
+                  <li className="nav-item">
+                    <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
+                      المستفيدون
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
                       المتطوعون
@@ -198,6 +208,11 @@ const Navbar = () => {
                   </button>
                   {activeDropdown === 'more' && (
                     <ul className="dropdown-menu">
+                      <li>
+                        <Link to="/beneficiaries" onClick={closeMenu}>
+                          المستفيدون
+                        </Link>
+                      </li>
                       <li>
                         <Link to="/volunteers" onClick={closeMenu}>
                           المتطوعون

@@ -13,6 +13,9 @@ const AboutDaawa = lazy(() => import('../pages/AboutDaawa'));
 const Reports = lazy(() => import('../pages/Reports'));
 const Settings = lazy(() => import('../pages/Settings'));
 const Volunteers = lazy(() => import('../pages/Volunteers'));
+const JoinVolunteer = lazy(() => import('../pages/JoinVolunteer'));
+const VolunteerThankYou = lazy(() => import('../pages/VolunteerThankYou'));
+const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -91,6 +94,16 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/beneficiaries"
+          element={
+            <ProtectedRoute>
+              <Beneficiaries />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/join-volunteer" element={<JoinVolunteer />} />
+        <Route path="/volunteer-thank-you" element={<VolunteerThankYou />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
