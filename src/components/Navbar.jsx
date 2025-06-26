@@ -147,6 +147,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
+                  المتطوعون
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/notifications" className="nav-link" onClick={closeMenu}>
                   الإشعارات
                   {unreadNotifications.length > 0 && (
@@ -157,6 +162,11 @@ const Navbar = () => {
 
               {isMobileView ? (
                 <>
+                  <li className="nav-item">
+                    <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
+                      المتطوعون
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link to="/reports" className="nav-link" onClick={closeMenu}>
                       التقارير
@@ -188,6 +198,11 @@ const Navbar = () => {
                   </button>
                   {activeDropdown === 'more' && (
                     <ul className="dropdown-menu">
+                      <li>
+                        <Link to="/volunteers" onClick={closeMenu}>
+                          المتطوعون
+                        </Link>
+                      </li>
                       <li>
                         <Link to="/reports" onClick={closeMenu}>
                           التقارير

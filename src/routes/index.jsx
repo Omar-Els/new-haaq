@@ -12,6 +12,7 @@ const Notifications = lazy(() => import('../pages/Notifications'));
 const AboutDaawa = lazy(() => import('../pages/AboutDaawa'));
 const Reports = lazy(() => import('../pages/Reports'));
 const Settings = lazy(() => import('../pages/Settings'));
+const Volunteers = lazy(() => import('../pages/Volunteers'));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -79,6 +80,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/volunteers"
+          element={
+            <ProtectedRoute>
+              <Volunteers />
             </ProtectedRoute>
           }
         />
