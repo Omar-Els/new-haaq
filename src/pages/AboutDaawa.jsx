@@ -647,10 +647,10 @@ const AboutDaawa = () => {
               }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                // Navigate to beneficiaries page to register as volunteer
-                window.location.href = '/beneficiaries';
+                // Navigate to volunteer registration page
+                window.location.href = '/volunteer-registration';
               }}
-              aria-label="انتقل إلى صفحة المستفيدين للتطوع"
+              aria-label="انتقل إلى صفحة تسجيل المتطوعين"
             >
               <FaUserPlus />
               <span>انضم كمتطوع</span>

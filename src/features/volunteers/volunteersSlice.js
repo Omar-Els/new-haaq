@@ -31,6 +31,13 @@ const volunteersSlice = createSlice({
         updatedAt: new Date().toISOString()
       };
       state.volunteers.push(newVolunteer);
+
+      // حفظ في localStorage
+      try {
+        localStorage.setItem('volunteers', JSON.stringify(state.volunteers));
+      } catch (error) {
+        console.error('خطأ في حفظ المتطوعين:', error);
+      }
     },
 
     // تحديث بيانات متطوع

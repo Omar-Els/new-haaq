@@ -16,6 +16,7 @@ const Volunteers = lazy(() => import('../pages/Volunteers'));
 const JoinVolunteer = lazy(() => import('../pages/JoinVolunteer'));
 const VolunteerThankYou = lazy(() => import('../pages/VolunteerThankYou'));
 const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
+const VolunteerRegistration = lazy(() => import('../pages/VolunteerRegistration'));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -104,6 +105,14 @@ const AppRoutes = () => {
         />
         <Route path="/join-volunteer" element={<JoinVolunteer />} />
         <Route path="/volunteer-thank-you" element={<VolunteerThankYou />} />
+        <Route
+          path="/volunteer-registration"
+          element={
+            <ProtectedRoute>
+              <VolunteerRegistration />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

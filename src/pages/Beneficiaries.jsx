@@ -9,17 +9,9 @@ import {
 } from 'react-icons/fa';
 import {
   selectAllBeneficiaries,
-  selectFilteredBeneficiaries,
-  selectBeneficiariesStats,
-  selectBeneficiariesSearchTerm,
-  selectBeneficiariesFilterBy,
   addBeneficiary,
   updateBeneficiary,
-  deleteBeneficiary,
-  setSearchTerm,
-  setFilterBy,
-  loadBeneficiaries,
-  saveBeneficiaries
+  deleteBeneficiary
 } from '../features/beneficiaries/beneficiariesSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
 import PermissionGuard from '../components/PermissionGuard';
@@ -36,11 +28,34 @@ const Beneficiaries = () => {
   const { isAdmin, hasPermission } = usePermissions();
   
   // Redux state
-  const beneficiaries = useSelector(selectFilteredBeneficiaries);
   const allBeneficiaries = useSelector(selectAllBeneficiaries);
-  const stats = useSelector(selectBeneficiariesStats);
-  const searchTerm = useSelector(selectBeneficiariesSearchTerm);
-  const filterBy = useSelector(selectBeneficiariesFilterBy);
+
+  // Local search and filter state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterBy, setFilterBy] = useState('all');
+
+  // Filter beneficiaries locally
+  const beneficiaries = allBeneficiaries.filter(beneficiary => {
+    const matchesSearch = !searchTerm ||
+      beneficiary.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      beneficiary.nationalId?.includes(searchTerm) ||
+      beneficiary.phone?.includes(searchTerm);
+
+    const matchesFilter = filterBy === 'all' ||
+      (filterBy === 'active' && beneficiary.status === 'active') ||
+      (filterBy === 'inactive' && beneficiary.status === 'inactive') ||
+      (filterBy === 'recent' && new Date(beneficiary.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+
+    return matchesSearch && matchesFilter;
+  });
+
+  // Calculate stats locally
+  const stats = {
+    total: allBeneficiaries.length,
+    active: allBeneficiaries.filter(b => b.status === 'active').length,
+    inactive: allBeneficiaries.filter(b => b.status === 'inactive').length,
+    totalFamilyMembers: allBeneficiaries.reduce((sum, b) => sum + (b.familySize || 1), 0)
+  };
 
   // Local state
   const [showAddModal, setShowAddModal] = useState(false);
@@ -64,17 +79,10 @@ const Beneficiaries = () => {
     notes: ''
   });
 
-  // تحميل المستفيدين عند بدء التشغيل
+  // تحميل المستفيدين من localStorage عند بدء التشغيل
   useEffect(() => {
-    dispatch(loadBeneficiaries());
-  }, [dispatch]);
-
-  // حفظ المستفيدين عند التغيير
-  useEffect(() => {
-    if (allBeneficiaries.length > 0) {
-      dispatch(saveBeneficiaries());
-    }
-  }, [allBeneficiaries, dispatch]);
+    // يمكن إضافة تحميل من localStorage هنا إذا لزم الأمر
+  }, []);
 
   // معالج إضافة مستفيد
   const handleAddBeneficiary = () => {
@@ -289,14 +297,14 @@ const Beneficiaries = () => {
               type="text"
               placeholder="البحث في المستفيدين..."
               value={searchTerm}
-              onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           <div className="filter-controls">
             <select
               value={filterBy}
-              onChange={(e) => dispatch(setFilterBy(e.target.value))}
+              onChange={(e) => setFilterBy(e.target.value)}
               className="filter-select"
             >
               <option value="all">جميع المستفيدين</option>
