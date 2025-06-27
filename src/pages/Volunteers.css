@@ -792,3 +792,133 @@
     color: #bdc3c7;
   }
 }
+
+/* Enhanced Modal Styles for New Forms */
+.volunteer-form-modal {
+  max-width: 900px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.volunteer-form-modal .modal-header {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border-radius: 20px 20px 0 0;
+  padding: 2rem;
+}
+
+.volunteer-form-modal .modal-header h2 {
+  color: white;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.volunteer-form-modal .close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volunteer-form-modal .close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.volunteer-form .form-section {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 2px solid #e9ecef;
+  margin-bottom: 1.5rem;
+}
+
+.volunteer-form .form-section h3 {
+  margin: 0 0 1.5rem 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #3498db;
+}
+
+.volunteer-form .form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.volunteer-form .btn {
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Enhanced Backdrop Blur */
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Form Grid Enhancements */
+.volunteer-form .form-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.volunteer-form .form-group input,
+.volunteer-form .form-group select,
+.volunteer-form .form-group textarea {
+  background: white;
+  border: 2px solid #e1e8ed;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.volunteer-form .form-group input:focus,
+.volunteer-form .form-group select:focus,
+.volunteer-form .form-group textarea:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .volunteer-form-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .volunteer-form-modal .modal-header {
+    padding: 1.5rem;
+  }
+
+  .volunteer-form {
+    padding: 1rem;
+  }
+
+  .volunteer-form .form-section {
+    padding: 1rem;
+  }
+
+  .volunteer-form .form-actions {
+    flex-direction: column;
+  }
+
+  .volunteer-form .btn {
+    width: 100%;
+  }
+}

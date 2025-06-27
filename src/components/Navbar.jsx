@@ -21,6 +21,7 @@ const Navbar = () => {
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 990);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showBackupManager, setShowBackupManager] = useState(false);
+  const [showDropdownBackdrop, setShowDropdownBackdrop] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -97,7 +98,9 @@ const Navbar = () => {
   };
 
   const toggleDropdown = (id) => {
-    setActiveDropdown(activeDropdown === id ? null : id);
+    const newActiveDropdown = activeDropdown === id ? null : id;
+    setActiveDropdown(newActiveDropdown);
+    setShowDropdownBackdrop(newActiveDropdown !== null);
   };
 
   const handleLogout = () => {
@@ -276,6 +279,17 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* Dropdown Backdrop */}
+      {showDropdownBackdrop && (
+        <div
+          className={`dropdown-backdrop ${showDropdownBackdrop ? 'active' : ''}`}
+          onClick={() => {
+            setActiveDropdown(null);
+            setShowDropdownBackdrop(false);
+          }}
+        />
+      )}
 
       {/* Backup Manager Modal */}
       <BackupManager
