@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FaCloud, FaSync, FaWifi, FaWifiSlash, FaCheckCircle,
-  FaExclamationTriangle, FaClock
+  FaCloud, FaSync, FaWifi, FaCheckCircle,
+  FaExclamationTriangle, FaClock, FaTimes
 } from 'react-icons/fa';
 import cloudSync from '../services/cloudSync';
 import './SyncIndicator.css';
@@ -47,7 +47,7 @@ const SyncIndicator = ({ onClick }) => {
   // تحديد أيقونة الحالة
   const getStatusIcon = () => {
     if (!syncStatus.isOnline) {
-      return <FaWifiSlash className="status-icon offline" />;
+      return <FaTimes className="status-icon offline" />;
     }
     
     if (syncStatus.pendingChanges > 0) {

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaCloud, FaDownload, FaUpload, FaSync, FaFileExport,
-  FaFileImport, FaShieldAlt, FaClock, FaWifi, FaWifiSlash,
+  FaFileImport, FaShieldAlt, FaClock, FaWifi, FaTimes,
   FaCheckCircle, FaExclamationTriangle, FaInfoCircle
 } from 'react-icons/fa';
 import cloudSync from '../services/cloudSync';
@@ -194,7 +194,7 @@ const BackupManager = ({ isOpen, onClose }) => {
                 {syncStatus.isOnline ? (
                   <FaWifi className="status-icon online" />
                 ) : (
-                  <FaWifiSlash className="status-icon offline" />
+                  <FaTimes className="status-icon offline" />
                 )}
               </div>
               
