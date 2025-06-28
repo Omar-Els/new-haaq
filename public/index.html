@@ -44,6 +44,26 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- GitHub Pages MIME Type Fix -->
+    <script>
+      // Fix for GitHub Pages MIME type issue
+      if (window.location.hostname.includes('github.io')) {
+        // Override module loading for GitHub Pages
+        const originalImport = window.import;
+        window.import = function(url) {
+          return fetch(url)
+            .then(response => {
+              if (!response.ok) throw new Error(`Failed to load ${url}`);
+              return response.text();
+            })
+            .then(code => {
+              const blob = new Blob([code], { type: 'application/javascript' });
+              const objectURL = URL.createObjectURL(blob);
+              return import(objectURL);
+            });
+        };
+      }
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
