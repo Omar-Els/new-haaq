@@ -12,25 +12,31 @@ export const PERMISSIONS = {
   BENEFICIARIES_CREATE: 'beneficiaries:create',
   BENEFICIARIES_EDIT: 'beneficiaries:edit',
   BENEFICIARIES_DELETE: 'beneficiaries:delete',
-  
+
+  // صلاحيات المتطوعين
+  VOLUNTEERS_VIEW: 'volunteers:view',
+  VOLUNTEERS_CREATE: 'volunteers:create',
+  VOLUNTEERS_EDIT: 'volunteers:edit',
+  VOLUNTEERS_DELETE: 'volunteers:delete',
+
   // صلاحيات المعاملات المالية
   TRANSACTIONS_VIEW: 'transactions:view',
   TRANSACTIONS_CREATE: 'transactions:create',
   TRANSACTIONS_EDIT: 'transactions:edit',
   TRANSACTIONS_DELETE: 'transactions:delete',
-  
+
   // صلاحيات التقارير
   REPORTS_VIEW: 'reports:view',
   REPORTS_EXPORT: 'reports:export',
-  
+
   // صلاحيات الإعدادات
   SETTINGS_VIEW: 'settings:view',
   SETTINGS_EDIT: 'settings:edit',
-  
+
   // صلاحيات إدارة المستخدمين
   USERS_VIEW: 'users:view',
   USERS_MANAGE: 'users:manage',
-  
+
   // صلاحيات المحتوى
   CONTENT_VIEW: 'content:view',
   CONTENT_EDIT: 'content:edit'
@@ -44,6 +50,10 @@ const ROLE_PERMISSIONS = {
     PERMISSIONS.BENEFICIARIES_CREATE,
     PERMISSIONS.BENEFICIARIES_EDIT,
     PERMISSIONS.BENEFICIARIES_DELETE,
+    PERMISSIONS.VOLUNTEERS_VIEW,
+    PERMISSIONS.VOLUNTEERS_CREATE,
+    PERMISSIONS.VOLUNTEERS_EDIT,
+    PERMISSIONS.VOLUNTEERS_DELETE,
     PERMISSIONS.TRANSACTIONS_VIEW,
     PERMISSIONS.TRANSACTIONS_CREATE,
     PERMISSIONS.TRANSACTIONS_EDIT,
@@ -68,9 +78,9 @@ const ROLE_PERMISSIONS = {
 
 // الحالة الأولية
 const initialState = {
-  currentUserRole: ROLES.USER, // افتراضي: مستخدم عادي
-  permissions: ROLE_PERMISSIONS[ROLES.USER],
-  isAdmin: false
+  currentUserRole: ROLES.ADMIN, // افتراضي: مدير
+  permissions: ROLE_PERMISSIONS[ROLES.ADMIN],
+  isAdmin: true
 };
 
 const rolesSlice = createSlice({

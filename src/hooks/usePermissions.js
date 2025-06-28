@@ -108,7 +108,7 @@ export const usePermissions = () => {
   const user = useSelector(selectUser);
 
   // تحديد الدور الافتراضي
-  const role = user?.role || 'user';
+  const role = user?.role || 'admin';
 
   // الحصول على صلاحيات الدور
   const rolePermissions = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS.user;
