@@ -287,9 +287,10 @@ const Volunteers = () => {
               onClick={() => setShowAddModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              title="إضافة متطوع جديد للمؤسسة"
             >
-              <FaPlus />
-              إضافة متطوع
+              <FaUserPlus />
+              إضافة متطوع جديد
             </motion.button>
           </PermissionGuard>
         </div>
@@ -380,13 +381,15 @@ const Volunteers = () => {
             </p>
             {!searchTerm && filterBy === 'all' && (
               <PermissionGuard permission={PERMISSIONS.VOLUNTEERS_CREATE}>
-                <button
-                  className="btn btn-primary"
+                <motion.button
+                  className="btn btn-primary add-btn"
                   onClick={() => setShowAddModal(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <FaPlus />
+                  <FaUserPlus />
                   إضافة أول متطوع
-                </button>
+                </motion.button>
               </PermissionGuard>
             )}
           </div>
@@ -467,179 +470,7 @@ const Volunteers = () => {
         )}
       </motion.div>
 
-      {/* Add Volunteer Modal */}
-      <AnimatePresence>
-        {showAddModal && (
-          <motion.div
-            className="modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowAddModal(false)}
-          >
-            <motion.div
-              className="modal-content volunteer-modal"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="modal-header">
-                <h2>إضافة متطوع جديد</h2>
-                <button
-                  className="close-btn"
-                  onClick={() => setShowAddModal(false)}
-                >
-                  ✕
-                </button>
-              </div>
 
-              <form className="volunteer-form" onSubmit={(e) => {
-                e.preventDefault();
-                handleAddVolunteer();
-              }}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">الاسم الكامل *</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={volunteerForm.name}
-                      onChange={handleFormChange}
-                      required
-                      placeholder="أدخل الاسم الكامل"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="email">البريد الإلكتروني *</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={volunteerForm.email}
-                      onChange={handleFormChange}
-                      required
-                      placeholder="example@email.com"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="phone">رقم الهاتف *</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={volunteerForm.phone}
-                      onChange={handleFormChange}
-                      required
-                      placeholder="01234567890"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="gender">الجنس</label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      value={volunteerForm.gender}
-                      onChange={handleFormChange}
-                    >
-                      <option value="male">ذكر</option>
-                      <option value="female">أنثى</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="birthDate">تاريخ الميلاد</label>
-                    <input
-                      type="date"
-                      id="birthDate"
-                      name="birthDate"
-                      value={volunteerForm.birthDate}
-                      onChange={handleFormChange}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="department">القسم</label>
-                    <select
-                      id="department"
-                      name="department"
-                      value={volunteerForm.department}
-                      onChange={handleFormChange}
-                    >
-                      <option value="">اختر القسم</option>
-                      <option value="education">التعليم</option>
-                      <option value="health">الصحة</option>
-                      <option value="social">الشؤون الاجتماعية</option>
-                      <option value="finance">المالية</option>
-                      <option value="media">الإعلام</option>
-                      <option value="logistics">اللوجستيات</option>
-                      <option value="it">تقنية المعلومات</option>
-                      <option value="other">أخرى</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="address">العنوان</label>
-                  <textarea
-                    id="address"
-                    name="address"
-                    value={volunteerForm.address}
-                    onChange={handleFormChange}
-                    rows="2"
-                    placeholder="أدخل العنوان الكامل"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="skills">المهارات (مفصولة بفواصل)</label>
-                  <input
-                    type="text"
-                    id="skills"
-                    name="skills"
-                    value={volunteerForm.skills.join(', ')}
-                    onChange={handleSkillsChange}
-                    placeholder="مثال: تصميم، برمجة، تدريس"
-                  />
-                </div>
-
-                <div className="form-group full-width">
-                  <label htmlFor="notes">ملاحظات</label>
-                  <textarea
-                    id="notes"
-                    name="notes"
-                    value={volunteerForm.notes}
-                    onChange={handleFormChange}
-                    rows="3"
-                    placeholder="أي ملاحظات إضافية"
-                  />
-                </div>
-
-                <div className="modal-actions">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setShowAddModal(false)}
-                  >
-                    إلغاء
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                  >
-                    <FaPlus />
-                    إضافة المتطوع
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Edit Volunteer Modal */}
       <AnimatePresence>
