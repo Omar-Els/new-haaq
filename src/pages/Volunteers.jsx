@@ -6,7 +6,8 @@ import {
   FaSort, FaUserPlus, FaPhone, FaEnvelope, FaMapMarkerAlt,
   FaCalendarAlt, FaBriefcase, FaGraduationCap, FaHeart,
   FaEye, FaDownload, FaUpload, FaUserCheck, FaUserTimes,
-  FaChartBar, FaUsers as FaUsersIcon, FaUserCog
+  FaChartBar, FaUsers as FaUsersIcon, FaUserCog, FaTimes,
+  FaCheck
 } from 'react-icons/fa';
 import {
   selectAllVolunteers,
