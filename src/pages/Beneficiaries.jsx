@@ -5,7 +5,7 @@ import {
   FaUsers, FaPlus, FaEdit, FaTrash, FaSearch, FaFilter,
   FaSort, FaUserPlus, FaPhone, FaEnvelope, FaMapMarkerAlt,
   FaCalendarAlt, FaBaby, FaHeart, FaEye, FaDownload,
-  FaUpload, FaUserCheck, FaUserTimes, FaChartBar
+  FaUpload, FaUserCheck, FaUserTimes, FaChartBar, FaTimes
 } from 'react-icons/fa';
 import {
   selectAllBeneficiaries,
@@ -16,6 +16,7 @@ import {
 import { addNotification } from '../features/notifications/notificationsSlice';
 import PermissionGuard from '../components/PermissionGuard';
 import { usePermissions, PERMISSIONS } from '../hooks/usePermissions';
+import BeneficiaryForm from '../components/BeneficiaryForm';
 import './Beneficiaries.css';
 
 /**
@@ -425,6 +426,144 @@ const Beneficiaries = () => {
           </div>
         )}
       </motion.div>
+
+      {/* Add Beneficiary Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAddModal(false)}
+          >
+            <motion.div
+              className="modal-content large"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>
+                  <FaUserPlus />
+                  إضافة مستفيد جديد
+                </h2>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <BeneficiaryForm
+                  onSubmit={handleAddBeneficiary}
+                  onCancel={() => setShowAddModal(false)}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Beneficiary Modal */}
+      <AnimatePresence>
+        {showEditModal && selectedBeneficiary && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowEditModal(false)}
+          >
+            <motion.div
+              className="modal-content large"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>
+                  <FaEdit />
+                  تعديل بيانات المستفيد
+                </h2>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <BeneficiaryForm
+                  beneficiary={selectedBeneficiary}
+                  onSubmit={handleEditBeneficiary}
+                  onCancel={() => setShowEditModal(false)}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteConfirm && beneficiaryToDelete && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2>
+                  <FaTrash />
+                  تأكيد الحذف
+                </h2>
+                <button
+                  className="close-btn"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="modal-body">
+                <p>هل أنت متأكد من حذف المستفيد "{beneficiaryToDelete.name}"؟</p>
+                <p className="warning-text">هذا الإجراء لا يمكن التراجع عنه!</p>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  إلغاء
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={handleDeleteBeneficiary}
+                >
+                  <FaTrash />
+                  حذف
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

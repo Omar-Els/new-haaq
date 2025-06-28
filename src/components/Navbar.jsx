@@ -205,47 +205,46 @@ const Navbar = () => {
                   </li>
                 </>
               ) : (
-                <li className="nav-item dropdown">
-                  <button
-                    className="dropdown-toggle"
-                    onClick={() => toggleDropdown('more')}
-                  >
+                <li
+                  className="nav-item dropdown"
+                  onMouseEnter={() => setActiveDropdown('more')}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
+                  <span className="dropdown-toggle">
                     المزيد <FaChevronDown className={activeDropdown === 'more' ? "rotate" : ""} />
-                  </button>
-                  {activeDropdown === 'more' && (
-                    <ul className="dropdown-menu">
-                      <li>
-                        <Link to="/beneficiaries" onClick={closeMenu}>
-                          المستفيدون
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/volunteers" onClick={closeMenu}>
-                          المتطوعون
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/reports" onClick={closeMenu}>
-                          التقارير
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/settings" onClick={closeMenu}>
-                          الإعدادات
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/about" onClick={closeMenu}>
-                          عن دعوة الحق
-                        </Link>
-                      </li>
-                      <li>
-                        <button onClick={handleLogout}>
-                          تسجيل الخروج
-                        </button>
-                      </li>
-                    </ul>
-                  )}
+                  </span>
+                  <ul className={`dropdown-menu ${activeDropdown === 'more' ? 'show' : ''}`}>
+                    <li>
+                      <Link to="/beneficiaries" onClick={closeMenu}>
+                        المستفيدون
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/volunteers" onClick={closeMenu}>
+                        المتطوعون
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/reports" onClick={closeMenu}>
+                        التقارير
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/settings" onClick={closeMenu}>
+                        الإعدادات
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/about" onClick={closeMenu}>
+                        عن دعوة الحق
+                      </Link>
+                    </li>
+                    <li>
+                      <button onClick={handleLogout}>
+                        تسجيل الخروج
+                      </button>
+                    </li>
+                  </ul>
                 </li>
               )}
             </>
