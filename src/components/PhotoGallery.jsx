@@ -17,7 +17,7 @@ const PhotoGallery = () => {
   const [photos] = useState([
     {
       id: 1,
-      url: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800',
+      url: '/images/6.jpg',
       title: 'توزيع المساعدات الغذائية',
       description: 'توزيع الطعام على الأسر المحتاجة في رمضان',
       date: '2024-03-15',
@@ -28,7 +28,7 @@ const PhotoGallery = () => {
     },
     {
       id: 2,
-      url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800',
+      url: '/images/6.jpg',
       title: 'برنامج التعليم المجاني',
       description: 'دروس تقوية مجانية للأطفال',
       date: '2024-03-10',
@@ -39,7 +39,7 @@ const PhotoGallery = () => {
     },
     {
       id: 3,
-      url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800',
+      url: '/images/6.jpg',
       title: 'الرعاية الصحية',
       description: 'فحص طبي مجاني للأطفال',
       date: '2024-03-08',
@@ -50,7 +50,7 @@ const PhotoGallery = () => {
     },
     {
       id: 4,
-      url: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800',
+      url: '/images/6.jpg',
       title: 'كسوة العيد',
       description: 'توزيع ملابس العيد على الأطفال',
       date: '2024-03-05',
@@ -61,7 +61,7 @@ const PhotoGallery = () => {
     },
     {
       id: 5,
-      url: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800',
+      url: '/images/6.jpg',
       title: 'مشروع الأرامل',
       description: 'دعم الأرامل بمشاريع صغيرة',
       date: '2024-03-01',
@@ -72,7 +72,7 @@ const PhotoGallery = () => {
     },
     {
       id: 6,
-      url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800',
+      url: '/images/6.jpg',
       title: 'دورات التدريب المهني',
       description: 'تدريب الشباب على مهن مختلفة',
       date: '2024-02-28',
