@@ -574,6 +574,8 @@ const Settings = () => {
                       <div className="color-preview" style={{ backgroundColor: localSettings.appearance.primaryColor }}>
                         <input
                           type="color"
+                          id="primary-color"
+                          name="primary-color"
                           value={localSettings.appearance.primaryColor}
                           onChange={(e) => handleSettingChange('appearance', 'primaryColor', e.target.value)}
                           ref={colorPickerRef}
@@ -585,6 +587,8 @@ const Settings = () => {
                       <div className="color-preview" style={{ backgroundColor: localSettings.appearance.secondaryColor }}>
                         <input
                           type="color"
+                          id="secondary-color"
+                          name="secondary-color"
                           value={localSettings.appearance.secondaryColor}
                           onChange={(e) => handleSettingChange('appearance', 'secondaryColor', e.target.value)}
                         />
@@ -831,6 +835,7 @@ const Settings = () => {
                       <input
                         type="text"
                         id="display-name"
+                        name="display-name"
                         value={localSettings.account.displayName}
                         onChange={(e) => handleSettingChange('account', 'displayName', e.target.value)}
                         placeholder="أدخل اسم العرض"
@@ -850,6 +855,7 @@ const Settings = () => {
                   <input
                     type="email"
                     id="account-email"
+                    name="account-email"
                     value={localSettings.account.email}
                     onChange={(e) => handleSettingChange('account', 'email', e.target.value)}
                     placeholder="أدخل البريد الإلكتروني"

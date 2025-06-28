@@ -295,14 +295,19 @@ const Beneficiaries = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
+              id="beneficiaries-search"
+              name="beneficiaries-search"
               placeholder="البحث في المستفيدين..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              autoComplete="off"
             />
           </div>
 
           <div className="filter-controls">
             <select
+              id="beneficiaries-filter"
+              name="beneficiaries-filter"
               value={filterBy}
               onChange={(e) => setFilterBy(e.target.value)}
               className="filter-select"

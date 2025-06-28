@@ -346,14 +346,19 @@ const Volunteers = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
+              id="volunteers-search"
+              name="volunteers-search"
               placeholder="البحث في المتطوعين..."
               value={searchTerm}
               onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+              autoComplete="off"
             />
           </div>
 
           <div className="filter-controls">
             <select
+              id="volunteers-filter"
+              name="volunteers-filter"
               value={filterBy}
               onChange={(e) => dispatch(setFilterBy(e.target.value))}
               className="filter-select"
