@@ -5,7 +5,8 @@ import {
   FaUsers, FaPlus, FaEdit, FaTrash, FaSearch, FaFilter,
   FaSort, FaUserPlus, FaPhone, FaEnvelope, FaMapMarkerAlt,
   FaCalendarAlt, FaBaby, FaHeart, FaEye, FaDownload,
-  FaUpload, FaUserCheck, FaUserTimes, FaChartBar, FaTimes
+  FaUpload, FaUserCheck, FaUserTimes, FaChartBar, FaTimes,
+  FaImages
 } from 'react-icons/fa';
 import {
   selectAllBeneficiaries,
@@ -17,6 +18,7 @@ import { addNotification } from '../features/notifications/notificationsSlice';
 import PermissionGuard from '../components/PermissionGuard';
 import { usePermissions, PERMISSIONS } from '../hooks/usePermissions';
 import BeneficiaryForm from '../components/BeneficiaryForm';
+import ImageGalleryManager from '../components/ImageGalleryManager';
 import './Beneficiaries.css';
 
 /**
