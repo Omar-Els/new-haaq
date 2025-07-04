@@ -413,6 +413,7 @@ const ImageGalleryManager = ({
                   <button
                     className="overlay-btn"
                     onClick={() => openEditModal(image)}
+                    aria-label="تعديل الصورة"
                   >
                     <FaEdit />
                   </button>
@@ -491,6 +492,7 @@ const ImageGalleryManager = ({
                     <input
                       type="file"
                       id="image-file"
+                      name="image-file"
                       accept="image/*"
                       onChange={handleFileChange}
                       className="file-input"
@@ -507,6 +509,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-title"
+                      name="image-title"
                       value={newImage.title}
                       onChange={(e) => setNewImage(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="أدخل عنوان الصورة"
@@ -517,6 +520,7 @@ const ImageGalleryManager = ({
                     <label htmlFor="image-description">وصف الصورة</label>
                     <textarea
                       id="image-description"
+                      name="image-description"
                       value={newImage.description}
                       onChange={(e) => setNewImage(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="أدخل وصف الصورة"
@@ -528,6 +532,7 @@ const ImageGalleryManager = ({
                     <label htmlFor="image-category">الفئة</label>
                     <select
                       id="image-category"
+                      name="image-category"
                       value={newImage.category}
                       onChange={(e) => setNewImage(prev => ({ ...prev, category: e.target.value }))}
                     >
@@ -543,6 +548,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-location"
+                      name="image-location"
                       value={newImage.location}
                       onChange={(e) => setNewImage(prev => ({ ...prev, location: e.target.value }))}
                       placeholder="أدخل مكان التقاط الصورة"
@@ -554,6 +560,7 @@ const ImageGalleryManager = ({
                     <input
                       type="date"
                       id="image-date"
+                      name="image-date"
                       value={newImage.date}
                       onChange={(e) => setNewImage(prev => ({ ...prev, date: e.target.value }))}
                     />
@@ -564,6 +571,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-tags"
+                      name="image-tags"
                       value={newImage.tags}
                       onChange={(e) => setNewImage(prev => ({ ...prev, tags: e.target.value }))}
                       placeholder="مثال: مساعدات، طعام، رمضان"
@@ -717,6 +725,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="edit-image-title"
+                      name="edit-image-title"
                       value={editImage.title}
                       onChange={e => setEditImage(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="أدخل عنوان الصورة"
@@ -726,6 +735,7 @@ const ImageGalleryManager = ({
                     <label htmlFor="edit-image-description">وصف الصورة</label>
                     <textarea
                       id="edit-image-description"
+                      name="edit-image-description"
                       value={editImage.description}
                       onChange={e => setEditImage(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="أدخل وصف الصورة"
@@ -736,6 +746,7 @@ const ImageGalleryManager = ({
                     <label htmlFor="edit-image-category">الفئة</label>
                     <select
                       id="edit-image-category"
+                      name="edit-image-category"
                       value={editImage.category}
                       onChange={e => setEditImage(prev => ({ ...prev, category: e.target.value }))}
                     >
@@ -750,6 +761,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="edit-image-location"
+                      name="edit-image-location"
                       value={editImage.location}
                       onChange={e => setEditImage(prev => ({ ...prev, location: e.target.value }))}
                       placeholder="أدخل مكان التقاط الصورة"
@@ -760,6 +772,7 @@ const ImageGalleryManager = ({
                     <input
                       type="date"
                       id="edit-image-date"
+                      name="edit-image-date"
                       value={editImage.date}
                       onChange={e => setEditImage(prev => ({ ...prev, date: e.target.value }))}
                     />
@@ -769,6 +782,7 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="edit-image-tags"
+                      name="edit-image-tags"
                       value={editImage.tags}
                       onChange={e => setEditImage(prev => ({ ...prev, tags: e.target.value }))}
                       placeholder="مثال: مساعدات، طعام، رمضان"

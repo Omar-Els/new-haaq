@@ -147,9 +147,9 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: var(--card-bg);
+  background-color: #222 !important;
   min-width: 180px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   padding: 0.5rem 0;
   z-index: 1000;
@@ -178,7 +178,7 @@
 .dropdown-menu li button {
   display: block;
   padding: 0.75rem 1rem;
-  color: var(--text-color);
+  color: #fff !important;
   text-decoration: none;
   text-align: right;
   width: 100%;
@@ -187,12 +187,13 @@
   font-size: 1rem;
   cursor: pointer;
   font-family: inherit;
+  transition: background 0.2s, color 0.2s;
 }
 
 .dropdown-menu li a:hover,
 .dropdown-menu li button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--primary-color);
+  background-color: #333 !important;
+  color: #4caf50 !important;
 }
 
 .dropdown-menu li button {

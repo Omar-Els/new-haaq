@@ -1,16 +1,16 @@
 /* Global Styles */
 :root {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --text-color: #333;
-  --text-secondary-color: #666;
-  --bg-color: #f9f9f9;
-  --card-bg: #fff;
-  --border-color: #ddd;
+  --primary-color: #2C7A7B;
+  --secondary-color: #38B2AC;
+  --text-color: #1A202C;
+  --text-secondary-color: #4A5568;
+  --bg-color: #F9FAFB;
+  --card-bg: #FFFFFF;
+  --border-color: #E2E8F0;
   --shadow-color: rgba(0, 0, 0, 0.1);
-  --error-color: #e74c3c;
-  --success-color: #27ae60;
-  --warning-color: #f39c12;
+  --error-color: #E53E3E;
+  --success-color: #38A169;
+  --warning-color: #D69E2E;
   --transition-speed: 0.3s;
   --container-width: 1200px;
   --spacing-xs: 0.25rem;
@@ -40,14 +40,17 @@ html, body {
 
 /* Dark Theme Variables */
 .dark-theme {
-  --primary-color: #3498db;
-  --secondary-color: #2ecc71;
-  --text-color: #f9f9f9;
-  --text-secondary-color: #aaa;
-  --bg-color: #222;
-  --card-bg: #333;
-  --border-color: #444;
+  --primary-color: #38B2AC;
+  --secondary-color: #81E6D9;
+  --text-color: #F7FAFC;
+  --text-secondary-color: #A0AEC0;
+  --bg-color: #1A202C;
+  --card-bg: #2D3748;
+  --border-color: #4A5568;
   --shadow-color: rgba(0, 0, 0, 0.3);
+  --error-color: #FC8181;
+  --success-color: #68D391;
+  --warning-color: #F6E05E;
 }
 
 #root {
@@ -119,16 +122,16 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #285E61;
 }
 
 .btn-secondary {
-  background-color: #95a5a6;
+  background-color: var(--secondary-color);
   color: white;
 }
 
 .btn-secondary:hover {
-  background-color: #7f8c8d;
+  background-color: #319795;
 }
 
 .btn-danger {
@@ -137,7 +140,7 @@ body {
 }
 
 .btn-danger:hover {
-  background-color: #c0392b;
+  background-color: #C53030;
 }
 
 .btn-success {
@@ -146,16 +149,16 @@ body {
 }
 
 .btn-success:hover {
-  background-color: #219653;
+  background-color: #2F855A;
 }
 
 .btn-info {
-  background-color: #3498db;
+  background-color: var(--primary-color);
   color: white;
 }
 
 .btn-info:hover {
-  background-color: #2980b9;
+  background-color: #285E61;
 }
 
 /* Form styles */
@@ -175,12 +178,14 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
   outline: none;
   border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.1);
 }
 
 label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: bold;
+  color: var(--text-color);
 }
 
 /* Grid layouts */

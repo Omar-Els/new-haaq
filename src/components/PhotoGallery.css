@@ -16,20 +16,20 @@
 
 .header-icon {
   font-size: 3rem;
-  color: #2ecc71;
+  color: var(--primary-color);
   margin-bottom: 1rem;
 }
 
 .gallery-header h2 {
   font-size: 2.5rem;
-  color: #2c3e50;
+  color: var(--text-color);
   margin: 0 0 1rem 0;
   font-weight: 700;
 }
 
 .gallery-header p {
   font-size: 1.2rem;
-  color: #7f8c8d;
+  color: var(--text-secondary-color);
   margin: 0;
   line-height: 1.6;
 }
@@ -44,21 +44,21 @@
   position: relative;
   display: flex;
   align-items: center;
-  background: white;
-  border: 2px solid #e1e8ed;
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
   border-radius: 25px;
   padding: 0.75rem 1rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px var(--shadow-color);
   transition: all 0.3s ease;
 }
 
 .search-box:focus-within {
-  border-color: #2ecc71;
-  box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 20px var(--primary-color-alpha);
 }
 
 .search-icon {
-  color: #7f8c8d;
+  color: var(--text-secondary-color);
   margin-left: 0.5rem;
   font-size: 1.1rem;
 }
@@ -75,7 +75,7 @@
 .clear-search {
   background: none;
   border: none;
-  color: #7f8c8d;
+  color: var(--text-secondary-color);
   cursor: pointer;
   padding: 0.25rem;
   border-radius: 50%;
@@ -83,14 +83,14 @@
 }
 
 .clear-search:hover {
-  background: #f8f9fa;
-  color: #e74c3c;
+  background: var(--hover-bg);
+  color: var(--error-color);
 }
 
 .search-results {
   text-align: center;
   margin-top: 1rem;
-  color: #7f8c8d;
+  color: var(--text-secondary-color);
   font-size: 0.9rem;
 }
 
@@ -103,16 +103,18 @@
 }
 
 .photo-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px var(--shadow-color);
   cursor: pointer;
   transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
 }
 
 .photo-card:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 30px var(--shadow-color);
+  transform: translateY(-2px);
 }
 
 .photo-container {
@@ -162,13 +164,13 @@
 
 .photo-info h3 {
   font-size: 1.3rem;
-  color: #2c3e50;
+  color: var(--text-color);
   margin: 0 0 0.5rem 0;
   font-weight: 600;
 }
 
 .photo-description {
-  color: #7f8c8d;
+  color: var(--text-secondary-color);
   font-size: 0.9rem;
   line-height: 1.5;
   margin: 0 0 1rem 0;
@@ -186,11 +188,11 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: #34495e;
+  color: var(--text-color);
 }
 
 .meta-item svg {
-  color: #2ecc71;
+  color: var(--primary-color);
   font-size: 0.9rem;
 }
 

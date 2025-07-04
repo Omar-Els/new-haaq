@@ -17,6 +17,7 @@ const JoinVolunteer = lazy(() => import('../pages/JoinVolunteer'));
 const VolunteerThankYou = lazy(() => import('../pages/VolunteerThankYou'));
 const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
 const VolunteerRegistration = lazy(() => import('../pages/VolunteerRegistration'));
+const Gallery = lazy(() => import('../pages/Gallery'));
 
 // Loading fallback
 const LoadingFallback = () => (
@@ -110,6 +111,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <VolunteerRegistration />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/gallery"
+          element={
+            <ProtectedRoute>
+              <Gallery />
             </ProtectedRoute>
           }
         />

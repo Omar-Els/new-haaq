@@ -473,3 +473,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+.gallery-entity-selector .dropdown select {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  text-align: right;
+  direction: rtl;
+  transition: border 0.2s;
+}
+.gallery-entity-selector .dropdown select:focus {
+  border: 1.5px solid #4caf50;
+  outline: none;
+}
+
+.gallery-entity-selector .dropdown option {
+  background: #222;
+  color: #fff;
+  direction: rtl;
+  text-align: right;
+}

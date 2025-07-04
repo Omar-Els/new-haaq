@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaImages, FaSearch, FaTimes, FaChevronLeft, FaChevronRight,
@@ -13,75 +13,13 @@ import './PhotoGallery.css';
  * معرض الصور مع إمكانية البحث عن المستفيدين
  */
 const PhotoGallery = () => {
-  // بيانات وهمية للصور
-  const [photos] = useState([
-    {
-      id: 1,
-      url: '/images/6.jpg',
-      title: 'توزيع المساعدات الغذائية',
-      description: 'توزيع الطعام على الأسر المحتاجة في رمضان',
-      date: '2024-03-15',
-      location: 'القاهرة',
-      beneficiaryName: 'أحمد محمد علي',
-      category: 'مساعدات غذائية',
-      likes: 45
-    },
-    {
-      id: 2,
-      url: '/images/6.jpg',
-      title: 'برنامج التعليم المجاني',
-      description: 'دروس تقوية مجانية للأطفال',
-      date: '2024-03-10',
-      location: 'الجيزة',
-      beneficiaryName: 'فاطمة أحمد حسن',
-      category: 'تعليم',
-      likes: 32
-    },
-    {
-      id: 3,
-      url: '/images/6.jpg',
-      title: 'الرعاية الصحية',
-      description: 'فحص طبي مجاني للأطفال',
-      date: '2024-03-08',
-      location: 'الإسكندرية',
-      beneficiaryName: 'محمد عبد الله',
-      category: 'صحة',
-      likes: 28
-    },
-    {
-      id: 4,
-      url: '/images/6.jpg',
-      title: 'كسوة العيد',
-      description: 'توزيع ملابس العيد على الأطفال',
-      date: '2024-03-05',
-      location: 'المنصورة',
-      beneficiaryName: 'عائشة محمود',
-      category: 'كسوة',
-      likes: 67
-    },
-    {
-      id: 5,
-      url: '/images/6.jpg',
-      title: 'مشروع الأرامل',
-      description: 'دعم الأرامل بمشاريع صغيرة',
-      date: '2024-03-01',
-      location: 'أسيوط',
-      beneficiaryName: 'زينب إبراهيم',
-      category: 'مشاريع',
-      likes: 41
-    },
-    {
-      id: 6,
-      url: '/images/6.jpg',
-      title: 'دورات التدريب المهني',
-      description: 'تدريب الشباب على مهن مختلفة',
-      date: '2024-02-28',
-      location: 'طنطا',
-      beneficiaryName: 'يوسف أحمد',
-      category: 'تدريب',
-      likes: 39
-    }
-  ]);
+  // جلب الصور من localStorage بدلاً من بيانات وهمية
+  const [photos, setPhotos] = useState([]);
+
+  useEffect(() => {
+    const savedImages = JSON.parse(localStorage.getItem('gallery_images') || '[]');
+    setPhotos(savedImages);
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -90,10 +28,10 @@ const PhotoGallery = () => {
 
   // فلترة الصور حسب البحث
   const filteredPhotos = photos.filter(photo =>
-    photo.beneficiaryName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    photo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    photo.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    photo.location.toLowerCase().includes(searchTerm.toLowerCase())
+    (photo.beneficiaryName && photo.beneficiaryName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (photo.title && photo.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (photo.description && photo.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (photo.location && photo.location.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // فتح الصورة في عارض كبير
@@ -192,9 +130,11 @@ const PhotoGallery = () => {
             >
               <div className="photo-container">
                 <img
-                  src={photo.url}
+                  src={photo.imageData || photo.url}
                   alt={photo.title}
-                  loading="lazy"
+                  onClick={() => openLightbox(photo, index)}
+                  className="gallery-photo"
+                  style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '8px' }}
                 />
                 <div className="photo-overlay">
                   <FaExpand className="expand-icon" />

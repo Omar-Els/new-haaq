@@ -6,35 +6,149 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Light Mode Colors */
+  --bg-color: #F9FAFB;
+  --bg-secondary: #FFFFFF;
+  --primary-color: #2C7A7B;
+  --secondary-color: #38B2AC;
+  --text-color: #1A202C;
+  --text-secondary: #4A5568;
+  --border-color: #E2E8F0;
+  --danger-color: #E53E3E;
+  --success-color: #38A169;
+  --warning-color: #D69E2E;
+  --info-color: #3182CE;
+  
+  /* Button Colors */
+  --btn-primary: #2C7A7B;
+  --btn-primary-hover: #285E61;
+  --btn-secondary: #38B2AC;
+  --btn-secondary-hover: #319795;
+  --btn-danger: #E53E3E;
+  --btn-danger-hover: #C53030;
+  
+  /* Card Colors */
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  /* Input Colors */
+  --input-bg: #FFFFFF;
+  --input-border: #E2E8F0;
+  --input-focus: #38B2AC;
+  
+  /* Status Colors */
+  --status-active: #38A169;
+  --status-inactive: #A0AEC0;
+  --status-pending: #D69E2E;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* Dark Mode Colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1A202C;
+    --bg-secondary: #2D3748;
+    --primary-color: #38B2AC;
+    --secondary-color: #81E6D9;
+    --text-color: #F7FAFC;
+    --text-secondary: #A0AEC0;
+    --border-color: #4A5568;
+    --danger-color: #FC8181;
+    --success-color: #68D391;
+    --warning-color: #F6E05E;
+    --info-color: #63B3ED;
+    
+    /* Button Colors */
+    --btn-primary: #38B2AC;
+    --btn-primary-hover: #319795;
+    --btn-secondary: #81E6D9;
+    --btn-secondary-hover: #4FD1C7;
+    --btn-danger: #FC8181;
+    --btn-danger-hover: #F56565;
+    
+    /* Card Colors */
+    --card-bg: #2D3748;
+    --card-border: #4A5568;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    
+    /* Input Colors */
+    --input-bg: #2D3748;
+    --input-border: #4A5568;
+    --input-focus: #81E6D9;
+    
+    /* Status Colors */
+    --status-active: #68D391;
+    --status-inactive: #718096;
+    --status-pending: #F6E05E;
+  }
 }
 
+/* Manual Dark Mode Class */
+.dark-mode {
+  --bg-color: #1A202C;
+  --bg-secondary: #2D3748;
+  --primary-color: #38B2AC;
+  --secondary-color: #81E6D9;
+  --text-color: #F7FAFC;
+  --text-secondary: #A0AEC0;
+  --border-color: #4A5568;
+  --danger-color: #FC8181;
+  --success-color: #68D391;
+  --warning-color: #F6E05E;
+  --info-color: #63B3ED;
+  
+  --btn-primary: #38B2AC;
+  --btn-primary-hover: #319795;
+  --btn-secondary: #81E6D9;
+  --btn-secondary-hover: #4FD1C7;
+  --btn-danger: #FC8181;
+  --btn-danger-hover: #F56565;
+  
+  --card-bg: #2D3748;
+  --card-border: #4A5568;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  
+  --input-bg: #2D3748;
+  --input-border: #4A5568;
+  --input-focus: #81E6D9;
+  
+  --status-active: #68D391;
+  --status-inactive: #718096;
+  --status-pending: #F6E05E;
+}
+
+/* Base Styles */
 body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  font-weight: 500;
+  color: var(--primary-color);
+  text-decoration: inherit;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--secondary-color);
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  color: var(--text-color);
 }
 
 button {
@@ -44,9 +158,10 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--btn-primary);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.3s ease;
 }
 
 /* استثناء زر التوب أب من أنماط الأزرار العامة */
@@ -54,29 +169,21 @@ button.fab-button,
 button.fn-button {
   border-radius: 50%;
   padding: 0;
-  background-color: var(--primary-color, #3498db);
+  background-color: var(--primary-color);
   border: none;
   transition: all 0.3s ease;
 }
+
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: var(--btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:focus,
+button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 /* تأكيد ظهور زر التوب أب في جميع الحالات */
@@ -89,4 +196,65 @@ button.fn-button {
   opacity: 1 !important;
   z-index: 9999 !important;
   position: fixed !important;
+}
+
+/* Utility Classes */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-danger {
+  background-color: var(--btn-danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: var(--btn-danger-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }

@@ -171,6 +171,7 @@ const Navbar = () => {
                 </Link>
               </li>
 
+
               {isMobileView ? (
                 <>
                   <li className="nav-item">
@@ -237,6 +238,11 @@ const Navbar = () => {
                     <li>
                       <Link to="/about" onClick={closeMenu}>
                         عن دعوة الحق
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/gallery" className="dropdown-link" onClick={closeMenu}>
+                        معرض الصور
                       </Link>
                     </li>
                     <li>

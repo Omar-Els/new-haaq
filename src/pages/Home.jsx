@@ -18,11 +18,12 @@ import "./Home.css";
 /**
  * Home Component
  *
- * This is the main page for displaying and managing beneficiaries.
- * It includes search filters and a list of beneficiary cards.
+ * This is the main welcome page with search functionality.
+ * Beneficiaries are only shown when searching.
  */
 const Home = () => {
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const dispatch = useDispatch();
   const beneficiaries = useSelector(selectFilteredBeneficiaries);
   const isLoading = useSelector(selectBeneficiariesLoading);
@@ -34,6 +35,12 @@ const Home = () => {
     dispatch(fetchBeneficiaries());
   }, [dispatch]);
 
+  // Check if any filter is active
+  useEffect(() => {
+    const hasActiveFilter = filter.name || filter.nationalId || filter.beneficiaryId || filter.phone;
+    setIsSearching(!!hasActiveFilter);
+  }, [filter]);
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     dispatch(setFilter({ [name]: value }));
@@ -41,6 +48,7 @@ const Home = () => {
 
   const handleClearFilters = () => {
     dispatch(clearFilters());
+    setIsSearching(false);
   };
 
   const toggleAddForm = () => {
@@ -72,31 +80,69 @@ const Home = () => {
       initial="hidden"
       animate="visible"
     >
-      <motion.div className="page-header" variants={itemVariants}>
-        <h1>المستفيدين</h1>
-        <motion.button
-          className="btn btn-primary"
-          onClick={toggleAddForm}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {showAddForm ? "إلغاء" : "إضافة مستفيد جديد"}
-        </motion.button>
-      </motion.div>
+      {/* Welcome Section - Only shown when not searching */}
+      {!isSearching && (
+        <motion.div className="welcome-section" variants={itemVariants}>
+          <motion.h1 
+            className="welcome-title"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            مرحباً بك في نظام إدارة دعوة الحق
+          </motion.h1>
+          <motion.p 
+            className="welcome-subtitle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            نظام متكامل لإدارة المستفيدين والمتطوعين والمبادرات
+          </motion.p>
+          
+          <motion.div 
+            className="welcome-stats"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <div className="stats-grid">
+              <div className="stat-item">
+                <div className="stat-number">{beneficiaries.length}</div>
+                <div className="stat-label">مستفيد مسجل</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number">0</div>
+                <div className="stat-label">متطوع نشط</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-number">0</div>
+                <div className="stat-label">مبادرة نشطة</div>
+              </div>
+            </div>
+          </motion.div>
 
-      {showAddForm && (
-        <motion.div
-          className="add-form-container"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-        >
-          <BeneficiaryForm onComplete={() => setShowAddForm(false)} />
+          <motion.div 
+            className="welcome-actions"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
+            <motion.button
+              className="btn btn-primary"
+              onClick={toggleAddForm}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {showAddForm ? "إلغاء" : "إضافة مستفيد جديد"}
+            </motion.button>
+          </motion.div>
         </motion.div>
       )}
 
-      <motion.div className="filters-container card" variants={itemVariants}>
-        <h2>البحث عن مستفيد</h2>
+      {/* Search Section - Always visible */}
+      <motion.div className="search-section card" variants={itemVariants}>
+        <h2>{isSearching ? "نتائج البحث" : "البحث عن مستفيد"}</h2>
         <div className="filters-grid">
           <div className="filter-group">
             <label htmlFor="name">الاسم</label>
@@ -151,16 +197,42 @@ const Home = () => {
           </div>
         </div>
 
-        <motion.button
-          className="btn btn-secondary"
-          onClick={handleClearFilters}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          مسح البحث
-        </motion.button>
+        <div className="search-actions">
+          <motion.button
+            className="btn btn-secondary"
+            onClick={handleClearFilters}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            مسح البحث
+          </motion.button>
+          
+          {!isSearching && (
+            <motion.button
+              className="btn btn-primary"
+              onClick={toggleAddForm}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {showAddForm ? "إلغاء" : "إضافة مستفيد جديد"}
+            </motion.button>
+          )}
+        </div>
       </motion.div>
 
+      {/* Add Form - Only shown when toggled */}
+      {showAddForm && (
+        <motion.div
+          className="add-form-container"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <BeneficiaryForm onComplete={() => setShowAddForm(false)} />
+        </motion.div>
+      )}
+
+      {/* Error Message */}
       {error && (
         <motion.div
           className="error-message"
@@ -171,25 +243,38 @@ const Home = () => {
         </motion.div>
       )}
 
-      {isLoading ? (
-        <div className="loading-message">جاري تحميل البيانات...</div>
-      ) : (
-        <motion.div className="beneficiaries-grid" variants={containerVariants}>
-          {beneficiaries.length > 0 ? (
-            beneficiaries.map((beneficiary) => (
-              <motion.div key={beneficiary.id} variants={itemVariants}>
-                <BeneficiaryCard beneficiary={beneficiary} />
-              </motion.div>
-            ))
+      {/* Beneficiaries Results - Only shown when searching */}
+      {isSearching && (
+        <>
+          {isLoading ? (
+            <div className="loading-message">جاري تحميل البيانات...</div>
           ) : (
-            <motion.div className="no-results" variants={itemVariants}>
-              <p>لا يوجد مستفيدين متطابقين مع البحث</p>
+            <motion.div className="beneficiaries-grid" variants={containerVariants}>
+              {beneficiaries.length > 0 ? (
+                beneficiaries.map((beneficiary) => (
+                  <motion.div key={beneficiary.id} variants={itemVariants}>
+                    <BeneficiaryCard beneficiary={beneficiary} />
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div className="no-results" variants={itemVariants}>
+                  <p>لا يوجد مستفيدين متطابقين مع البحث</p>
+                  <motion.button
+                    className="btn btn-primary"
+                    onClick={toggleAddForm}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    إضافة مستفيد جديد
+                  </motion.button>
+                </motion.div>
+              )}
             </motion.div>
           )}
-        </motion.div>
+        </>
       )}
 
-      {/* Photo Gallery Section */}
+      {/* Photo Gallery Section - Always visible */}
       <motion.section
         className="gallery-section"
         initial={{ opacity: 0, y: 50 }}
