@@ -18,6 +18,21 @@ const dataURLtoFile = (dataurl, filename) => {
   return new File([u8arr], filename, { type: mime });
 };
 
+// دالة لإنشاء معرف كشف فريد
+const generateSheetId = () => {
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 1000);
+  return `SHEET-${timestamp}-${random}`;
+};
+
+// دالة لإنشاء اسم كشف تلقائي
+const generateSheetName = (beneficiaryCount = 0) => {
+  const now = new Date();
+  const month = now.toLocaleDateString('ar-EG', { month: 'long' });
+  const year = now.getFullYear();
+  return `كشف ${month} ${year} (${beneficiaryCount} مستفيد)`;
+};
+
 // حفظ معرفات المستفيدين فقط في localStorage للجلسة
 const saveSessionData = (beneficiaries) => {
   try {
@@ -429,6 +444,12 @@ export const addBeneficiary = createAsyncThunk(
       // فحص الحقول المفقودة
       checkForMissingFields(savedBeneficiary, dispatch);
       checkForMissingIDImages(savedBeneficiary, dispatch);
+
+      // إضافة المستفيد للكشف إذا تم تحديده
+      if (beneficiaryData.sheetId) {
+        // سيتم التعامل مع إضافة المستفيد للكشف في مكون آخر
+        console.log(`📝 المستفيد ${savedBeneficiary.name} محدد للكشف: ${beneficiaryData.sheetId}`);
+      }
 
       dispatch(addNotification({
         type: 'success',

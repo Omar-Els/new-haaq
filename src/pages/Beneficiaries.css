@@ -101,6 +101,13 @@
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
 }
 
+/* Header Actions */
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
 /* تصميم متجاوب */
 @media (max-width: 768px) {
   .beneficiaries-container {
@@ -113,5 +120,10 @@
   
   .beneficiary-card {
     padding: 1rem;
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: 10px;
   }
 }

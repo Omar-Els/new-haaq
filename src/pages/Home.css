@@ -3,7 +3,7 @@
   padding: var(--spacing-md) 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   box-sizing: border-box;
 }
 
@@ -23,7 +23,7 @@
 
 .add-form-container {
   margin-bottom: 2rem;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .filters-container {
@@ -43,7 +43,7 @@
   margin-bottom: 1.5rem;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-sizing: border-box;
 }
 
@@ -72,7 +72,7 @@
   gap: 1.5rem;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   box-sizing: border-box;
 }
 
@@ -297,7 +297,7 @@
 
 @media (max-width: 768px) {
   .home-container {
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     padding: var(--spacing-sm) 0;
   }
 
@@ -378,12 +378,12 @@
   }
 
   .beneficiary-card {
-    overflow: hidden;
+    /* overflow: hidden; */
     margin-bottom: var(--spacing-sm);
   }
 
   .card-details {
-    overflow-x: auto;
+    /* overflow-x: auto; */
   }
 
   .card-actions {

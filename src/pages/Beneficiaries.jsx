@@ -6,7 +6,7 @@ import {
   FaSort, FaUserPlus, FaPhone, FaEnvelope, FaMapMarkerAlt,
   FaCalendarAlt, FaBaby, FaHeart, FaEye, FaDownload,
   FaUpload, FaUserCheck, FaUserTimes, FaChartBar, FaTimes,
-  FaImages
+  FaImages, FaClipboardList
 } from 'react-icons/fa';
 import {
   selectAllBeneficiaries,
@@ -19,6 +19,7 @@ import PermissionGuard from '../components/PermissionGuard';
 import { usePermissions, PERMISSIONS } from '../hooks/usePermissions';
 import BeneficiaryForm from '../components/BeneficiaryForm';
 import ImageGalleryManager from '../components/ImageGalleryManager';
+import { Link } from 'react-router-dom';
 import './Beneficiaries.css';
 
 /**
@@ -234,17 +235,23 @@ const Beneficiaries = () => {
             <p>إدارة بيانات المستفيدين من خدمات المؤسسة</p>
           </div>
           
-          <PermissionGuard permission={PERMISSIONS.BENEFICIARIES_CREATE}>
-            <motion.button
-              className="btn btn-primary add-btn"
-              onClick={() => setShowAddModal(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaPlus />
-              إضافة مستفيد
-            </motion.button>
-          </PermissionGuard>
+          <div className="header-actions">
+            <Link to="/sheets" className="btn btn-secondary">
+              <FaClipboardList />
+              إدارة الكشفات
+            </Link>
+            <PermissionGuard permission={PERMISSIONS.BENEFICIARIES_CREATE}>
+              <motion.button
+                className="btn btn-primary add-btn"
+                onClick={() => setShowAddModal(true)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <FaPlus />
+                إضافة مستفيد
+              </motion.button>
+            </PermissionGuard>
+          </div>
         </div>
 
         {/* Statistics */}

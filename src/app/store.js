@@ -8,6 +8,7 @@ import themeReducer from '../features/ui/themeSlice';
 import financeReducer from '../features/finance/financeSlice';
 import settingsReducer from '../features/settings/settingsSlice';
 import volunteersReducer from '../features/volunteers/volunteersSlice';
+import sheetsReducer from '../features/sheets/sheetsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -20,7 +21,7 @@ export const store = configureStore({
     finance: financeReducer,
     settings: settingsReducer,
     volunteers: volunteersReducer,
-    volunteers: volunteersReducer
+    sheets: sheetsReducer
   }
 });
 

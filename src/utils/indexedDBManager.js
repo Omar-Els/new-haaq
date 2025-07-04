@@ -2,7 +2,7 @@
 class IndexedDBManager {
   constructor() {
     this.dbName = 'ElhaqDB';
-    this.version = 1;
+    this.version = 2;
     this.db = null;
   }
 
@@ -48,6 +48,13 @@ class IndexedDBManager {
           const imagesStore = db.createObjectStore('images', { keyPath: 'id' });
           imagesStore.createIndex('beneficiaryId', 'beneficiaryId', { unique: false });
           imagesStore.createIndex('type', 'type', { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains('sheets')) {
+          const sheetsStore = db.createObjectStore('sheets', { keyPath: 'id' });
+          sheetsStore.createIndex('name', 'name', { unique: false });
+          sheetsStore.createIndex('status', 'status', { unique: false });
+          sheetsStore.createIndex('createdAt', 'createdAt', { unique: false });
         }
 
         console.log('🏗️ تم إنشاء هيكل قاعدة البيانات');
@@ -274,6 +281,13 @@ class IndexedDBManager {
       if (transactions.length > 0) {
         await this.saveData('transactions', transactions);
         console.log(`✅ تم ترحيل ${transactions.length} معاملة مالية`);
+      }
+
+      // ترحيل الكشفات
+      const sheets = JSON.parse(localStorage.getItem('sheets') || '[]');
+      if (sheets.length > 0) {
+        await this.saveData('sheets', sheets);
+        console.log(`✅ تم ترحيل ${sheets.length} كشف`);
       }
 
       // ترحيل الإعدادات

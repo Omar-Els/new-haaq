@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import {
   addBeneficiary,
   updateBeneficiary,
 } from "../features/beneficiaries/beneficiariesSlice";
+import { selectAllSheets, addBeneficiaryToSheet } from "../features/sheets/sheetsSlice";
 import ImageUpload from "./ImageUpload";
 import ChildrenManager from "./ChildrenManager";
 import "./BeneficiaryForm.css";
@@ -40,7 +41,8 @@ const BeneficiaryForm = ({
     spouseIdImage: "",
     wifeIdImage: "",
     notes: "",
-    children: []
+    children: [],
+    sheetId: "" // حقل الكشف الجديد
   });
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,6 +65,7 @@ const BeneficiaryForm = ({
   };
 
   const dispatch = useDispatch();
+  const sheets = useSelector(selectAllSheets);
 
   // If editing, populate form with existing data
   useEffect(() => {
@@ -76,6 +79,7 @@ const BeneficiaryForm = ({
         profileImage: beneficiary.profileImage || "",
         spouseIdImage: beneficiary.spouseIdImage || "",
         wifeIdImage: beneficiary.wifeIdImage || "",
+        sheetId: beneficiary.sheetId || "",
       });
     }
   }, [beneficiary]);
@@ -227,7 +231,16 @@ const BeneficiaryForm = ({
 
       dispatch(action)
         .unwrap()
-        .then(() => {
+        .then((savedBeneficiary) => {
+          // إضافة المستفيد للكشف إذا تم تحديده
+          if (formData.sheetId && !isEditing) {
+            dispatch(addBeneficiaryToSheet({
+              sheetId: formData.sheetId,
+              beneficiary: savedBeneficiary
+            })).catch((sheetError) => {
+              console.warn('⚠️ فشل في إضافة المستفيد للكشف:', sheetError);
+            });
+          }
           setIsSubmitting(false);
           onComplete();
         })
@@ -424,6 +437,26 @@ const BeneficiaryForm = ({
               <option value="10">10 - عاجلة</option>
             </select>
             <small className="form-help-text">يمكنك تعديل الأولوية حسب الحاجة (1 = منخفضة، 10 = عاجلة)</small>
+          </motion.div>
+
+          <motion.div className="form-group" variants={itemVariants}>
+            <label htmlFor="sheetId">الكشف</label>
+            <select
+              id="sheetId"
+              name="sheetId"
+              value={formData.sheetId}
+              onChange={handleChange}
+              autoComplete="off"
+              aria-label="اختر الكشف"
+            >
+              <option value="">اختر الكشف (اختياري)</option>
+              {sheets.map((sheet) => (
+                <option key={sheet.id} value={sheet.id}>
+                  {sheet.name} ({sheet.beneficiaryCount} مستفيد)
+                </option>
+              ))}
+            </select>
+            <small className="form-help-text">اختر الكشف الذي سيتم إضافة المستفيد إليه (اختياري)</small>
           </motion.div>
 
           <motion.div className="form-group full-width" variants={itemVariants}>

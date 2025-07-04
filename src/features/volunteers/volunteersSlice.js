@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createSelector } from '@reduxjs/toolkit';
 import cloudSync from '../../services/cloudSync';
 
 /**
@@ -255,21 +255,21 @@ export const selectFilteredVolunteers = (state) => {
   return filtered;
 };
 
-// Statistics selectors
-export const selectVolunteersStats = (state) => {
-  const volunteers = state.volunteers.volunteers;
-  
-  return {
-    total: volunteers.length,
-    active: volunteers.filter(v => v.status === 'active').length,
-    inactive: volunteers.filter(v => v.status === 'inactive').length,
-    new: volunteers.filter(v => {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      return new Date(v.joinDate) > oneWeekAgo;
-    }).length,
-    departments: [...new Set(volunteers.map(v => v.department).filter(Boolean))].length
-  };
-};
+// Statistics selectors - memoized to prevent unnecessary re-renders
+export const selectVolunteersStats = createSelector(
+  [selectAllVolunteers],
+  (volunteers) => {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    return {
+      total: volunteers.length,
+      active: volunteers.filter(v => v.status === 'active').length,
+      inactive: volunteers.filter(v => v.status === 'inactive').length,
+      new: volunteers.filter(v => new Date(v.joinDate) > oneWeekAgo).length,
+      departments: [...new Set(volunteers.map(v => v.department).filter(Boolean))].length
+    };
+  }
+);
 
 export default volunteersSlice.reducer;

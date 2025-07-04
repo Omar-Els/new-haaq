@@ -7,6 +7,7 @@ import SyncIndicator from './SyncIndicator';
 import BackupManager from './BackupManager';
 import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
+import { createPortal } from 'react-dom';
 
 const MENU_STATE_KEY = 'navbar_menu_state';
 
@@ -180,6 +181,11 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
+                    <Link to="/sheets" className="nav-link" onClick={closeMenu}>
+                      الكشفات
+                    </Link>
+                  </li>
+                  <li className="nav-item">
                     <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
                       المتطوعون
                     </Link>
@@ -218,6 +224,11 @@ const Navbar = () => {
                     <li>
                       <Link to="/beneficiaries" onClick={closeMenu}>
                         المستفيدون
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/sheets" onClick={closeMenu}>
+                        الكشفات
                       </Link>
                     </li>
                     <li>

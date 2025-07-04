@@ -199,6 +199,23 @@ const AboutDaawa = () => {
     setIsAutoPlaying(false);
   }, [sections.length]);
 
+  // معالجات أزرار التواصل الاجتماعي
+  const handleSocialClick = useCallback((platform) => {
+    const urls = {
+      facebook: 'https://facebook.com/dawaaelhaq',
+      twitter: 'https://twitter.com/dawaaelhaq',
+      instagram: 'https://instagram.com/dawaaelhaq',
+      youtube: 'https://youtube.com/@dawaaelhaq',
+      whatsapp: 'https://wa.me/201234567890',
+      telegram: 'https://t.me/dawaaelhaq'
+    };
+    
+    const url = urls[platform];
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }, []);
+
   const goToSection = useCallback((index) => {
     setCurrentSection(index);
     setIsAutoPlaying(false);
@@ -466,12 +483,12 @@ const AboutDaawa = () => {
             <h3>تابعنا على وسائل التواصل</h3>
             <div className="social-icons">
               {[
-                { icon: FaFacebook, name: 'فيسبوك', color: '#1877f2' },
-                { icon: FaTwitter, name: 'تويتر', color: '#1da1f2' },
-                { icon: FaInstagram, name: 'انستغرام', color: '#e4405f' },
-                { icon: FaYoutube, name: 'يوتيوب', color: '#ff0000' },
-                { icon: FaWhatsapp, name: 'واتساب', color: '#25d366' },
-                { icon: FaTelegram, name: 'تليجرام', color: '#0088cc' }
+                { icon: FaFacebook, name: 'فيسبوك', color: '#1877f2', platform: 'facebook' },
+                { icon: FaTwitter, name: 'تويتر', color: '#1da1f2', platform: 'twitter' },
+                { icon: FaInstagram, name: 'انستغرام', color: '#e4405f', platform: 'instagram' },
+                { icon: FaYoutube, name: 'يوتيوب', color: '#ff0000', platform: 'youtube' },
+                { icon: FaWhatsapp, name: 'واتساب', color: '#25d366', platform: 'whatsapp' },
+                { icon: FaTelegram, name: 'تليجرام', color: '#0088cc', platform: 'telegram' }
               ].map((social, index) => (
                 <motion.button
                   key={index}
@@ -482,6 +499,8 @@ const AboutDaawa = () => {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.2 + index * 0.1 }}
+                  onClick={() => handleSocialClick(social.platform)}
+                  aria-label={`تابعنا على ${social.name}`}
                 >
                   {React.createElement(social.icon)}
                   <span>{social.name}</span>

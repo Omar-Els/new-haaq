@@ -16,6 +16,7 @@ const Volunteers = lazy(() => import('../pages/Volunteers'));
 const JoinVolunteer = lazy(() => import('../pages/JoinVolunteer'));
 const VolunteerThankYou = lazy(() => import('../pages/VolunteerThankYou'));
 const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
+const Sheets = lazy(() => import('../pages/Sheets'));
 const VolunteerRegistration = lazy(() => import('../pages/VolunteerRegistration'));
 const Gallery = lazy(() => import('../pages/Gallery'));
 
@@ -101,6 +102,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Beneficiaries />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sheets"
+          element={
+            <ProtectedRoute>
+              <Sheets />
             </ProtectedRoute>
           }
         />
