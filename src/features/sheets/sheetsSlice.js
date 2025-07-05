@@ -17,6 +17,13 @@ const generateSheetName = (beneficiaryCount = 0) => {
   return `كشف ${month} ${year} (${beneficiaryCount} مستفيد)`;
 };
 
+// دالة لحساب إجمالي الكشف
+const calculateSheetTotal = (beneficiaries) => {
+  return beneficiaries.reduce((total, beneficiary) => {
+    return total + (parseFloat(beneficiary.monthlyAmount) || 0);
+  }, 0);
+};
+
 // Helper functions for storage
 const getSheetsFromStorage = async () => {
   try {
@@ -101,7 +108,10 @@ export const createSheet = createAsyncThunk(
         updatedAt: new Date().toISOString(),
         status: 'active',
         totalAmount: 0,
-        beneficiaryCount: 0
+        beneficiaryCount: 0,
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+        sheetType: 'monthly' // نوع الكشف (شهري)
       };
 
       // Get current sheets and add the new one
@@ -133,6 +143,12 @@ export const updateSheet = createAsyncThunk(
         ...sheetData,
         updatedAt: new Date().toISOString()
       };
+
+      // إعادة حساب الإجمالي إذا تم تحديث المستفيدين
+      if (updatedSheet.beneficiaries) {
+        updatedSheet.totalAmount = calculateSheetTotal(updatedSheet.beneficiaries);
+        updatedSheet.beneficiaryCount = updatedSheet.beneficiaries.length;
+      }
 
       // Get current sheets and update the specified one
       const currentSheets = await getSheetsFromStorage();
@@ -185,7 +201,7 @@ export const deleteSheet = createAsyncThunk(
 
 export const addBeneficiaryToSheet = createAsyncThunk(
   'sheets/addBeneficiaryToSheet',
-  async ({ sheetId, beneficiary }, { rejectWithValue, dispatch }) => {
+  async ({ sheetId, beneficiary, monthlyAmount = 0 }, { rejectWithValue, dispatch }) => {
     try {
       // Get current sheets
       const currentSheets = await getSheetsFromStorage();
@@ -208,11 +224,19 @@ export const addBeneficiaryToSheet = createAsyncThunk(
         return { sheetId, beneficiary: existingBeneficiary };
       }
 
+      // إضافة المبلغ الشهري للمستفيد
+      const beneficiaryWithAmount = {
+        ...beneficiary,
+        monthlyAmount: parseFloat(monthlyAmount) || 0,
+        addedAt: new Date().toISOString()
+      };
+
       // Add beneficiary to sheet
       const updatedSheet = {
         ...sheet,
-        beneficiaries: [...sheet.beneficiaries, beneficiary],
+        beneficiaries: [...sheet.beneficiaries, beneficiaryWithAmount],
         beneficiaryCount: sheet.beneficiaries.length + 1,
+        totalAmount: calculateSheetTotal([...sheet.beneficiaries, beneficiaryWithAmount]),
         updatedAt: new Date().toISOString()
       };
 
@@ -225,11 +249,11 @@ export const addBeneficiaryToSheet = createAsyncThunk(
 
       dispatch(addNotification({
         type: 'success',
-        message: `تم إضافة المستفيد "${beneficiary.name}" إلى الكشف "${updatedSheet.name}"`,
+        message: `تم إضافة المستفيد "${beneficiary.name}" إلى الكشف "${updatedSheet.name}" بمبلغ ${monthlyAmount} جنيه`,
         duration: 5000
       }));
 
-      return { sheetId, beneficiary };
+      return { sheetId, beneficiary: beneficiaryWithAmount };
     } catch (error) {
       console.error('❌ خطأ في إضافة المستفيد للكشف:', error);
       return rejectWithValue(error.message);
@@ -257,10 +281,12 @@ export const removeBeneficiaryFromSheet = createAsyncThunk(
       }
 
       // Remove beneficiary from sheet
+      const updatedBeneficiaries = sheet.beneficiaries.filter(b => b.id !== beneficiaryId);
       const updatedSheet = {
         ...sheet,
-        beneficiaries: sheet.beneficiaries.filter(b => b.id !== beneficiaryId),
-        beneficiaryCount: sheet.beneficiaries.length - 1,
+        beneficiaries: updatedBeneficiaries,
+        beneficiaryCount: updatedBeneficiaries.length,
+        totalAmount: calculateSheetTotal(updatedBeneficiaries),
         updatedAt: new Date().toISOString()
       };
 
@@ -280,6 +306,62 @@ export const removeBeneficiaryFromSheet = createAsyncThunk(
       return { sheetId, beneficiaryId };
     } catch (error) {
       console.error('❌ خطأ في إزالة المستفيد من الكشف:', error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+// دالة جديدة لتحديث المبلغ الشهري للمستفيد
+export const updateBeneficiaryAmount = createAsyncThunk(
+  'sheets/updateBeneficiaryAmount',
+  async ({ sheetId, beneficiaryId, monthlyAmount }, { rejectWithValue, dispatch }) => {
+    try {
+      // Get current sheets
+      const currentSheets = await getSheetsFromStorage();
+      const sheetIndex = currentSheets.findIndex(s => s.id === sheetId);
+      
+      if (sheetIndex === -1) {
+        throw new Error('الكشف غير موجود');
+      }
+
+      const sheet = currentSheets[sheetIndex];
+      const beneficiaryIndex = sheet.beneficiaries.findIndex(b => b.id === beneficiaryId);
+      
+      if (beneficiaryIndex === -1) {
+        throw new Error('المستفيد غير موجود في هذا الكشف');
+      }
+
+      // Update beneficiary amount
+      const updatedBeneficiaries = [...sheet.beneficiaries];
+      updatedBeneficiaries[beneficiaryIndex] = {
+        ...updatedBeneficiaries[beneficiaryIndex],
+        monthlyAmount: parseFloat(monthlyAmount) || 0,
+        updatedAt: new Date().toISOString()
+      };
+
+      const updatedSheet = {
+        ...sheet,
+        beneficiaries: updatedBeneficiaries,
+        totalAmount: calculateSheetTotal(updatedBeneficiaries),
+        updatedAt: new Date().toISOString()
+      };
+
+      // Update sheets array
+      const updatedSheets = [...currentSheets];
+      updatedSheets[sheetIndex] = updatedSheet;
+
+      // Save to storage
+      await saveSheetsToStorage(updatedSheets);
+
+      dispatch(addNotification({
+        type: 'success',
+        message: `تم تحديث المبلغ الشهري للمستفيد إلى ${monthlyAmount} جنيه`,
+        duration: 5000
+      }));
+
+      return { sheetId, beneficiaryId, monthlyAmount };
+    } catch (error) {
+      console.error('❌ خطأ في تحديث مبلغ المستفيد:', error);
       return rejectWithValue(error.message);
     }
   }
@@ -345,6 +427,7 @@ const sheetsSlice = createSlice({
         if (sheet && !sheet.beneficiaries.find(b => b.id === beneficiary.id)) {
           sheet.beneficiaries.push(beneficiary);
           sheet.beneficiaryCount = sheet.beneficiaries.length;
+          sheet.totalAmount = calculateSheetTotal(sheet.beneficiaries);
           sheet.updatedAt = new Date().toISOString();
         }
       })
@@ -355,7 +438,22 @@ const sheetsSlice = createSlice({
         if (sheet) {
           sheet.beneficiaries = sheet.beneficiaries.filter(b => b.id !== beneficiaryId);
           sheet.beneficiaryCount = sheet.beneficiaries.length;
+          sheet.totalAmount = calculateSheetTotal(sheet.beneficiaries);
           sheet.updatedAt = new Date().toISOString();
+        }
+      })
+      // updateBeneficiaryAmount
+      .addCase(updateBeneficiaryAmount.fulfilled, (state, action) => {
+        const { sheetId, beneficiaryId, monthlyAmount } = action.payload;
+        const sheet = state.items.find(s => s.id === sheetId);
+        if (sheet) {
+          const beneficiary = sheet.beneficiaries.find(b => b.id === beneficiaryId);
+          if (beneficiary) {
+            beneficiary.monthlyAmount = parseFloat(monthlyAmount) || 0;
+            beneficiary.updatedAt = new Date().toISOString();
+            sheet.totalAmount = calculateSheetTotal(sheet.beneficiaries);
+            sheet.updatedAt = new Date().toISOString();
+          }
         }
       });
   }
@@ -389,6 +487,16 @@ export const selectSheetsStats = (state) => {
     totalBeneficiaries: sheets.reduce((sum, s) => sum + (s.beneficiaryCount || 0), 0),
     totalAmount: sheets.reduce((sum, s) => sum + (s.totalAmount || 0), 0)
   };
+};
+
+// دالة جديدة لحساب إجمالي الشهر
+export const selectMonthlyTotal = (state, month, year) => {
+  const sheets = state.sheets?.items || [];
+  const monthlySheets = sheets.filter(s => 
+    s.month === month && s.year === year && s.status === 'active'
+  );
+  
+  return monthlySheets.reduce((total, sheet) => total + (sheet.totalAmount || 0), 0);
 };
 
 export default sheetsSlice.reducer; 

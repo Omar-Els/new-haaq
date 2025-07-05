@@ -4,24 +4,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaClipboardList, FaPlus, FaEdit, FaTrash, FaSearch, FaFilter,
   FaUsers, FaCalendarAlt, FaEye, FaDownload, FaUpload,
-  FaTimes, FaCheck, FaUserPlus, FaUserMinus, FaPrint
+  FaTimes, FaCheck, FaUserPlus, FaUserMinus, FaPrint,
+  FaFilePdf, FaMoneyBillWave, FaChartBar
 } from 'react-icons/fa';
 import {
   selectAllSheets,
   selectSheetsLoading,
   selectSheetsError,
   selectSheetsStats,
+  selectMonthlyTotal,
   fetchSheets,
   createSheet,
   updateSheet,
   deleteSheet,
   addBeneficiaryToSheet,
   removeBeneficiaryFromSheet,
+  updateBeneficiaryAmount,
   setSelectedSheet,
   clearSelectedSheet
 } from '../features/sheets/sheetsSlice';
 import { selectAllBeneficiaries } from '../features/beneficiaries/beneficiariesSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
+import { 
+  exportSheetToPDF, 
+  exportMonthlyReportToPDF, 
+  exportDetailedSheetToPDF,
+  exportYearlyReportToPDF 
+} from '../utils/pdfExporter';
 import PermissionGuard from './PermissionGuard';
 import { usePermissions, PERMISSIONS } from '../hooks/usePermissions';
 import './SheetsManager.css';
@@ -29,7 +38,7 @@ import './SheetsManager.css';
 /**
  * SheetsManager Component
  * 
- * مكون إدارة الكشفات - إنشاء وإدارة كشفات المستفيدين
+ * مكون إدارة الكشفات - إنشاء وإدارة كشفات المستفيدين مع نظام الشهرية
  */
 const SheetsManager = () => {
   const dispatch = useDispatch();
@@ -46,14 +55,22 @@ const SheetsManager = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddBeneficiaryModal, setShowAddBeneficiaryModal] = useState(false);
+  const [showAmountModal, setShowAmountModal] = useState(false);
   const [selectedSheet, setSelectedSheet] = useState(null);
+  const [selectedBeneficiary, setSelectedBeneficiary] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterBy, setFilterBy] = useState('all');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   // Form state
   const [sheetForm, setSheetForm] = useState({
     name: '',
     description: ''
+  });
+
+  const [amountForm, setAmountForm] = useState({
+    monthlyAmount: ''
   });
 
   // Load sheets on component mount
@@ -70,15 +87,27 @@ const SheetsManager = () => {
     const matchesFilter = filterBy === 'all' ||
       (filterBy === 'active' && sheet.status === 'active') ||
       (filterBy === 'inactive' && sheet.status === 'inactive') ||
-      (filterBy === 'recent' && new Date(sheet.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+      (filterBy === 'recent' && new Date(sheet.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) ||
+      (filterBy === 'monthly' && sheet.month === selectedMonth && sheet.year === selectedYear);
 
     return matchesSearch && matchesFilter;
   });
+
+  // Get monthly total
+  const monthlyTotal = useSelector(state => selectMonthlyTotal(state, selectedMonth, selectedYear));
 
   // Handle form changes
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setSheetForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAmountFormChange = (e) => {
+    const { name, value } = e.target;
+    setAmountForm(prev => ({
       ...prev,
       [name]: value
     }));
@@ -158,10 +187,11 @@ const SheetsManager = () => {
   };
 
   // Handle add beneficiary to sheet
-  const handleAddBeneficiaryToSheet = (beneficiary) => {
+  const handleAddBeneficiaryToSheet = (beneficiary, monthlyAmount = 0) => {
     dispatch(addBeneficiaryToSheet({
       sheetId: selectedSheet.id,
-      beneficiary
+      beneficiary,
+      monthlyAmount: parseFloat(monthlyAmount) || 0
     }));
     setShowAddBeneficiaryModal(false);
   };
@@ -176,11 +206,127 @@ const SheetsManager = () => {
     }
   };
 
+  // Handle update beneficiary amount
+  const handleUpdateBeneficiaryAmount = () => {
+    if (!amountForm.monthlyAmount || isNaN(amountForm.monthlyAmount)) {
+      dispatch(addNotification({
+        type: 'error',
+        message: 'يرجى إدخال مبلغ صحيح'
+      }));
+      return;
+    }
+
+    dispatch(updateBeneficiaryAmount({
+      sheetId: selectedSheet.id,
+      beneficiaryId: selectedBeneficiary.id,
+      monthlyAmount: parseFloat(amountForm.monthlyAmount)
+    }));
+    setShowAmountModal(false);
+    setSelectedBeneficiary(null);
+    setAmountForm({ monthlyAmount: '' });
+  };
+
+  // Handle open amount modal
+  const openAmountModal = (sheet, beneficiary) => {
+    setSelectedSheet(sheet);
+    setSelectedBeneficiary(beneficiary);
+    setAmountForm({ monthlyAmount: beneficiary.monthlyAmount?.toString() || '0' });
+    setShowAmountModal(true);
+  };
+
+  // Handle export PDF
+  const handleExportPDF = (sheet) => {
+    try {
+      exportSheetToPDF(sheet, sheet.beneficiaries);
+      dispatch(addNotification({
+        type: 'success',
+        message: 'تم تصدير الكشف إلى PDF بنجاح',
+        duration: 3000
+      }));
+    } catch (error) {
+      console.error('خطأ في تصدير PDF:', error);
+      dispatch(addNotification({
+        type: 'error',
+        message: 'فشل في تصدير PDF',
+        duration: 3000
+      }));
+    }
+  };
+
+  // Handle export detailed PDF
+  const handleExportDetailedPDF = (sheet) => {
+    try {
+      exportDetailedSheetToPDF(sheet, sheet.beneficiaries);
+      dispatch(addNotification({
+        type: 'success',
+        message: 'تم تصدير الكشف المفصل إلى PDF بنجاح',
+        duration: 3000
+      }));
+    } catch (error) {
+      console.error('خطأ في تصدير PDF المفصل:', error);
+      dispatch(addNotification({
+        type: 'error',
+        message: 'فشل في تصدير PDF المفصل',
+        duration: 3000
+      }));
+    }
+  };
+
+  // Handle export monthly report
+  const handleExportMonthlyReport = () => {
+    try {
+      const monthlySheets = sheets.filter(sheet => 
+        sheet.month === selectedMonth && sheet.year === selectedYear
+      );
+      exportMonthlyReportToPDF(monthlySheets, selectedMonth, selectedYear);
+      dispatch(addNotification({
+        type: 'success',
+        message: 'تم تصدير التقرير الشهري إلى PDF بنجاح',
+        duration: 3000
+      }));
+    } catch (error) {
+      console.error('خطأ في تصدير التقرير الشهري:', error);
+      dispatch(addNotification({
+        type: 'error',
+        message: 'فشل في تصدير التقرير الشهري',
+        duration: 3000
+      }));
+    }
+  };
+
+  // Handle export yearly report
+  const handleExportYearlyReport = () => {
+    try {
+      exportYearlyReportToPDF(sheets, selectedYear);
+      dispatch(addNotification({
+        type: 'success',
+        message: 'تم تصدير التقرير السنوي إلى PDF بنجاح',
+        duration: 3000
+      }));
+    } catch (error) {
+      console.error('خطأ في تصدير التقرير السنوي:', error);
+      dispatch(addNotification({
+        type: 'error',
+        message: 'فشل في تصدير التقرير السنوي',
+        duration: 3000
+      }));
+    }
+  };
+
   // Get available beneficiaries (not in current sheet)
   const getAvailableBeneficiaries = () => {
     if (!selectedSheet) return [];
     const sheetBeneficiaryIds = selectedSheet.beneficiaries.map(b => b.id);
     return allBeneficiaries.filter(b => !sheetBeneficiaryIds.includes(b.id));
+  };
+
+  // Get month name
+  const getMonthName = (month) => {
+    const months = [
+      'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+      'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+    ];
+    return months[month - 1] || 'غير محدد';
   };
 
   // Animation variants
@@ -223,7 +369,7 @@ const SheetsManager = () => {
           <div className="header-content">
             <div className="header-title">
               <FaClipboardList className="header-icon" />
-              <h1>إدارة الكشفات</h1>
+              <h1>إدارة الكشفات الشهرية</h1>
             </div>
             <div className="header-actions">
               <motion.button
@@ -257,11 +403,58 @@ const SheetsManager = () => {
             </div>
           </div>
           <div className="stat-card">
-            <FaCheck className="stat-icon" />
+            <FaMoneyBillWave className="stat-icon" />
             <div className="stat-content">
-              <h3>{stats.active}</h3>
-              <p>الكشفات النشطة</p>
+              <h3>{stats.totalAmount.toLocaleString('ar-EG')}</h3>
+              <p>إجمالي المبالغ (جنيه)</p>
             </div>
+          </div>
+          <div className="stat-card">
+            <FaChartBar className="stat-icon" />
+            <div className="stat-content">
+              <h3>{monthlyTotal.toLocaleString('ar-EG')}</h3>
+              <p>إجمالي {getMonthName(selectedMonth)} {selectedYear}</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Monthly Filter */}
+        <motion.div className="monthly-filter" variants={itemVariants}>
+          <div className="filter-controls">
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+            >
+              {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                <option key={month} value={month}>
+                  {getMonthName(month)}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+            >
+              {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i).map(year => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <button
+              className="btn btn-secondary"
+              onClick={handleExportMonthlyReport}
+            >
+              <FaFilePdf />
+              تصدير تقرير شهري
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={handleExportYearlyReport}
+            >
+              <FaFilePdf />
+              تصدير تقرير سنوي
+            </button>
           </div>
         </motion.div>
 
@@ -285,6 +478,7 @@ const SheetsManager = () => {
               <option value="active">الكشفات النشطة</option>
               <option value="inactive">الكشفات غير النشطة</option>
               <option value="recent">الكشفات الحديثة</option>
+              <option value="monthly">كشفات الشهر الحالي</option>
             </select>
           </div>
         </motion.div>
@@ -324,6 +518,20 @@ const SheetsManager = () => {
                       </button>
                       <button
                         className="btn-icon"
+                        onClick={() => handleExportPDF(sheet)}
+                        title="تصدير PDF"
+                      >
+                        <FaFilePdf />
+                      </button>
+                      <button
+                        className="btn-icon"
+                        onClick={() => handleExportDetailedPDF(sheet)}
+                        title="تصدير PDF مفصل"
+                      >
+                        <FaPrint />
+                      </button>
+                      <button
+                        className="btn-icon"
                         onClick={() => openEditModal(sheet)}
                         title="تعديل الكشف"
                       >
@@ -350,8 +558,12 @@ const SheetsManager = () => {
                         <span>{sheet.beneficiaryCount} مستفيد</span>
                       </div>
                       <div className="stat">
+                        <FaMoneyBillWave />
+                        <span>{sheet.totalAmount.toLocaleString('ar-EG')} جنيه</span>
+                      </div>
+                      <div className="stat">
                         <FaCalendarAlt />
-                        <span>{new Date(sheet.createdAt).toLocaleDateString('ar-EG')}</span>
+                        <span>{getMonthName(sheet.month)} {sheet.year}</span>
                       </div>
                     </div>
 
@@ -361,14 +573,28 @@ const SheetsManager = () => {
                         <div className="beneficiaries-list">
                           {sheet.beneficiaries.slice(0, 3).map((beneficiary) => (
                             <div key={beneficiary.id} className="beneficiary-item">
-                              <span>{beneficiary.name}</span>
-                              <button
-                                className="btn-icon small danger"
-                                onClick={() => handleRemoveBeneficiaryFromSheet(beneficiary.id)}
-                                title="إزالة من الكشف"
-                              >
-                                <FaUserMinus />
-                              </button>
+                              <div className="beneficiary-info">
+                                <span>{beneficiary.name}</span>
+                                <span className="amount">
+                                  {beneficiary.monthlyAmount?.toLocaleString('ar-EG') || 0} جنيه
+                                </span>
+                              </div>
+                              <div className="beneficiary-actions">
+                                <button
+                                  className="btn-icon small"
+                                  onClick={() => openAmountModal(sheet, beneficiary)}
+                                  title="تعديل المبلغ"
+                                >
+                                  <FaMoneyBillWave />
+                                </button>
+                                <button
+                                  className="btn-icon small danger"
+                                  onClick={() => handleRemoveBeneficiaryFromSheet(beneficiary.id)}
+                                  title="إزالة من الكشف"
+                                >
+                                  <FaUserMinus />
+                                </button>
+                              </div>
                             </div>
                           ))}
                           {sheet.beneficiaries.length > 3 && (
@@ -561,13 +787,27 @@ const SheetsManager = () => {
                               <p>{beneficiary.nationalId}</p>
                               <p>{beneficiary.phone}</p>
                             </div>
-                            <button
-                              className="btn btn-primary small"
-                              onClick={() => handleAddBeneficiaryToSheet(beneficiary)}
-                            >
-                              <FaUserPlus />
-                              إضافة
-                            </button>
+                            <div className="beneficiary-actions">
+                              <input
+                                type="number"
+                                placeholder="المبلغ الشهري"
+                                className="amount-input"
+                                onChange={(e) => {
+                                  const amount = e.target.value;
+                                  beneficiary.monthlyAmount = parseFloat(amount) || 0;
+                                }}
+                              />
+                              <button
+                                className="btn btn-primary small"
+                                onClick={() => handleAddBeneficiaryToSheet(
+                                  beneficiary, 
+                                  beneficiary.monthlyAmount || 0
+                                )}
+                              >
+                                <FaUserPlus />
+                                إضافة
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -581,6 +821,70 @@ const SheetsManager = () => {
                     onClick={() => setShowAddBeneficiaryModal(false)}
                   >
                     إغلاق
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Update Amount Modal */}
+        <AnimatePresence>
+          {showAmountModal && selectedBeneficiary && (
+            <motion.div
+              className="modal-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="modal-content"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+              >
+                <div className="modal-header">
+                  <h2>تعديل المبلغ الشهري</h2>
+                  <button
+                    className="btn-icon"
+                    onClick={() => setShowAmountModal(false)}
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+                
+                <div className="modal-body">
+                  <div className="beneficiary-info">
+                    <h3>{selectedBeneficiary.name}</h3>
+                    <p>الرقم القومي: {selectedBeneficiary.nationalId}</p>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>المبلغ الشهري (جنيه)</label>
+                    <input
+                      type="number"
+                      name="monthlyAmount"
+                      value={amountForm.monthlyAmount}
+                      onChange={handleAmountFormChange}
+                      placeholder="أدخل المبلغ الشهري"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+                
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowAmountModal(false)}
+                  >
+                    إلغاء
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleUpdateBeneficiaryAmount}
+                  >
+                    تحديث المبلغ
                   </button>
                 </div>
               </motion.div>
