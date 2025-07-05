@@ -230,7 +230,7 @@ const Register = () => {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn-primary"
             disabled={isLoading}
           >
             {isLoading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}

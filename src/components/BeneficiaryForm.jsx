@@ -271,7 +271,7 @@ const BeneficiaryForm = ({
 
   return (
     <motion.div
-      className="beneficiary-form-container"
+      className="form-container form-fade-in"
       variants={formVariants}
       initial="hidden"
       animate="visible"
@@ -556,7 +556,7 @@ const BeneficiaryForm = ({
         <motion.div className="form-actions" variants={itemVariants}>
           <motion.button
             type="submit"
-            className="btn btn-primary"
+            className="btn-primary"
             disabled={isSubmitting}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -570,7 +570,7 @@ const BeneficiaryForm = ({
 
           <motion.button
             type="button"
-            className="btn btn-secondary"
+            className="btn-secondary"
             onClick={onComplete}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

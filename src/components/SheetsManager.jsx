@@ -373,7 +373,7 @@ const SheetsManager = () => {
             </div>
             <div className="header-actions">
               <motion.button
-                className="btn btn-primary"
+                className="btn-primary"
                 onClick={() => setShowCreateModal(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -442,14 +442,14 @@ const SheetsManager = () => {
               ))}
             </select>
             <button
-              className="btn btn-secondary"
+              className="btn-secondary"
               onClick={handleExportMonthlyReport}
             >
               <FaFilePdf />
               تصدير تقرير شهري
             </button>
             <button
-              className="btn btn-secondary"
+              className="btn-secondary"
               onClick={handleExportYearlyReport}
             >
               <FaFilePdf />
@@ -491,7 +491,7 @@ const SheetsManager = () => {
               <h3>لا توجد كشفات</h3>
               <p>ابدأ بإنشاء كشف جديد لإدارة المستفيدين</p>
               <button
-                className="btn btn-primary"
+                className="btn-primary"
                 onClick={() => setShowCreateModal(true)}
               >
                 إنشاء كشف جديد
@@ -663,13 +663,13 @@ const SheetsManager = () => {
                 
                 <div className="modal-footer">
                   <button
-                    className="btn btn-secondary"
+                    className="btn-secondary"
                     onClick={() => setShowCreateModal(false)}
                   >
                     إلغاء
                   </button>
                   <button
-                    className="btn btn-primary"
+                    className="btn-primary"
                     onClick={handleCreateSheet}
                   >
                     إنشاء الكشف
@@ -731,13 +731,13 @@ const SheetsManager = () => {
                 
                 <div className="modal-footer">
                   <button
-                    className="btn btn-secondary"
+                    className="btn-secondary"
                     onClick={() => setShowEditModal(false)}
                   >
                     إلغاء
                   </button>
                   <button
-                    className="btn btn-primary"
+                    className="btn-primary"
                     onClick={handleEditSheet}
                   >
                     حفظ التغييرات
@@ -798,7 +798,7 @@ const SheetsManager = () => {
                                 }}
                               />
                               <button
-                                className="btn btn-primary small"
+                                className="btn-primary btn-small"
                                 onClick={() => handleAddBeneficiaryToSheet(
                                   beneficiary, 
                                   beneficiary.monthlyAmount || 0
@@ -817,7 +817,7 @@ const SheetsManager = () => {
                 
                 <div className="modal-footer">
                   <button
-                    className="btn btn-secondary"
+                    className="btn-secondary"
                     onClick={() => setShowAddBeneficiaryModal(false)}
                   >
                     إغلاق
@@ -875,13 +875,13 @@ const SheetsManager = () => {
                 
                 <div className="modal-footer">
                   <button
-                    className="btn btn-secondary"
+                    className="btn-secondary"
                     onClick={() => setShowAmountModal(false)}
                   >
                     إلغاء
                   </button>
                   <button
-                    className="btn btn-primary"
+                    className="btn-primary"
                     onClick={handleUpdateBeneficiaryAmount}
                   >
                     تحديث المبلغ

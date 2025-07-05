@@ -182,7 +182,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="btn btn-primary"
+            className="btn-primary"
             disabled={isLoading}
           >
             {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}

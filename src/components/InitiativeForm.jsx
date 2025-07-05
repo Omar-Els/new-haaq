@@ -116,9 +116,9 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
   };
 
   return (
-    <div className="initiative-form-container">
+    <div className="form-container form-fade-in">
       <h2>{isEditing ? 'تعديل المبادرة' : 'إضافة مبادرة جديدة'}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form-grid single-column">
         <div className="form-group">
           <label htmlFor="name">اسم المبادرة</label>
           <input
@@ -200,10 +200,10 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn btn-secondary" onClick={onComplete}>
+          <button type="button" className="btn-secondary" onClick={onComplete}>
             إلغاء
           </button>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn-primary">
             {isEditing ? 'تحديث المبادرة' : 'إضافة المبادرة'}
           </button>
         </div>

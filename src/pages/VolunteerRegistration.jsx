@@ -192,7 +192,7 @@ const VolunteerRegistration = () => {
 
   return (
     <motion.div
-      className="volunteer-registration-container"
+      className="form-container form-fade-in"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -488,7 +488,7 @@ const VolunteerRegistration = () => {
             
             <button
               type="submit"
-              className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
+              className={`btn-primary ${isSubmitting ? 'btn-loading' : ''}`}
               disabled={isSubmitting}
             >
               {isSubmitting ? (
