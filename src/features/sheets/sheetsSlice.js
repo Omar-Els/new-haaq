@@ -479,15 +479,17 @@ export const selectBeneficiariesBySheet = (state, sheetId) => {
 export const selectActiveSheets = (state) => 
   state.sheets?.items?.filter(s => s.status === 'active') || [];
 
-export const selectSheetsStats = (state) => {
-  const sheets = state.sheets?.items || [];
-  return {
-    total: sheets.length,
-    active: sheets.filter(s => s.status === 'active').length,
-    totalBeneficiaries: sheets.reduce((sum, s) => sum + (s.beneficiaryCount || 0), 0),
-    totalAmount: sheets.reduce((sum, s) => sum + (s.totalAmount || 0), 0)
-  };
-};
+export const selectSheetsStats = createSelector(
+  [selectAllSheets],
+  (sheets) => {
+    return {
+      total: sheets.length,
+      active: sheets.filter(s => s.status === 'active').length,
+      totalBeneficiaries: sheets.reduce((sum, s) => sum + (s.beneficiaryCount || 0), 0),
+      totalAmount: sheets.reduce((sum, s) => sum + (s.totalAmount || 0), 0)
+    };
+  }
+);
 
 // دالة جديدة لحساب إجمالي الشهر
 export const selectMonthlyTotal = (state, month, year) => {

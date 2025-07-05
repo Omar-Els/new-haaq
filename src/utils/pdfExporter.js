@@ -5,9 +5,12 @@ import 'jspdf-autotable';
 export const exportSheetToPDF = (sheet, beneficiaries) => {
   const doc = new jsPDF('p', 'mm', 'a4');
   
-  // إعداد الخط العربي
-  doc.addFont('https://fonts.gstatic.com/s/amiri/v12/J7aRnpd8CGxBHpUrtLMA7w.ttf', 'Amiri', 'normal');
-  doc.setFont('Amiri');
+  // إعداد الخط العربي - استخدام خط افتراضي
+  try {
+    doc.setFont('helvetica');
+  } catch (error) {
+    console.warn('خطأ في إعداد الخط:', error);
+  }
   
   // العنوان الرئيسي
   doc.setFontSize(20);
@@ -52,7 +55,7 @@ export const exportSheetToPDF = (sheet, beneficiaries) => {
     body: tableData,
     startY: 90,
     styles: {
-      font: 'Amiri',
+      font: 'helvetica',
       fontSize: 10,
       textColor: [0, 0, 0],
       halign: 'center'
@@ -95,9 +98,12 @@ export const exportSheetToPDF = (sheet, beneficiaries) => {
 export const exportMonthlyReportToPDF = (sheets, month, year) => {
   const doc = new jsPDF('p', 'mm', 'a4');
   
-  // إعداد الخط العربي
-  doc.addFont('https://fonts.gstatic.com/s/amiri/v12/J7aRnpd8CGxBHpUrtLMA7w.ttf', 'Amiri', 'normal');
-  doc.setFont('Amiri');
+  // إعداد الخط العربي - استخدام خط افتراضي
+  try {
+    doc.setFont('helvetica');
+  } catch (error) {
+    console.warn('خطأ في إعداد الخط:', error);
+  }
   
   // العنوان الرئيسي
   doc.setFontSize(20);
@@ -130,7 +136,7 @@ export const exportMonthlyReportToPDF = (sheets, month, year) => {
     body: tableData,
     startY: 90,
     styles: {
-      font: 'Amiri',
+      font: 'helvetica',
       fontSize: 10,
       textColor: [0, 0, 0],
       halign: 'center'
@@ -164,9 +170,12 @@ export const exportMonthlyReportToPDF = (sheets, month, year) => {
 export const exportDetailedSheetToPDF = (sheet, beneficiaries) => {
   const doc = new jsPDF('p', 'mm', 'a4');
   
-  // إعداد الخط العربي
-  doc.addFont('https://fonts.gstatic.com/s/amiri/v12/J7aRnpd8CGxBHpUrtLMA7w.ttf', 'Amiri', 'normal');
-  doc.setFont('Amiri');
+  // إعداد الخط العربي - استخدام خط افتراضي
+  try {
+    doc.setFont('helvetica');
+  } catch (error) {
+    console.warn('خطأ في إعداد الخط:', error);
+  }
   
   // العنوان الرئيسي
   doc.setFontSize(20);
@@ -201,7 +210,7 @@ export const exportDetailedSheetToPDF = (sheet, beneficiaries) => {
     body: tableData,
     startY: 80,
     styles: {
-      font: 'Amiri',
+      font: 'helvetica',
       fontSize: 8,
       textColor: [0, 0, 0],
       halign: 'center'
@@ -255,9 +264,12 @@ const getMonthName = (month) => {
 export const exportYearlyReportToPDF = (sheets, year) => {
   const doc = new jsPDF('p', 'mm', 'a4');
   
-  // إعداد الخط العربي
-  doc.addFont('https://fonts.gstatic.com/s/amiri/v12/J7aRnpd8CGxBHpUrtLMA7w.ttf', 'Amiri', 'normal');
-  doc.setFont('Amiri');
+  // إعداد الخط العربي - استخدام خط افتراضي
+  try {
+    doc.setFont('helvetica');
+  } catch (error) {
+    console.warn('خطأ في إعداد الخط:', error);
+  }
   
   // العنوان الرئيسي
   doc.setFontSize(20);
@@ -297,7 +309,7 @@ export const exportYearlyReportToPDF = (sheets, year) => {
     body: monthlyData,
     startY: 90,
     styles: {
-      font: 'Amiri',
+      font: 'helvetica',
       fontSize: 10,
       textColor: [0, 0, 0],
       halign: 'center'
