@@ -143,6 +143,115 @@ class MongoService {
     }
   }
 
+  // ==================== نظام تحفيظ القرآن ====================
+  
+  // جلب جميع بيانات القرآن
+  async getQuranData() {
+    try {
+      console.log('🔄 محاكاة جلب بيانات القرآن من MongoDB...');
+      
+      // إرجاع بيانات وهمية للاختبار
+      const mockData = {
+        success: true,
+        data: {
+          students: [],
+          teachers: [],
+          competitions: [],
+          levels: [],
+          settings: {},
+          subscriptions: []
+        },
+        message: 'لا يوجد خادم MongoDB متصل حالياً. يتم استخدام البيانات المحلية.'
+      };
+
+      return mockData;
+    } catch (error) {
+      console.error('خطأ في جلب بيانات القرآن:', error);
+      throw error;
+    }
+  }
+
+  // إضافة طالب قرآن
+  async addQuranStudent(studentData) {
+    try {
+      console.log('🔄 محاكاة إضافة طالب قرآن إلى MongoDB...');
+      
+      const mockStudent = {
+        ...studentData,
+        _id: Date.now().toString(),
+        id: studentData.id || Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log('✅ تم إنشاء طالب قرآن وهمي:', mockStudent.name);
+      return mockStudent;
+    } catch (error) {
+      console.error('خطأ في إضافة طالب القرآن:', error);
+      throw error;
+    }
+  }
+
+  // إضافة معلمة قرآن
+  async addQuranTeacher(teacherData) {
+    try {
+      console.log('🔄 محاكاة إضافة معلمة قرآن إلى MongoDB...');
+      
+      const mockTeacher = {
+        ...teacherData,
+        _id: Date.now().toString(),
+        id: teacherData.id || Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log('✅ تم إنشاء معلمة قرآن وهمية:', mockTeacher.name);
+      return mockTeacher;
+    } catch (error) {
+      console.error('خطأ في إضافة معلمة القرآن:', error);
+      throw error;
+    }
+  }
+
+  // إنشاء مسابقة قرآن
+  async addQuranCompetition(competitionData) {
+    try {
+      console.log('🔄 محاكاة إنشاء مسابقة قرآن في MongoDB...');
+      
+      const mockCompetition = {
+        ...competitionData,
+        _id: Date.now().toString(),
+        id: competitionData.id || Date.now().toString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log('✅ تم إنشاء مسابقة قرآن وهمية:', mockCompetition.title);
+      return mockCompetition;
+    } catch (error) {
+      console.error('خطأ في إنشاء مسابقة القرآن:', error);
+      throw error;
+    }
+  }
+
+  // تحديث إعدادات القرآن
+  async updateQuranSettings(settings) {
+    try {
+      console.log('🔄 محاكاة تحديث إعدادات القرآن في MongoDB...');
+      
+      const mockSettings = {
+        ...settings,
+        updatedAt: new Date().toISOString()
+      };
+
+      console.log('✅ تم تحديث إعدادات القرآن وهمياً');
+      return mockSettings;
+    } catch (error) {
+      console.error('خطأ في تحديث إعدادات القرآن:', error);
+      throw error;
+    }
+  }
+
   // ==================== المعاملات المالية ====================
   
   // جلب المعاملات المالية
@@ -352,5 +461,12 @@ export const deleteFile = (fileId) => mongoService.deleteFile(fileId);
 
 export const getStatistics = () => mongoService.getStatistics();
 export const getReport = (type, filters) => mongoService.getReport(type, filters);
+
+// Quran functions
+export const getQuranData = () => mongoService.getQuranData();
+export const addQuranStudent = (data) => mongoService.addQuranStudent(data);
+export const addQuranTeacher = (data) => mongoService.addQuranTeacher(data);
+export const addQuranCompetition = (data) => mongoService.addQuranCompetition(data);
+export const updateQuranSettings = (data) => mongoService.updateQuranSettings(data);
 
 export default mongoService;

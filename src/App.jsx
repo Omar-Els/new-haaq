@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { selectTheme } from './features/ui/themeSlice';
 import { selectIsAuthenticated, loginSuccess } from './features/auth/authSlice';
+import ThemeProvider from './components/ThemeProvider';
 import { fetchBeneficiaries } from './features/beneficiaries/beneficiariesSlice';
 import { fetchTransactions } from './features/finance/financeSlice';
 import { clearOldNotifications } from './features/notifications/notificationsSlice';
@@ -237,18 +238,20 @@ function App() {
   }, []);
 
   return (
-    <div className={`app ${theme === 'dark' ? 'dark-theme' : ''} ${isFabActive ? 'fab-active' : ''}`}>
-      <Navbar />
-      <main className="main-content">
-        <AppRoutes />
-      </main>
-      <ScrollToTop scrollThreshold={300} />
-      {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
-      <FloatingActionButton />
-      <ToastNotifications />
-      {/* تم تعطيل StorageAlert لأن لدينا نظام أفضل في الإعدادات */}
-      {/* <StorageAlert /> */}
-    </div>
+    <ThemeProvider>
+      <div className={`app ${theme === 'dark' ? 'dark-theme' : ''} ${isFabActive ? 'fab-active' : ''}`}>
+        <Navbar />
+        <main className="main-content">
+          <AppRoutes />
+        </main>
+        <ScrollToTop scrollThreshold={300} />
+        {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
+        <FloatingActionButton />
+        <ToastNotifications />
+        {/* تم تعطيل StorageAlert لأن لدينا نظام أفضل في الإعدادات */}
+        {/* <StorageAlert /> */}
+      </div>
+    </ThemeProvider>
   );
 }
 

@@ -6,6 +6,7 @@ import { selectAllInitiatives } from '../features/initiatives/initiativesSlice';
 import { selectAllTransactions, selectFinanceStats } from '../features/finance/financeSlice';
 import { selectAllBeneficiaries } from '../features/beneficiaries/beneficiariesSlice';
 import { exportToExcel } from '../utils/helpers';
+import { exportSheetToPDF, exportMonthlyReportToPDF, exportDetailedSheetToPDF, exportYearlyReportToPDF } from '../utils/pdfExporter';
 import './Reports.css';
 
 /**
@@ -205,9 +206,9 @@ const Reports = () => {
                 <h2>تقارير المبادرات</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleExportToExcel(filteredInitiatives, 'تقرير_المبادرات')}
+                  onClick={() => exportMonthlyReportToPDF(filteredInitiatives, selectedMonth, selectedYear)}
                 >
-                  <FaFileExcel /> تصدير إلى Excel
+                  <FaFilePdf /> تصدير إلى PDF
                 </button>
               </div>
               
@@ -271,9 +272,9 @@ const Reports = () => {
                 <h2>تقارير الماليات</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleExportToExcel(filteredTransactions, 'تقرير_الماليات')}
+                  onClick={() => exportMonthlyReportToPDF(filteredTransactions, selectedMonth, selectedYear)}
                 >
-                  <FaFileExcel /> تصدير إلى Excel
+                  <FaFilePdf /> تصدير إلى PDF
                 </button>
               </div>
               
@@ -339,9 +340,9 @@ const Reports = () => {
                 <h2>تقارير المستفيدين</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => handleExportToExcel(beneficiaries, 'تقرير_المستفيدين')}
+                  onClick={() => exportMonthlyReportToPDF(beneficiaries, selectedMonth, selectedYear)}
                 >
-                  <FaFileExcel /> تصدير إلى Excel
+                  <FaFilePdf /> تصدير إلى PDF
                 </button>
               </div>
               

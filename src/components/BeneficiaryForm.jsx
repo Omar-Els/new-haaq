@@ -279,14 +279,14 @@ const BeneficiaryForm = ({
       <form onSubmit={handleSubmit}>
         <div className="form-grid">
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="name">الاسم</label>
+            <label htmlFor="name" className="adaptive-text">الاسم</label>
             <input
               type="text"
               id="name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={formErrors.name ? "error" : ""}
+              className={`adaptive-text ${formErrors.name ? "error" : ""}`}
               ref={inputRefs.name}
               autoComplete="name"
               aria-describedby={formErrors.name ? "name-error" : undefined}
@@ -298,14 +298,14 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="nationalId">الرقم القومي</label>
+            <label htmlFor="nationalId" className="adaptive-text">الرقم القومي</label>
             <input
               type="text"
               id="nationalId"
               name="nationalId"
               value={formData.nationalId}
               onChange={handleChange}
-              className={formErrors.nationalId ? "error" : ""}
+              className={`adaptive-text ${formErrors.nationalId ? "error" : ""}`}
               ref={inputRefs.nationalId}
               autoComplete="off"
               aria-describedby={formErrors.nationalId ? "nationalId-error" : undefined}
@@ -318,14 +318,14 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="beneficiaryId">رقم المستفيد</label>
+            <label htmlFor="beneficiaryId" className="adaptive-text">رقم المستفيد</label>
             <input
               type="text"
               id="beneficiaryId"
               name="beneficiaryId"
               value={formData.beneficiaryId}
               onChange={handleChange}
-              className={formErrors.beneficiaryId ? "error" : ""}
+              className={`adaptive-text ${formErrors.beneficiaryId ? "error" : ""}`}
               ref={inputRefs.beneficiaryId}
               autoComplete="off"
               aria-describedby={formErrors.beneficiaryId ? "beneficiaryId-error" : undefined}
@@ -337,14 +337,14 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="phone">رقم الهاتف</label>
+            <label htmlFor="phone" className="adaptive-text">رقم الهاتف</label>
             <input
               type="tel"
               id="phone"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className={formErrors.phone ? "error" : ""}
+              className={`adaptive-text ${formErrors.phone ? "error" : ""}`}
               ref={inputRefs.phone}
               autoComplete="tel"
               aria-describedby={formErrors.phone ? "phone-error" : undefined}
@@ -357,14 +357,14 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="income">الدخل (جنيه)</label>
+            <label htmlFor="income" className="adaptive-text">الدخل (جنيه)</label>
             <input
               type="number"
               id="income"
               name="income"
               value={formData.income}
               onChange={handleChange}
-              className={formErrors.income ? "error" : ""}
+              className={`adaptive-text ${formErrors.income ? "error" : ""}`}
               ref={inputRefs.income}
               autoComplete="off"
               aria-describedby={formErrors.income ? "income-error" : undefined}
@@ -378,7 +378,7 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="maritalStatus">الحالة الاجتماعية</label>
+            <label htmlFor="maritalStatus" className="adaptive-text">الحالة الاجتماعية</label>
             <select
               id="maritalStatus"
               name="maritalStatus"
@@ -387,6 +387,7 @@ const BeneficiaryForm = ({
               ref={inputRefs.maritalStatus}
               autoComplete="off"
               aria-label="اختر الحالة الاجتماعية"
+              className="adaptive-text"
             >
               <option value="single">أعزب</option>
               <option value="married">متزوج</option>
@@ -396,7 +397,7 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="familyMembers">عدد أفراد الأسرة</label>
+            <label htmlFor="familyMembers" className="adaptive-text">عدد أفراد الأسرة</label>
             <select
               id="familyMembers"
               name="familyMembers"
@@ -405,6 +406,7 @@ const BeneficiaryForm = ({
               ref={inputRefs.familyMembers}
               autoComplete="off"
               aria-label="اختر عدد أفراد الأسرة"
+              className="adaptive-text"
             >
               {[...Array(15)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>
@@ -415,7 +417,7 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="priority">الأولوية</label>
+            <label htmlFor="priority" className="adaptive-text">الأولوية</label>
             <select
               id="priority"
               name="priority"
@@ -424,6 +426,7 @@ const BeneficiaryForm = ({
               ref={inputRefs.priority}
               autoComplete="off"
               aria-label="اختر مستوى الأولوية"
+              className="adaptive-text"
             >
               <option value="1">1 - منخفضة جداً</option>
               <option value="2">2 - منخفضة</option>
@@ -440,7 +443,7 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group" variants={itemVariants}>
-            <label htmlFor="sheetId">الكشف</label>
+            <label htmlFor="sheetId" className="adaptive-text">الكشف</label>
             <select
               id="sheetId"
               name="sheetId"
@@ -448,6 +451,7 @@ const BeneficiaryForm = ({
               onChange={handleChange}
               autoComplete="off"
               aria-label="اختر الكشف"
+              className="adaptive-text"
             >
               <option value="">اختر الكشف (اختياري)</option>
               {sheets.map((sheet) => (
@@ -460,13 +464,13 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group full-width" variants={itemVariants}>
-            <label htmlFor="address">العنوان</label>
+            <label htmlFor="address" className="adaptive-text">العنوان</label>
             <textarea
               id="address"
               name="address"
               value={formData.address}
               onChange={handleChange}
-              className={formErrors.address ? "error" : ""}
+              className={`adaptive-text ${formErrors.address ? "error" : ""}`}
               rows="3"
               ref={inputRefs.address}
               autoComplete="street-address"
@@ -479,7 +483,7 @@ const BeneficiaryForm = ({
           </motion.div>
 
           <motion.div className="form-group full-width" variants={itemVariants}>
-            <label htmlFor="notes">ملاحظات</label>
+            <label htmlFor="notes" className="adaptive-text">ملاحظات</label>
             <textarea
               id="notes"
               name="notes"
@@ -490,14 +494,15 @@ const BeneficiaryForm = ({
               placeholder="أي ملاحظات إضافية عن المستفيد..."
               autoComplete="off"
               aria-label="ملاحظات إضافية عن المستفيد"
+              className="adaptive-text"
             ></textarea>
           </motion.div>
 
           {/* Profile Image */}
           <motion.div className="form-group full-width" variants={itemVariants}>
-            <h3>صورة المستفيد</h3>
+            <h3 className="adaptive-text">صورة المستفيد</h3>
             <div className="form-group">
-              <label htmlFor="profileImage-upload">صورة شخصية للمستفيد (اختيارية)</label>
+              <label htmlFor="profileImage-upload" className="adaptive-text">صورة شخصية للمستفيد (اختيارية)</label>
               <ImageUpload
                 key={`profile-${formData.name}`}
                 initialImage={formData.profileImage}
@@ -506,17 +511,17 @@ const BeneficiaryForm = ({
                 id="profileImage-container"
                 inputId="profileImage-upload"
               />
-              <small className="form-help-text" id="profileImage-help">يمكنك رفع صورة شخصية للمستفيد (اختيارية)</small>
+              <small className="form-help-text adaptive-text" id="profileImage-help">يمكنك رفع صورة شخصية للمستفيد (اختيارية)</small>
             </div>
           </motion.div>
 
           {/* ID Images (only if married) */}
           {formData.maritalStatus === 'married' && (
             <motion.div className="form-section" variants={itemVariants}>
-              <h3>صور البطاقات (اختيارية)</h3>
+              <h3 className="adaptive-text">صور البطاقات (اختيارية)</h3>
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="spouseIdImage-upload">صورة بطاقة الزوج (اختيارية)</label>
+                  <label htmlFor="spouseIdImage-upload" className="adaptive-text">صورة بطاقة الزوج (اختيارية)</label>
                   <ImageUpload
                     key={`spouse-${formData.maritalStatus}`}
                     initialImage={formData.spouseIdImage}
@@ -525,11 +530,11 @@ const BeneficiaryForm = ({
                     id="spouseIdImage-container"
                     inputId="spouseIdImage-upload"
                   />
-                  <small className="form-help-text" id="spouseIdImage-help">يمكنك رفع صورة بطاقة الزوج (اختيارية)</small>
+                  <small className="form-help-text adaptive-text" id="spouseIdImage-help">يمكنك رفع صورة بطاقة الزوج (اختيارية)</small>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="wifeIdImage-upload">صورة بطاقة الزوجة (اختيارية)</label>
+                  <label htmlFor="wifeIdImage-upload" className="adaptive-text">صورة بطاقة الزوجة (اختيارية)</label>
                   <ImageUpload
                     key={`wife-${formData.maritalStatus}`}
                     initialImage={formData.wifeIdImage}
@@ -538,7 +543,7 @@ const BeneficiaryForm = ({
                     id="wifeIdImage-container"
                     inputId="wifeIdImage-upload"
                   />
-                  <small className="form-help-text" id="wifeIdImage-help">يمكنك رفع صورة بطاقة الزوجة (اختيارية)</small>
+                  <small className="form-help-text adaptive-text" id="wifeIdImage-help">يمكنك رفع صورة بطاقة الزوجة (اختيارية)</small>
                 </div>
               </div>
             </motion.div>
@@ -556,7 +561,7 @@ const BeneficiaryForm = ({
         <motion.div className="form-actions" variants={itemVariants}>
           <motion.button
             type="submit"
-            className="btn-primary"
+            className="btn-primary adaptive-text"
             disabled={isSubmitting}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -570,7 +575,7 @@ const BeneficiaryForm = ({
 
           <motion.button
             type="button"
-            className="btn-secondary"
+            className="btn-secondary adaptive-text"
             onClick={onComplete}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

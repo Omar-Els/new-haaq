@@ -9,6 +9,7 @@ import {
 } from '../features/initiatives/initiativesSlice';
 import InitiativeForm from '../components/InitiativeForm';
 import { exportToExcel } from '../utils/helpers';
+import { exportSheetToPDF } from '../utils/pdfExporter';
 import './Initiatives.css';
 
 /**
@@ -169,9 +170,9 @@ const Initiatives = () => {
                   </button>
                   <button 
                     className="btn btn-info"
-                    onClick={() => handleExportToExcel(initiative)}
+                    onClick={() => exportSheetToPDF(initiative, initiative.beneficiaries)}
                   >
-                    تصدير إلى Excel
+                    تصدير إلى PDF
                   </button>
                 </div>
               </div>

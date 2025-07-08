@@ -369,7 +369,8 @@ const SheetsManager = () => {
           <div className="header-content">
             <div className="header-title">
               <FaClipboardList className="header-icon" />
-              <h1>إدارة الكشفات الشهرية</h1>
+              <h1 className="adaptive-text" style={{color:'#111'}}>مرحبًا بك في إدارة الكشفات الشهرية</h1>
+              <p style={{marginTop:8, fontSize:'1.1em'}}>ابدأ بتنظيم كشفات المستفيدين بسهولة ووضوح.</p>
             </div>
             <div className="header-actions">
               <motion.button
@@ -392,28 +393,28 @@ const SheetsManager = () => {
             <FaClipboardList className="stat-icon" />
             <div className="stat-content">
               <h3>{stats.total}</h3>
-              <p>إجمالي الكشفات</p>
+              <p>إجمالي الكشفات المُسجلة</p>
             </div>
           </div>
           <div className="stat-card">
             <FaUsers className="stat-icon" />
             <div className="stat-content">
               <h3>{stats.totalBeneficiaries}</h3>
-              <p>إجمالي المستفيدين</p>
+              <p>عدد المستفيدين في جميع الكشفات</p>
             </div>
           </div>
           <div className="stat-card">
             <FaMoneyBillWave className="stat-icon" />
             <div className="stat-content">
               <h3>{stats.totalAmount.toLocaleString('ar-EG')}</h3>
-              <p>إجمالي المبالغ (جنيه)</p>
+              <p>إجمالي المبالغ المصروفة (جنيه)</p>
             </div>
           </div>
           <div className="stat-card">
             <FaChartBar className="stat-icon" />
             <div className="stat-content">
               <h3>{monthlyTotal.toLocaleString('ar-EG')}</h3>
-              <p>إجمالي {getMonthName(selectedMonth)} {selectedYear}</p>
+              <p>إجمالي الشهر الحالي: {getMonthName(selectedMonth)} {selectedYear}</p>
             </div>
           </div>
         </motion.div>
@@ -488,8 +489,8 @@ const SheetsManager = () => {
           {filteredSheets.length === 0 ? (
             <div className="empty-state">
               <FaClipboardList className="empty-icon" />
-              <h3>لا توجد كشفات</h3>
-              <p>ابدأ بإنشاء كشف جديد لإدارة المستفيدين</p>
+              <h3 style={{color:'#444'}}>لا توجد كشفات بعد</h3>
+              <p style={{color:'#666'}}>يمكنك البدء الآن بإنشاء أول كشف وتنظيم بيانات المستفيدين بكل سهولة ووضوح.</p>
               <button
                 className="btn-primary"
                 onClick={() => setShowCreateModal(true)}
@@ -507,7 +508,7 @@ const SheetsManager = () => {
                   whileHover={{ scale: 1.02 }}
                 >
                   <div className="sheet-header">
-                    <h3>{sheet.name}</h3>
+                    <h3 style={{color:'#2a3b4c'}}>{sheet.name}</h3>
                     <div className="sheet-actions">
                       <button
                         className="btn-icon"
@@ -549,7 +550,7 @@ const SheetsManager = () => {
                   
                   <div className="sheet-content">
                     {sheet.description && (
-                      <p className="sheet-description">{sheet.description}</p>
+                      <p className="sheet-description" style={{color:'#555', fontSize:'1.05em'}}>{sheet.description}</p>
                     )}
                     
                     <div className="sheet-stats">

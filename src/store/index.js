@@ -10,6 +10,7 @@ import notificationsReducer from '../features/notifications/notificationsSlice';
 import volunteersReducer from '../features/volunteers/volunteersSlice';
 import financeReducer from '../features/finance/financeSlice';
 import settingsReducer from '../features/settings/settingsSlice';
+import quranReducer from '../features/quran/quranSlice';
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     volunteers: volunteersReducer,
     finance: financeReducer,
     settings: settingsReducer,
+    quran: quranReducer,
     ui: {
       theme: themeReducer
     }

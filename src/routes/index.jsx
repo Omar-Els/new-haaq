@@ -19,11 +19,12 @@ const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
 const Sheets = lazy(() => import('../pages/Sheets'));
 const VolunteerRegistration = lazy(() => import('../pages/VolunteerRegistration'));
 const Gallery = lazy(() => import('../pages/Gallery'));
+const QuranMemorization = lazy(() => import('../pages/QuranMemorization'));
 
 // Loading fallback
 const LoadingFallback = () => (
   <div className="loading-fallback">
-    <h2>جاري التحميل...</h2>
+    <h2 className="adaptive-text">جاري التحميل...</h2>
   </div>
 );
 
@@ -128,6 +129,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Gallery />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quran"
+          element={
+            <ProtectedRoute>
+              <QuranMemorization />
             </ProtectedRoute>
           }
         />

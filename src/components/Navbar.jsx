@@ -138,16 +138,16 @@ const Navbar = () => {
         <ul className={isMenuOpen ? "nav-menu active" : "nav-menu"}>
           {isAuthenticated ? (
             <>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/" className="nav-link" onClick={closeMenu}>
                   الرئيسية
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link to="/initiatives" className="nav-link" onClick={closeMenu}>
                   المبادرات
                 </Link>
-              </li>
+              </li>ّ
               <li className="nav-item">
                 <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
                   المستفيدون
@@ -161,6 +161,11 @@ const Navbar = () => {
               <li className="nav-item">
                 <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
                   المتطوعون
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/quran" className="nav-link" onClick={closeMenu}>
+                  تحفيظ القرآن
                 </Link>
               </li>
               <li className="nav-item">
@@ -251,11 +256,16 @@ const Navbar = () => {
                         عن دعوة الحق
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/gallery" className="dropdown-link" onClick={closeMenu}>
-                        معرض الصور
-                      </Link>
-                    </li>
+                                      <li>
+                    <Link to="/quran" onClick={closeMenu}>
+                      تحفيظ القرآن
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/gallery" className="dropdown-link" onClick={closeMenu}>
+                      معرض الصور
+                    </Link>
+                  </li>
                     <li>
                       <button onClick={handleLogout}>
                         تسجيل الخروج

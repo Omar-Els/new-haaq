@@ -1,6 +1,8 @@
 @import './styles/dropdown-blur.css';
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
 @import './styles/unified-forms.css';
+@import './styles/theme-colors.css';
+@import './styles/text-theme.css';
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

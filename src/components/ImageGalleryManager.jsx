@@ -309,7 +309,7 @@ const ImageGalleryManager = ({
           <button className={tab === 'volunteer' ? 'active' : ''} onClick={() => { setTab('volunteer'); setSelectedId(''); }}>المتطوعون</button>
         </div>
         <div className="dropdown">
-          <select value={selectedId} onChange={e => setSelectedId(e.target.value)}>
+          <select id="entity-selector" name="entity-selector" value={selectedId} onChange={e => setSelectedId(e.target.value)}>
             {tab === 'beneficiary' && beneficiaries.map(b => (
               <option key={b.id} value={b.id}>{b.name}</option>
             ))}
@@ -323,8 +323,8 @@ const ImageGalleryManager = ({
       {/* واجهة الفلترة أعلى المعرض: */}
       <div className="gallery-filters">
         <div className="filter-group">
-          <label>الفئة:</label>
-          <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
+          <label htmlFor="filter-category">الفئة:</label>
+          <select id="filter-category" name="filter-category" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
             <option value="">الكل</option>
             {categories.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
@@ -332,26 +332,32 @@ const ImageGalleryManager = ({
           </select>
         </div>
         <div className="filter-group">
-          <label>علامة:</label>
+          <label htmlFor="filter-tag">علامة:</label>
           <input
             type="text"
+            id="filter-tag"
+            name="filter-tag"
             value={filterTag}
             onChange={e => setFilterTag(e.target.value)}
             placeholder="أدخل جزء من العلامة"
           />
         </div>
         <div className="filter-group">
-          <label>من تاريخ:</label>
+          <label htmlFor="filter-date-from">من تاريخ:</label>
           <input
             type="date"
+            id="filter-date-from"
+            name="filter-date-from"
             value={filterDateFrom}
             onChange={e => setFilterDateFrom(e.target.value)}
           />
         </div>
         <div className="filter-group">
-          <label>إلى تاريخ:</label>
+          <label htmlFor="filter-date-to">إلى تاريخ:</label>
           <input
             type="date"
+            id="filter-date-to"
+            name="filter-date-to"
             value={filterDateTo}
             onChange={e => setFilterDateTo(e.target.value)}
           />

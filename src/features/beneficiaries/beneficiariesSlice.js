@@ -4,6 +4,12 @@ import { addNotification } from '../notifications/notificationsSlice';
 import { mongoService } from '../../services/mongoService';
 import { offlineService } from '../../services/offlineService';
 import cloudSync from '../../services/cloudSync';
+import { 
+  saveToIndexedDB, 
+  getFromIndexedDB, 
+  deleteFromIndexedDB,
+  migrateData 
+} from '../../utils/indexedDBManager';
 
 // دالة مساعدة لتحويل dataURL إلى File
 const dataURLtoFile = (dataurl, filename) => {
@@ -31,6 +37,14 @@ const generateSheetName = (beneficiaryCount = 0) => {
   const month = now.toLocaleDateString('ar-EG', { month: 'long' });
   const year = now.getFullYear();
   return `كشف ${month} ${year} (${beneficiaryCount} مستفيد)`;
+};
+
+// دالة لضغط البيانات للحفظ
+const compressDataForStorage = (beneficiaries) => {
+  return beneficiaries.map(beneficiary => {
+    const { spouseIdImage, wifeIdImage, ...compressedBeneficiary } = beneficiary;
+    return compressedBeneficiary;
+  });
 };
 
 // حفظ معرفات المستفيدين فقط في localStorage للجلسة
@@ -61,11 +75,12 @@ const getBeneficiariesFromStorage = async () => {
         const beneficiariesWithImages = await Promise.all(
           beneficiaries.map(async (beneficiary) => {
             try {
-              const images = await dbManager.getBeneficiaryImages(beneficiary.id);
+              const images = await getFromIndexedDB('images');
+              const beneficiaryImages = images.filter(img => img.beneficiaryId === beneficiary.id);
               const imageData = {};
 
-              if (Array.isArray(images)) {
-                images.forEach(img => {
+              if (Array.isArray(beneficiaryImages)) {
+                beneficiaryImages.forEach(img => {
                   imageData[img.type] = img.data;
                 });
               }
@@ -209,7 +224,7 @@ const saveBeneficiariesToStorage = async (beneficiaries) => {
 
       if (migrate) {
         try {
-          await dbManager.migrateFromLocalStorage();
+          await migrateData();
           await saveBeneficiariesToStorage(beneficiaries);
           alert('تم الترحيل بنجاح! الآن لديك مساحة تخزين أكبر.');
         } catch (migrationError) {
