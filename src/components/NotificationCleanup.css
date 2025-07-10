@@ -1,0 +1,248 @@
+.notification-cleanup {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+  border: 1px solid #e1e8ed;
+}
+
+.notification-cleanup h3 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.notification-cleanup p {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* إحصائيات الإشعارات */
+.notification-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #3498db;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+/* أزرار التنظيف */
+.cleanup-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cleanup-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  min-height: 60px;
+}
+
+.cleanup-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.clear-read-btn {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+}
+
+.clear-read-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #229954, #27ae60);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+}
+
+.clear-old-btn {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.clear-old-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+}
+
+.clear-all-btn {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.clear-all-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
+}
+
+/* معلومات التنظيف */
+.cleanup-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-left: 4px solid #3498db;
+  margin-bottom: 1.5rem;
+}
+
+.cleanup-info h4 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.cleanup-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cleanup-info li {
+  padding: 0.5rem 0;
+  color: #34495e;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* تحذير الإشعارات الكثيرة */
+.cleanup-warning {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border: 1px solid #f39c12;
+  border-radius: 8px;
+  color: #856404;
+  font-weight: 500;
+}
+
+.cleanup-warning svg {
+  font-size: 1.5rem;
+  color: #f39c12;
+  flex-shrink: 0;
+}
+
+/* رسالة عدم وجود إشعارات */
+.no-notifications {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border: 1px solid #27ae60;
+  border-radius: 8px;
+  color: #155724;
+  font-weight: 500;
+}
+
+.no-notifications svg {
+  font-size: 1.5rem;
+  color: #27ae60;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .notification-cleanup {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .notification-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 1rem;
+  }
+  
+  .cleanup-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .cleanup-action-btn {
+    padding: 1.25rem;
+    font-size: 1.1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .cleanup-info {
+    padding: 1rem;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .notification-cleanup {
+    background: #2c3e50;
+    border-color: #34495e;
+  }
+  
+  .notification-cleanup h3 {
+    color: #ecf0f1;
+  }
+  
+  .notification-cleanup p {
+    color: #bdc3c7;
+  }
+  
+  .notification-stats {
+    background: #34495e;
+  }
+  
+  .stat-item {
+    background: #2c3e50;
+  }
+  
+  .cleanup-info {
+    background: #34495e;
+    border-left-color: #3498db;
+  }
+  
+  .cleanup-info h4 {
+    color: #ecf0f1;
+  }
+  
+  .cleanup-info li {
+    color: #bdc3c7;
+  }
+}

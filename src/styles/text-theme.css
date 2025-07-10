@@ -1,0 +1,368 @@
+/* تحسين مظهر النصوص في الوضع المظلم والفاتح */
+
+/* النصوص الأساسية */
+.text-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-inverse {
+  color: var(--text-inverse) !important;
+}
+
+/* العناوين */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+}
+
+h3 {
+  font-size: 1.75rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+h5 {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-medium);
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+}
+
+/* الفقرات والنصوص */
+p {
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+span {
+  color: var(--text-primary);
+}
+
+div {
+  color: var(--text-primary);
+}
+
+/* الروابط */
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--text-link-hover);
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* النصوص في البطاقات */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+  color: var(--text-primary);
+}
+
+.card p, .card span, .card div {
+  color: var(--text-secondary);
+}
+
+/* النصوص في الجداول */
+table {
+  color: var(--text-primary);
+}
+
+th {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+td {
+  color: var(--text-secondary);
+}
+
+/* النصوص في النماذج */
+label {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-xs);
+  display: block;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* النصوص في الأزرار */
+.btn {
+  color: var(--text-inverse);
+  font-weight: var(--font-weight-medium);
+}
+
+.btn-outline {
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  color: var(--text-inverse);
+}
+
+/* النصوص في التنبيهات */
+.alert {
+  color: var(--text-primary);
+}
+
+.alert-success {
+  color: var(--alert-success-text);
+}
+
+.alert-warning {
+  color: var(--alert-warning-text);
+}
+
+.alert-error {
+  color: var(--alert-error-text);
+}
+
+.alert-info {
+  color: var(--alert-info-text);
+}
+
+/* النصوص في القوائم */
+.navbar-nav .nav-link {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-color);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+}
+
+/* النصوص في النوافذ المنبثقة */
+.modal-title {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.modal-body {
+  color: var(--text-secondary);
+}
+
+/* النصوص في شريط التمرير */
+::-webkit-scrollbar-thumb {
+  background: var(--border-secondary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* النصوص المحددة */
+::selection {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+}
+
+::-moz-selection {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+}
+
+/* النصوص في الشاشات الصغيرة */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+  
+  h4 {
+    font-size: 1.25rem;
+  }
+  
+  h5 {
+    font-size: 1.125rem;
+  }
+  
+  h6 {
+    font-size: 1rem;
+  }
+  
+  p {
+    font-size: 0.95rem;
+  }
+}
+
+/* النصوص في الشاشات الصغيرة جداً */
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  h4 {
+    font-size: 1.125rem;
+  }
+  
+  h5 {
+    font-size: 1rem;
+  }
+  
+  h6 {
+    font-size: 0.95rem;
+  }
+  
+  p {
+    font-size: 0.9rem;
+  }
+}
+
+/* تحسين قراءة النصوص */
+.text-readable {
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+.text-large {
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+.text-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* النصوص المميزة */
+.text-emphasis {
+  font-weight: var(--font-weight-semibold);
+  color: var(--primary-color);
+}
+
+.text-highlight {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+/* النصوص في الحالات المختلفة */
+.text-success {
+  color: var(--success-color);
+}
+
+.text-warning {
+  color: var(--warning-color);
+}
+
+.text-danger {
+  color: var(--error-color);
+}
+
+.text-info {
+  color: var(--info-color);
+}
+
+/* النصوص في الخلفيات المختلفة */
+.bg-primary .text-primary,
+.bg-secondary .text-secondary,
+.bg-success .text-success,
+.bg-warning .text-warning,
+.bg-danger .text-danger,
+.bg-info .text-info {
+  color: var(--text-inverse);
+}
+
+/* تحسين التباين للنصوص */
+[data-theme="dark"] {
+  .text-muted {
+    color: #94a3b8;
+  }
+  
+  .text-secondary {
+    color: #cbd5e1;
+  }
+}
+
+[data-theme="light"] {
+  .text-muted {
+    color: #64748b;
+  }
+  
+  .text-secondary {
+    color: #475569;
+  }
+}
+
+/* نص متكيف مع الخلفية: أبيض على الخلفية الغامقة، أسود على الخلفية الفاتحة */
+.adaptive-text {
+  /* إذا كانت الخلفية غامقة، يكون النص أبيض والعكس */
+  color: #222;
+  mix-blend-mode: difference;
+  /* يمكن استخدام filter: invert(1) في بعض الحالات */
+}
+
+/* دعم للنصوص في البطاقات أو الحاويات الداكنة */
+.dark-bg .adaptive-text {
+  color: #fff;
+  mix-blend-mode: normal;
+}
+
+/* دعم للنصوص في الحاويات الفاتحة */
+.light-bg .adaptive-text {
+  color: #222;
+  mix-blend-mode: normal;
+} 

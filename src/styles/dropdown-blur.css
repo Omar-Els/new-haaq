@@ -1,0 +1,266 @@
+/* تأثير الخلفية الضبابية للقوائم المنسدلة */
+
+/* Backdrop blur overlay */
+.dropdown-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.dropdown-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* تحسين القوائم المنسدلة الموجودة */
+.dropdown-menu {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem 0;
+  min-width: 200px;
+  z-index: 1000;
+  transform: translateY(-10px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown-menu.show {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.dropdown-menu li {
+  list-style: none;
+  margin: 0;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.75rem 1.25rem;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0 0.5rem;
+}
+
+.dropdown-menu a:hover {
+  background: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+  transform: translateX(5px);
+}
+
+/* تحسين القوائم في Navbar */
+.nav-item.dropdown {
+  position: relative;
+}
+
+.nav-item.dropdown.show .dropdown-menu {
+  display: block;
+}
+
+.nav-item.dropdown .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item.dropdown .dropdown-toggle:hover {
+  color: #3498db;
+}
+
+.nav-item.dropdown .dropdown-toggle svg {
+  transition: transform 0.3s ease;
+}
+
+.nav-item.dropdown.show .dropdown-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* تحسين القوائم في الموبايل */
+@media (max-width: 768px) {
+  .dropdown-backdrop {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+  
+  .dropdown-menu {
+    position: static;
+    background: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .dropdown-menu a {
+    margin: 0;
+    border-radius: 0;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .dropdown-menu a:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdown-menu a:hover {
+    background: rgba(52, 152, 219, 0.1);
+    transform: none;
+  }
+}
+
+/* تحسين القوائم المنسدلة في النماذج */
+.form-group select {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid rgba(52, 152, 219, 0.2);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: left 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-left: 3rem;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-group select option {
+  background: white;
+  color: #2c3e50;
+  padding: 0.5rem;
+}
+
+/* تحسين القوائم في المودال */
+.modal-content .dropdown-menu {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+/* تأثيرات خاصة للقوائم المهمة */
+.dropdown-menu.important {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
+  border: 2px solid rgba(52, 152, 219, 0.3);
+}
+
+.dropdown-menu.important a:hover {
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+}
+
+/* تحسين الأداء */
+.dropdown-menu,
+.dropdown-backdrop {
+  will-change: transform, opacity;
+}
+
+/* دعم المتصفحات القديمة */
+@supports not (backdrop-filter: blur(10px)) {
+  .dropdown-menu {
+    background: rgba(255, 255, 255, 0.98);
+  }
+  
+  .dropdown-backdrop {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* الوضع المظلم */
+@media (prefers-color-scheme: dark) {
+  .dropdown-menu {
+    background: rgba(44, 62, 80, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .dropdown-menu a {
+    color: #ecf0f1;
+  }
+  
+  .dropdown-menu a:hover {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498db;
+  }
+  
+  .form-group select {
+    background: rgba(44, 62, 80, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ecf0f1;
+  }
+  
+  .form-group select:focus {
+    background: rgba(44, 62, 80, 1);
+    border-color: #3498db;
+  }
+  
+  .form-group select option {
+    background: #2c3e50;
+    color: #ecf0f1;
+  }
+}
+
+/* تأثيرات الحركة المتقدمة */
+@keyframes dropdownSlideIn {
+  from {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes dropdownSlideOut {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+}
+
+.dropdown-menu.animate-in {
+  animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.dropdown-menu.animate-out {
+  animation: dropdownSlideOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

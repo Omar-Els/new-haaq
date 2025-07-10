@@ -1,0 +1,376 @@
+/* Global Styles */
+:root {
+  --primary-color: #2C7A7B;
+  --secondary-color: #38B2AC;
+  --text-color: #1A202C;
+  --text-secondary-color: #4A5568;
+  --bg-color: #F9FAFB;
+  --card-bg: #FFFFFF;
+  --border-color: #E2E8F0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --error-color: #E53E3E;
+  --success-color: #38A169;
+  --warning-color: #D69E2E;
+  --transition-speed: 0.3s;
+  --container-width: 1200px;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --border-radius: 8px;
+}
+
+/* إعادة تعيين عامة لمنع العناصر من الخروج */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Dark Theme Variables */
+.dark-theme {
+  --primary-color: #38B2AC;
+  --secondary-color: #81E6D9;
+  --text-color: #F7FAFC;
+  --text-secondary-color: #A0AEC0;
+  --bg-color: #1A202C;
+  --card-bg: #2D3748;
+  --border-color: #4A5568;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --error-color: #FC8181;
+  --success-color: #68D391;
+  --warning-color: #F6E05E;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: var(--spacing-md);
+  max-width: var(--container-width);
+  margin: 0 auto;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* Utility Classes */
+.card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  transition: all var(--transition-speed);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Button styles */
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #285E61;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #319795;
+}
+
+.btn-danger {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #C53030;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #2F855A;
+}
+
+.btn-info {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: #285E61;
+}
+
+/* Form styles */
+input, select, textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Grid layouts */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .main-content {
+    max-width: 100%;
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    overflow-x: hidden;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    overflow: hidden;
+  }
+
+  .card {
+    padding: var(--spacing-md);
+    overflow: hidden;
+  }
+
+  .btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* تأكيد ظهور زر التوب أب في الشاشات الصغيرة */
+  .fab-button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+  }
+
+  /* إصلاح الشبكات في الشاشات المتوسطة */
+  .finance-summary {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-md) !important;
+  }
+
+  .filters-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--spacing-sm) !important;
+  }
+
+  .beneficiaries-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-md) !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-md) !important;
+  }
+}
+
+/* فئة للشاشات الصغيرة */
+.mobile-view .fab-button {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 9999 !important;
+  position: fixed !important;
+  bottom: 1rem !important;
+  left: 1rem !important;
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: var(--spacing-sm);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  /* تأكيد ظهور زر التوب أب في الشاشات الصغيرة جدًا */
+  .fab-button,
+  button.fab-button,
+  .fn-button,
+  button.fn-button {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+    bottom: 1rem !important;
+    left: 1rem !important;
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  /* منع العناصر من الخروج في الشاشات الصغيرة */
+  .main-content {
+    padding: var(--spacing-sm) !important;
+    overflow-x: hidden !important;
+  }
+
+  .card {
+    padding: var(--spacing-md) !important;
+    margin-bottom: var(--spacing-sm) !important;
+    overflow: hidden !important;
+  }
+
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--spacing-sm) !important;
+  }
+
+  /* إصلاح النماذج في الشاشات الصغيرة */
+  input, select, textarea {
+    font-size: 16px !important; /* منع التكبير في iOS */
+    max-width: 100% !important;
+    min-height: 48px !important; /* ضمان سهولة اللمس */
+    padding: 1rem !important;
+  }
+
+  /* تحسين الأزرار للشاشات الصغيرة */
+  .btn {
+    min-height: 48px !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* تحسين العناوين */
+  h1 {
+    font-size: 1.3rem !important;
+  }
+
+  h2 {
+    font-size: 1.1rem !important;
+  }
+
+  h3 {
+    font-size: 1rem !important;
+  }
+
+  /* تحسين المسافات */
+  .card {
+    margin-bottom: var(--spacing-sm) !important;
+  }
+
+  /* تحسين النصوص المساعدة */
+  .form-help-text {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Loading Fallback */
+.loading-fallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  font-size: 1.5rem;
+}
+
+
