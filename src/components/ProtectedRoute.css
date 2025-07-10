@@ -1,9 +1,0 @@
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.2rem;
-  color: var(--primary-color);
-  background-color: var(--bg-color);
-}
