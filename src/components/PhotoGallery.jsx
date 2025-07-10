@@ -92,6 +92,7 @@ const PhotoGallery = () => {
             <FaSearch className="search-icon" />
             <input
               type="text"
+              name="search"
               placeholder="ابحث عن مستفيد أو نشاط..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
