@@ -265,3 +265,4 @@ VITE_FIREBASE_CONFIG=your_firebase_config
 ---
 
 **تم التطوير بواسطة فريق دعوة الحق** 🚀
+"# new-haaq" 
