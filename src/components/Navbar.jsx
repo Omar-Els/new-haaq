@@ -176,6 +176,11 @@ const Navbar = () => {
                   )}
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/healthcare" className="nav-link" onClick={closeMenu}>
+                  الرعاية الصحية
+                </Link>
+              </li>
 
 
               {isMobileView ? (

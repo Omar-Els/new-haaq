@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 import ProtectedRoute from '../components/ProtectedRoute';
+import HealthcarePage from '../features/healthcare/HealthcarePage';
 
 // Lazy loading components
 const Login = lazy(() => import('../pages/Login'));
@@ -140,6 +141,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/healthcare" element={<HealthcarePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
