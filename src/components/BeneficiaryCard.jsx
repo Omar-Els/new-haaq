@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { deleteBeneficiary } from '../features/beneficiaries/beneficiariesSlice';
 import BeneficiaryForm from './BeneficiaryForm';
 import { formatDate } from '../utils/helpers';
+import { addHealthcareService } from '../features/healthcare/healthcareSlice';
 
 /**
  * BeneficiaryCard Component
@@ -19,10 +20,21 @@ const BeneficiaryCard = ({ beneficiary }) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useDispatch();
 
+  const healthcareServices = useSelector(state => state.healthcare.services.filter(s => s.beneficiaryId === beneficiary.id));
+  const [showAddHealthcare, setShowAddHealthcare] = useState(false);
+  const [newService, setNewService] = useState({ serviceType: '', description: '', date: '', provider: '', status: 'pending' });
+
   const handleDelete = () => {
     if (window.confirm('هل أنت متأكد من حذف هذا المستفيد؟')) {
       dispatch(deleteBeneficiary(beneficiary.id));
     }
+  };
+
+  const handleAddHealthcare = () => {
+    if (!newService.serviceType || !newService.date) return;
+    dispatch(addHealthcareService({ ...newService, id: Date.now(), beneficiaryId: beneficiary.id }));
+    setShowAddHealthcare(false);
+    setNewService({ serviceType: '', description: '', date: '', provider: '', status: 'pending' });
   };
 
   const toggleEdit = () => {
@@ -215,6 +227,32 @@ const BeneficiaryCard = ({ beneficiary }) => {
                 />
               </div>
             )}
+
+            {/* قسم الرعاية الصحية */}
+            <div className="healthcare-section">
+              <h4>الخدمات الطبية والرعاية الصحية</h4>
+              <ul>
+                {healthcareServices.length === 0 && <li>لا توجد خدمات طبية مسجلة لهذا المستفيد.</li>}
+                {healthcareServices.map(service => (
+                  <li key={service.id}>
+                    <strong>{service.serviceType}</strong> - {service.description} <br/>
+                    <span>تاريخ: {service.date} | مقدم الخدمة: {service.provider} | الحالة: {service.status}</span>
+                  </li>
+                ))}
+              </ul>
+              <button onClick={() => setShowAddHealthcare(!showAddHealthcare)}>
+                {showAddHealthcare ? 'إلغاء' : 'إضافة خدمة طبية'}
+              </button>
+              {showAddHealthcare && (
+                <div className="add-healthcare-form">
+                  <input type="text" placeholder="نوع الخدمة الطبية" value={newService.serviceType} onChange={e => setNewService({ ...newService, serviceType: e.target.value })} />
+                  <input type="text" placeholder="وصف مختصر" value={newService.description} onChange={e => setNewService({ ...newService, description: e.target.value })} />
+                  <input type="date" value={newService.date} onChange={e => setNewService({ ...newService, date: e.target.value })} />
+                  <input type="text" placeholder="مقدم الخدمة" value={newService.provider} onChange={e => setNewService({ ...newService, provider: e.target.value })} />
+                  <button onClick={handleAddHealthcare}>حفظ الخدمة</button>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </div>
