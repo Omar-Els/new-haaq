@@ -147,7 +147,7 @@ const Navbar = () => {
                 <Link to="/initiatives" className="nav-link" onClick={closeMenu}>
                   المبادرات
                 </Link>
-              </li>ّ
+              </li>
               <li className="nav-item">
                 <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
                   المستفيدون
@@ -174,11 +174,6 @@ const Navbar = () => {
                   {unreadNotifications.length > 0 && (
                     <span className="notification-badge">{unreadNotifications.length}</span>
                   )}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/healthcare" className="nav-link" onClick={closeMenu}>
-                  الرعاية الصحية
                 </Link>
               </li>
 
@@ -275,6 +270,11 @@ const Navbar = () => {
                       <button onClick={handleLogout}>
                         تسجيل الخروج
                       </button>
+                    </li>
+                    <li>
+                      <Link to="/healthcare" className="dropdown-link" onClick={closeMenu}>
+                        الرعاية الصحية
+                      </Link>
                     </li>
                   </ul>
                 </li>

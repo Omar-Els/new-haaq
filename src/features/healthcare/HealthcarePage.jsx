@@ -8,7 +8,7 @@ const HealthcarePage = () => {
   const beneficiaries = useSelector(state => state.beneficiaries.beneficiaries || []);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
-  const [newService, setNewService] = useState({ beneficiaryId: '', serviceType: '', description: '', date: '', provider: '', status: 'pending' });
+  const [newService, setNewService] = useState({ beneficiaryId: '', serviceType: '', description: '', date: '', provider: '', status: 'pending', image: null });
 
   const filteredServices = services.filter(s =>
     (!search || s.serviceType.includes(search) || s.description.includes(search) || (beneficiaries.find(b => b.id === s.beneficiaryId)?.name || '').includes(search))
@@ -18,7 +18,18 @@ const HealthcarePage = () => {
     if (!newService.beneficiaryId || !newService.serviceType || !newService.date) return;
     dispatch(addHealthcareService({ ...newService, id: Date.now() }));
     setShowAdd(false);
-    setNewService({ beneficiaryId: '', serviceType: '', description: '', date: '', provider: '', status: 'pending' });
+    setNewService({ beneficiaryId: '', serviceType: '', description: '', date: '', provider: '', status: 'pending', image: null });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewService(prev => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -38,6 +49,7 @@ const HealthcarePage = () => {
           <input type="text" placeholder="وصف مختصر" value={newService.description} onChange={e => setNewService({ ...newService, description: e.target.value })} />
           <input type="date" value={newService.date} onChange={e => setNewService({ ...newService, date: e.target.value })} />
           <input type="text" placeholder="مقدم الخدمة" value={newService.provider} onChange={e => setNewService({ ...newService, provider: e.target.value })} />
+          <input type="file" accept="image/*" onChange={handleImageChange} />
           <button onClick={handleAdd}>حفظ الخدمة</button>
         </div>
       )}
@@ -49,6 +61,7 @@ const HealthcarePage = () => {
             <th>الوصف</th>
             <th>التاريخ</th>
             <th>مقدم الخدمة</th>
+            <th>الصورة</th>
             <th>الحالة</th>
           </tr>
         </thead>
@@ -65,6 +78,7 @@ const HealthcarePage = () => {
                 <td>{service.description}</td>
                 <td>{service.date}</td>
                 <td>{service.provider}</td>
+                <td>{service.image && <img src={service.image} alt="صورة الخدمة" style={{maxWidth: '60px', maxHeight: '60px'}} />}</td>
                 <td>{service.status}</td>
               </tr>
             );
