@@ -298,4 +298,98 @@
   }
 }
 
+.more-drawer-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 12000;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.more-drawer {
+  background: #fff;
+  width: 80vw;
+  max-width: 340px;
+  height: 100vh;
+  box-shadow: -2px 0 16px rgba(0,0,0,0.15);
+  position: relative;
+  animation: slideInDrawer 0.3s;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  overflow-y: auto;
+  direction: rtl;
+}
+
+@keyframes slideInDrawer {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.close-more-drawer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #333;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.more-drawer ul {
+  margin: 0;
+  padding: 2rem 1rem 1rem 1rem;
+  list-style: none;
+}
+
+.more-drawer ul li {
+  margin-bottom: 1rem;
+}
+
+.more-drawer ul li a {
+  display: block;
+  font-size: 1.15rem;
+  color: #222;
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #f7f7f7;
+  transition: background 0.2s, color 0.2s;
+  font-weight: 500;
+}
+
+.more-drawer ul li a:hover {
+  background: #3498db;
+  color: #fff;
+}
+
+.more-btn-mobile {
+  background: #222 !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1.15rem;
+  font-weight: bold;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.more-btn-mobile:hover {
+  background: #3498db !important;
+  color: #fff !important;
+}
+
 

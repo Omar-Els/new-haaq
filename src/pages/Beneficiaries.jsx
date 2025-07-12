@@ -468,8 +468,7 @@ const Beneficiaries = () => {
 
               <div className="modal-body">
                 <BeneficiaryForm
-                  onSubmit={handleAddBeneficiary}
-                  onCancel={() => setShowAddModal(false)}
+                  onComplete={() => setShowAddModal(false)}
                 />
               </div>
             </motion.div>
@@ -510,8 +509,8 @@ const Beneficiaries = () => {
               <div className="modal-body">
                 <BeneficiaryForm
                   beneficiary={selectedBeneficiary}
-                  onSubmit={handleEditBeneficiary}
-                  onCancel={() => setShowEditModal(false)}
+                  onComplete={() => setShowEditModal(false)}
+                  isEditing={true}
                 />
               </div>
             </motion.div>

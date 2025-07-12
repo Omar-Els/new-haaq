@@ -23,7 +23,7 @@ import "./BeneficiaryForm.css";
  */
 const BeneficiaryForm = ({
   beneficiary = null,
-  onComplete,
+  onComplete = () => {},
   isEditing = false,
   focusField = null,
 }) => {
@@ -242,7 +242,7 @@ const BeneficiaryForm = ({
             });
           }
           setIsSubmitting(false);
-          onComplete();
+          if (typeof onComplete === 'function') onComplete();
         })
         .catch((error) => {
           setIsSubmitting(false);
@@ -576,7 +576,7 @@ const BeneficiaryForm = ({
           <motion.button
             type="button"
             className="btn-secondary adaptive-text"
-            onClick={onComplete}
+            onClick={() => { if (typeof onComplete === 'function') onComplete(); }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

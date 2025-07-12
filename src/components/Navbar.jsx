@@ -23,6 +23,7 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showBackupManager, setShowBackupManager] = useState(false);
   const [showDropdownBackdrop, setShowDropdownBackdrop] = useState(false);
+  const [showMoreDrawer, setShowMoreDrawer] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -175,19 +176,16 @@ const Navbar = () => {
 
               {isMobileView ? (
                 <>
+                  {/* زر المزيد في الموبايل */}
                   <li className="nav-item">
-                    <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
-                      المستفيدون
-                    </Link>
+                    <button className="nav-link more-btn-mobile" style={{fontSize:'1.1rem',fontWeight:'bold',padding:'1rem',width:'100%'}} onClick={() => setShowMoreDrawer(true)}>
+                      المزيد <FaChevronDown style={{verticalAlign:'middle'}} />
+                    </button>
                   </li>
+                  {/* باقي الروابط الأساسية ... */}
                   <li className="nav-item">
                     <Link to="/sheets" className="nav-link" onClick={closeMenu}>
                       الكشفات
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
-                      المتطوعون
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -196,13 +194,18 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/settings" className="nav-link" onClick={closeMenu}>
-                      الإعدادات
+                    <Link to="/development-projects" className="nav-link" onClick={closeMenu}>
+                      المشاريع التنموية
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/about" className="nav-link" onClick={closeMenu}>
-                      عن دعوة الحق
+                    <Link to="/gallery" className="nav-link" onClick={closeMenu}>
+                      معرض الصور
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/healthcare" className="nav-link" onClick={closeMenu}>
+                      الرعاية الصحية
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -310,6 +313,29 @@ const Navbar = () => {
           </div>
         )}
       </div>
+
+      {/* Drawer/Overlay للمزيد في الموبايل */}
+      {isMobileView && showMoreDrawer && (
+        <div className="more-drawer-overlay" onClick={() => setShowMoreDrawer(false)}>
+          <div className="more-drawer" onClick={e => e.stopPropagation()}>
+            <button className="close-more-drawer" onClick={() => setShowMoreDrawer(false)} style={{background:'none',border:'none',fontSize:'2rem',color:'#333',position:'absolute',top:10,left:10,cursor:'pointer'}}>
+              <FaTimes />
+            </button>
+            <ul style={{listStyle:'none',padding:'2rem 1rem 1rem 1rem',margin:0}}>
+              <li><Link to="/beneficiaries" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المستفيدون</Link></li>
+              <li><Link to="/sheets" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الكشفات</Link></li>
+              <li><Link to="/volunteers" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المتطوعون</Link></li>
+              <li><Link to="/reports" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>التقارير</Link></li>
+              <li><Link to="/settings" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الإعدادات</Link></li>
+              <li><Link to="/about" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>عن دعوة الحق</Link></li>
+              <li><Link to="/development-projects" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المشاريع التنموية</Link></li>
+              <li><Link to="/quran" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>تحفيظ القرآن</Link></li>
+              <li><Link to="/gallery" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>معرض الصور</Link></li>
+              <li><Link to="/healthcare" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الرعاية الصحية</Link></li>
+            </ul>
+          </div>
+        </div>
+      )}
 
       {/* Dropdown Backdrop */}
       {showDropdownBackdrop && (
