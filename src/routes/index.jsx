@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 import ProtectedRoute from '../components/ProtectedRoute';
 import HealthcarePage from '../features/healthcare/HealthcarePage';
+import DevelopmentProjectsManager from '../components/DevelopmentProjectsManager';
 
 // Lazy loading components
 const Login = lazy(() => import('../pages/Login'));
@@ -142,6 +143,7 @@ const AppRoutes = () => {
           }
         />
         <Route path="/healthcare" element={<HealthcarePage />} />
+        <Route path="/development-projects" element={<DevelopmentProjectsManager />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

@@ -164,11 +164,6 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/quran" className="nav-link" onClick={closeMenu}>
-                  تحفيظ القرآن
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/notifications" className="nav-link" onClick={closeMenu}>
                   الإشعارات
                   {unreadNotifications.length > 0 && (
@@ -256,6 +251,11 @@ const Navbar = () => {
                         عن دعوة الحق
                       </Link>
                     </li>
+                    <li>
+                      <Link to="/development-projects" onClick={closeMenu}>
+                        المشاريع التنموية
+                      </Link>
+                    </li>
                                       <li>
                     <Link to="/quran" onClick={closeMenu}>
                       تحفيظ القرآن
@@ -295,9 +295,9 @@ const Navbar = () => {
             </>
           )}
 
-          <li className="sync-indicator-container">
+          {/* <li className="sync-indicator-container">
             <SyncIndicator onClick={() => setShowBackupManager(true)} />
-          </li>
+          </li> */}
 
           <li className="theme-toggle-container">
             <ThemeToggle />
