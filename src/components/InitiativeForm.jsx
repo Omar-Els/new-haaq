@@ -128,6 +128,7 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             value={formData.name}
             onChange={handleChange}
             className={errors.name ? 'error' : ''}
+            autoComplete="off"
           />
           {errors.name && <div className="error-message">{errors.name}</div>}
         </div>
@@ -141,6 +142,7 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             value={formData.date}
             onChange={handleChange}
             className={errors.date ? 'error' : ''}
+            autoComplete="off"
           />
           {errors.date && <div className="error-message">{errors.date}</div>}
         </div>
@@ -154,12 +156,13 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             onChange={handleChange}
             rows="4"
             className={errors.description ? 'error' : ''}
+            autoComplete="off"
           ></textarea>
           {errors.description && <div className="error-message">{errors.description}</div>}
         </div>
 
         <div className="form-group">
-          <label htmlFor="beneficiaries-selection">المستفيدون</label>
+          <span className="group-label">المستفيدون</span>
           <div id="beneficiaries-selection" className="beneficiaries-selection">
             {allBeneficiaries.length > 0 ? (
               <div className="beneficiaries-list">
@@ -196,6 +199,7 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             onChange={handleChange}
             min="0"
             step="0.01"
+            autoComplete="off"
           />
         </div>
 

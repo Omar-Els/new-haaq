@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- الصفحة الرئيسية -->
+  <url>
+    <loc>https://elhaq.web.app/</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/" />
+  </url>
+  
+  <!-- صفحة المستفيدين -->
+  <url>
+    <loc>https://elhaq.web.app/beneficiaries</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/beneficiaries" />
+  </url>
+  
+  <!-- صفحة المتطوعين -->
+  <url>
+    <loc>https://elhaq.web.app/volunteers</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/volunteers" />
+  </url>
+  
+  <!-- صفحة المبادرات -->
+  <url>
+    <loc>https://elhaq.web.app/initiatives</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/initiatives" />
+  </url>
+  
+  <!-- صفحة المالية -->
+  <url>
+    <loc>https://elhaq.web.app/finance</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/finance" />
+  </url>
+  
+  <!-- صفحة الكشوفات -->
+  <url>
+    <loc>https://elhaq.web.app/sheets</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/sheets" />
+  </url>
+  
+  <!-- صفحة معرض الصور -->
+  <url>
+    <loc>https://elhaq.web.app/gallery</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/gallery" />
+  </url>
+  
+  <!-- صفحة تحفيظ القرآن -->
+  <url>
+    <loc>https://elhaq.web.app/quran</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/quran" />
+  </url>
+  
+  <!-- صفحة الرعاية الصحية -->
+  <url>
+    <loc>https://elhaq.web.app/healthcare</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/healthcare" />
+  </url>
+  
+  <!-- صفحة المشاريع التنموية -->
+  <url>
+    <loc>https://elhaq.web.app/development-projects</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/development-projects" />
+  </url>
+  
+  <!-- صفحة التقارير -->
+  <url>
+    <loc>https://elhaq.web.app/reports</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/reports" />
+  </url>
+  
+  <!-- صفحة الإشعارات -->
+  <url>
+    <loc>https://elhaq.web.app/notifications</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/notifications" />
+  </url>
+  
+  <!-- صفحة الإعدادات -->
+  <url>
+    <loc>https://elhaq.web.app/settings</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/settings" />
+  </url>
+  
+  <!-- صفحة حول دعوة الحق -->
+  <url>
+    <loc>https://elhaq.web.app/about</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/about" />
+  </url>
+  
+  <!-- صفحة انضم كمتطوع -->
+  <url>
+    <loc>https://elhaq.web.app/join-volunteer</loc>
+    <lastmod>2024-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://elhaq.web.app/join-volunteer" />
+  </url>
+  
+</urlset> 

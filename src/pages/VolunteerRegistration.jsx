@@ -228,6 +228,7 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   className={errors.name ? 'error adaptive-text' : 'adaptive-text'}
                   placeholder="أدخل الاسم الكامل"
+                  autoComplete="name"
                 />
                 {errors.name && <span className="error-message adaptive-text">{errors.name}</span>}
               </div>
@@ -243,6 +244,7 @@ const VolunteerRegistration = () => {
                   className={errors.nationalId ? 'error adaptive-text' : 'adaptive-text'}
                   placeholder="14 رقم"
                   maxLength="14"
+                  autoComplete="off"
                 />
                 {errors.nationalId && <span className="error-message adaptive-text">{errors.nationalId}</span>}
               </div>
@@ -257,6 +259,7 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   className={errors.email ? 'error adaptive-text' : 'adaptive-text'}
                   placeholder="example@email.com"
+                  autoComplete="email"
                 />
                 {errors.email && <span className="error-message adaptive-text">{errors.email}</span>}
               </div>
@@ -271,6 +274,7 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   className={errors.phone ? 'error adaptive-text' : 'adaptive-text'}
                   placeholder="01234567890"
+                  autoComplete="tel"
                 />
                 {errors.phone && <span className="error-message adaptive-text">{errors.phone}</span>}
               </div>

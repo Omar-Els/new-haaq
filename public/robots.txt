@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://elhaq.web.app/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Disallow: /_/
+
+# Allow important pages
+Allow: /beneficiaries/
+Allow: /volunteers/
+Allow: /initiatives/
+Allow: /finance/
+Allow: /sheets/
+Allow: /gallery/
+
+# Crawl delay
+Crawl-delay: 1 

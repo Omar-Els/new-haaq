@@ -226,6 +226,7 @@ const JoinVolunteer = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="أدخل اسمك الكامل"
+                    autoComplete="name"
                   />
                 </div>
 
@@ -239,6 +240,7 @@ const JoinVolunteer = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="example@email.com"
+                    autoComplete="email"
                   />
                 </div>
 
@@ -252,6 +254,7 @@ const JoinVolunteer = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="01234567890"
+                    autoComplete="tel"
                   />
                 </div>
 
@@ -276,6 +279,7 @@ const JoinVolunteer = () => {
                     name="birthDate"
                     value={formData.birthDate}
                     onChange={handleInputChange}
+                    autoComplete="bday"
                   />
                 </div>
 
@@ -288,6 +292,7 @@ const JoinVolunteer = () => {
                     onChange={handleInputChange}
                     rows="2"
                     placeholder="أدخل عنوانك الكامل"
+                    autoComplete="street-address"
                   />
                 </div>
               </div>
