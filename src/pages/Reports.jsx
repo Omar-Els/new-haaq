@@ -6,7 +6,6 @@ import { selectAllInitiatives } from '../features/initiatives/initiativesSlice';
 import { selectAllTransactions, selectFinanceStats } from '../features/finance/financeSlice';
 import { selectAllBeneficiaries } from '../features/beneficiaries/beneficiariesSlice';
 import { exportToExcel } from '../utils/helpers';
-import { exportSheetToPDF, exportMonthlyReportToPDF, exportDetailedSheetToPDF, exportYearlyReportToPDF } from '../utils/pdfExporter';
 import './Reports.css';
 
 /**
@@ -206,9 +205,9 @@ const Reports = () => {
                 <h2>تقارير المبادرات</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => exportMonthlyReportToPDF(filteredInitiatives, selectedMonth, selectedYear)}
+                  onClick={() => handleExportToExcel(filteredInitiatives, 'تقرير_المبادرات')}
                 >
-                  <FaFilePdf /> تصدير إلى PDF
+                  <FaFileExcel /> تصدير إلى Excel
                 </button>
               </div>
               
@@ -272,9 +271,9 @@ const Reports = () => {
                 <h2>تقارير الماليات</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => exportMonthlyReportToPDF(filteredTransactions, selectedMonth, selectedYear)}
+                  onClick={() => handleExportToExcel(filteredTransactions, 'تقرير_الماليات')}
                 >
-                  <FaFilePdf /> تصدير إلى PDF
+                  <FaFileExcel /> تصدير إلى Excel
                 </button>
               </div>
               
@@ -340,9 +339,9 @@ const Reports = () => {
                 <h2>تقارير المستفيدين</h2>
                 <button
                   className="btn btn-primary"
-                  onClick={() => exportMonthlyReportToPDF(beneficiaries, selectedMonth, selectedYear)}
+                  onClick={() => handleExportToExcel(beneficiaries, 'تقرير_المستفيدين')}
                 >
-                  <FaFilePdf /> تصدير إلى PDF
+                  <FaFileExcel /> تصدير إلى Excel
                 </button>
               </div>
               

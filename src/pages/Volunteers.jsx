@@ -275,11 +275,11 @@ const Volunteers = () => {
       <motion.div className="page-header" variants={itemVariants}>
         <div className="header-content">
           <div className="header-text">
-            <h1 className="adaptive-text">
+            <h1>
               <FaUsers className="page-icon" />
               المتطوعون
             </h1>
-            <p className="adaptive-text">إدارة بيانات المتطوعين والمساعدين في المؤسسة</p>
+            <p>إدارة بيانات المتطوعين والمساعدين في المؤسسة</p>
           </div>
           
           <PermissionGuard permission={PERMISSIONS.VOLUNTEERS_CREATE}>
@@ -475,6 +475,8 @@ const Volunteers = () => {
           </div>
         )}
       </motion.div>
+
+
 
       {/* Edit Volunteer Modal */}
       <AnimatePresence>

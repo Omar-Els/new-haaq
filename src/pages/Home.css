@@ -3,7 +3,7 @@
   padding: var(--spacing-md) 0;
   width: 100%;
   max-width: 100%;
-  /* overflow-x: hidden; */
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
@@ -23,7 +23,7 @@
 
 .add-form-container {
   margin-bottom: 2rem;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .filters-container {
@@ -43,7 +43,7 @@
   margin-bottom: 1.5rem;
   width: 100%;
   max-width: 100%;
-  /* overflow: hidden; */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -72,7 +72,7 @@
   gap: 1.5rem;
   width: 100%;
   max-width: 100%;
-  /* overflow: hidden; */
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -297,7 +297,7 @@
 
 @media (max-width: 768px) {
   .home-container {
-    /* overflow-x: hidden; */
+    overflow-x: hidden;
     padding: var(--spacing-sm) 0;
   }
 
@@ -378,12 +378,12 @@
   }
 
   .beneficiary-card {
-    /* overflow: hidden; */
+    overflow: hidden;
     margin-bottom: var(--spacing-sm);
   }
 
   .card-details {
-    /* overflow-x: auto; */
+    overflow-x: auto;
   }
 
   .card-actions {
@@ -446,191 +446,6 @@
 @media (prefers-color-scheme: dark) {
   .gallery-section {
     background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-  }
-}
-
-/* Welcome Section */
-.welcome-section {
-  text-align: center;
-  padding: 3rem 2rem;
-  margin-bottom: 2rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  border-radius: 12px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.welcome-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(44, 122, 123, 0.9), rgba(56, 178, 172, 0.9));
-  z-index: 1;
-}
-
-.welcome-section > * {
-  position: relative;
-  z-index: 2;
-}
-
-.welcome-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: white;
-}
-
-.welcome-subtitle {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0.95;
-  line-height: 1.6;
-  color: white;
-}
-
-.welcome-stats {
-  margin: 2rem 0;
-}
-
-.welcome-stats .stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.welcome-stats .stat-item {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 1.5rem;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-}
-
-.welcome-stats .stat-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
-
-.welcome-stats .stat-number {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: white;
-}
-
-.welcome-stats .stat-label {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  color: white;
-}
-
-.welcome-actions {
-  margin-top: 2rem;
-}
-
-/* Search Section */
-.search-section {
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
-}
-
-.search-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.search-section h2 {
-  margin-bottom: 1.5rem;
-  color: var(--text-color);
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.search-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .welcome-title {
-    font-size: 2rem;
-  }
-  
-  .welcome-subtitle {
-    font-size: 1rem;
-  }
-  
-  .welcome-stats .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-  }
-  
-  .welcome-stats .stat-item {
-    padding: 1rem;
-  }
-  
-  .welcome-stats .stat-number {
-    font-size: 1.5rem;
-  }
-  
-  .search-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .search-actions .btn {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .filters-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .beneficiaries-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .welcome-section {
-    padding: 2rem 1rem;
-  }
-  
-  .welcome-title {
-    font-size: 1.8rem;
-  }
-  
-  .welcome-stats .stats-grid {
-    grid-template-columns: 1fr;
-    max-width: 200px;
-  }
-  
-  .search-section {
-    padding: 1.5rem;
-  }
-  
-  .add-form-container {
-    padding: 1.5rem;
   }
 }
 

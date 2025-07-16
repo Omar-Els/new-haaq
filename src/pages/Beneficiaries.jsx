@@ -6,7 +6,7 @@ import {
   FaSort, FaUserPlus, FaPhone, FaEnvelope, FaMapMarkerAlt,
   FaCalendarAlt, FaBaby, FaHeart, FaEye, FaDownload,
   FaUpload, FaUserCheck, FaUserTimes, FaChartBar, FaTimes,
-  FaImages, FaClipboardList
+  FaImages
 } from 'react-icons/fa';
 import {
   selectAllBeneficiaries,
@@ -19,7 +19,6 @@ import PermissionGuard from '../components/PermissionGuard';
 import { usePermissions, PERMISSIONS } from '../hooks/usePermissions';
 import BeneficiaryForm from '../components/BeneficiaryForm';
 import ImageGalleryManager from '../components/ImageGalleryManager';
-import { Link } from 'react-router-dom';
 import './Beneficiaries.css';
 
 /**
@@ -235,23 +234,17 @@ const Beneficiaries = () => {
             <p>إدارة بيانات المستفيدين من خدمات المؤسسة</p>
           </div>
           
-          <div className="header-actions">
-            <Link to="/sheets" className="btn btn-secondary">
-              <FaClipboardList />
-              إدارة الكشفات
-            </Link>
-            <PermissionGuard permission={PERMISSIONS.BENEFICIARIES_CREATE}>
-              <motion.button
-                className="btn btn-primary add-btn"
-                onClick={() => setShowAddModal(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FaPlus />
-                إضافة مستفيد
-              </motion.button>
-            </PermissionGuard>
-          </div>
+          <PermissionGuard permission={PERMISSIONS.BENEFICIARIES_CREATE}>
+            <motion.button
+              className="btn btn-primary add-btn"
+              onClick={() => setShowAddModal(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaPlus />
+              إضافة مستفيد
+            </motion.button>
+          </PermissionGuard>
         </div>
 
         {/* Statistics */}
@@ -468,7 +461,8 @@ const Beneficiaries = () => {
 
               <div className="modal-body">
                 <BeneficiaryForm
-                  onComplete={() => setShowAddModal(false)}
+                  onSubmit={handleAddBeneficiary}
+                  onCancel={() => setShowAddModal(false)}
                 />
               </div>
             </motion.div>
@@ -509,8 +503,8 @@ const Beneficiaries = () => {
               <div className="modal-body">
                 <BeneficiaryForm
                   beneficiary={selectedBeneficiary}
-                  onComplete={() => setShowEditModal(false)}
-                  isEditing={true}
+                  onSubmit={handleEditBeneficiary}
+                  onCancel={() => setShowEditModal(false)}
                 />
               </div>
             </motion.div>

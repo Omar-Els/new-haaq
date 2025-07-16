@@ -3,19 +3,17 @@
 
 /* تخصيصات خاصة بالمستفيدين */
 .beneficiaries-container {
-  /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); */
-  background: inherit;
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
 }
 
 .beneficiary-card {
-  background: var(--card-bg);
-  border: 2px solid var(--border-color);
+  background: white;
+  border: 2px solid #e1e8ed;
   border-radius: 16px;
   padding: 1.5rem;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .beneficiary-card::before {
@@ -25,15 +23,15 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
 }
 
 .beneficiary-card.active::before {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
 }
 
 .beneficiary-card.inactive::before {
-  background: linear-gradient(90deg, var(--error-color), #c0392b);
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
 }
 
 .beneficiary-header {
@@ -47,7 +45,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,14 +56,14 @@
 
 .beneficiary-info h3 {
   margin: 0 0 0.25rem 0;
-  color: var(--text-color);
+  color: #2c3e50;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
 .beneficiary-id {
   margin: 0 0 0.5rem 0;
-  color: var(--text-secondary-color);
+  color: #7f8c8d;
   font-size: 0.8rem;
 }
 
@@ -86,11 +84,10 @@
 }
 
 .beneficiaries-content {
-  background: var(--card-bg);
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 20px var(--shadow-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  border: 1px solid var(--border-color);
 }
 
 /* إحصائيات المستفيدين */
@@ -100,13 +97,6 @@
 
 .stat-card.families .stat-icon {
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
-}
-
-/* Header Actions */
-.header-actions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
 }
 
 /* تصميم متجاوب */
@@ -121,10 +111,5 @@
   
   .beneficiary-card {
     padding: 1rem;
-  }
-  
-  .header-actions {
-    flex-direction: column;
-    gap: 10px;
   }
 }

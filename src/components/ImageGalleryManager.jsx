@@ -6,9 +6,6 @@ import {
   FaCalendarAlt, FaMapMarkerAlt, FaUser, FaTag
 } from 'react-icons/fa';
 import './ImageGalleryManager.css';
-import { useSelector } from 'react-redux';
-import { selectAllBeneficiaries } from '../features/beneficiaries/beneficiariesSlice';
-import { selectAllVolunteers } from '../features/volunteers/volunteersSlice';
 
 /**
  * ImageGalleryManager Component
@@ -35,42 +32,6 @@ const ImageGalleryManager = ({
     file: null,
     preview: null
   });
-  const [editImage, setEditImage] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [filterCategory, setFilterCategory] = useState('');
-  const [filterTag, setFilterTag] = useState('');
-  const [filterDateFrom, setFilterDateFrom] = useState('');
-  const [filterDateTo, setFilterDateTo] = useState('');
-  const [tab, setTab] = useState('beneficiary');
-  const [selectedId, setSelectedId] = useState('');
-  const [selectedName, setSelectedName] = useState('');
-
-  const beneficiaries = useSelector(selectAllBeneficiaries);
-  const volunteers = useSelector(selectAllVolunteers);
-
-  useEffect(() => {
-    if (tab === 'beneficiary' && beneficiaries.length > 0) {
-      if (!selectedId) {
-        setSelectedId(beneficiaries[0].id);
-        setSelectedName(beneficiaries[0].name);
-      } else {
-        const b = beneficiaries.find(b => b.id === selectedId);
-        if (b) setSelectedName(b.name);
-      }
-    } else if (tab === 'volunteer' && volunteers.length > 0) {
-      if (!selectedId) {
-        setSelectedId(volunteers[0].id);
-        setSelectedName(volunteers[0].name);
-      } else {
-        const v = volunteers.find(v => v.id === selectedId);
-        if (v) setSelectedName(v.name);
-      }
-    }
-  }, [tab, selectedId, beneficiaries, volunteers]);
-
-  entityType = tab;
-  entityId = selectedId;
-  entityName = selectedName;
 
   // تحميل الصور المحفوظة
   useEffect(() => {
@@ -205,37 +166,6 @@ const ImageGalleryManager = ({
     URL.revokeObjectURL(url);
   };
 
-  // دالة فتح نموذج التعديل:
-  const openEditModal = (image) => {
-    setEditImage({ ...image, tags: image.tags ? image.tags.join(', ') : '' });
-    setShowEditModal(true);
-  };
-
-  // دالة حفظ التعديلات:
-  const handleEditImage = () => {
-    if (!editImage.title) {
-      alert('يرجى إدخال عنوان الصورة');
-      return;
-    }
-    const updatedImages = images.map(img =>
-      img.id === editImage.id
-        ? {
-            ...img,
-            title: editImage.title,
-            description: editImage.description,
-            category: editImage.category,
-            location: editImage.location,
-            date: editImage.date,
-            tags: editImage.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-          }
-        : img
-    );
-    setImages(updatedImages);
-    saveImages(updatedImages);
-    setShowEditModal(false);
-    setEditImage(null);
-  };
-
   const categories = [
     'مساعدات غذائية',
     'مساعدات طبية',
@@ -246,16 +176,6 @@ const ImageGalleryManager = ({
     'تدريب',
     'أخرى'
   ];
-
-  // دالة الفلترة:
-  const filteredImages = images.filter(img => {
-    let match = true;
-    if (filterCategory && img.category !== filterCategory) match = false;
-    if (filterTag && (!img.tags || !img.tags.some(tag => tag.includes(filterTag)))) match = false;
-    if (filterDateFrom && img.date < filterDateFrom) match = false;
-    if (filterDateTo && img.date > filterDateTo) match = false;
-    return match;
-  });
 
   return (
     <motion.div
@@ -303,73 +223,9 @@ const ImageGalleryManager = ({
         </div>
       </div>
 
-      <div className="gallery-entity-selector">
-        <div className="tabs">
-          <button className={tab === 'beneficiary' ? 'active' : ''} onClick={() => { setTab('beneficiary'); setSelectedId(''); }}>المستفيدون</button>
-          <button className={tab === 'volunteer' ? 'active' : ''} onClick={() => { setTab('volunteer'); setSelectedId(''); }}>المتطوعون</button>
-        </div>
-        <div className="dropdown">
-          <select id="entity-selector" name="entity-selector" value={selectedId} onChange={e => setSelectedId(e.target.value)}>
-            {tab === 'beneficiary' && beneficiaries.map(b => (
-              <option key={b.id} value={b.id}>{b.name}</option>
-            ))}
-            {tab === 'volunteer' && volunteers.map(v => (
-              <option key={v.id} value={v.id}>{v.name}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* واجهة الفلترة أعلى المعرض: */}
-      <div className="gallery-filters">
-        <div className="filter-group">
-          <label htmlFor="filter-category">الفئة:</label>
-          <select id="filter-category" name="filter-category" value={filterCategory} onChange={e => setFilterCategory(e.target.value)}>
-            <option value="">الكل</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-        </div>
-        <div className="filter-group">
-          <label htmlFor="filter-tag">علامة:</label>
-          <input
-            type="text"
-            id="filter-tag"
-            name="filter-tag"
-            value={filterTag}
-            onChange={e => setFilterTag(e.target.value)}
-            placeholder="أدخل جزء من العلامة"
-          />
-        </div>
-        <div className="filter-group">
-          <label htmlFor="filter-date-from">من تاريخ:</label>
-          <input
-            type="date"
-            id="filter-date-from"
-            name="filter-date-from"
-            value={filterDateFrom}
-            onChange={e => setFilterDateFrom(e.target.value)}
-          />
-        </div>
-        <div className="filter-group">
-          <label htmlFor="filter-date-to">إلى تاريخ:</label>
-          <input
-            type="date"
-            id="filter-date-to"
-            name="filter-date-to"
-            value={filterDateTo}
-            onChange={e => setFilterDateTo(e.target.value)}
-          />
-        </div>
-        <button className="btn btn-secondary" onClick={() => {
-          setFilterCategory(''); setFilterTag(''); setFilterDateFrom(''); setFilterDateTo('');
-        }}>مسح الفلاتر</button>
-      </div>
-
       {/* عرض الصور */}
       <div className="images-grid">
-        {filteredImages.length === 0 ? (
+        {images.length === 0 ? (
           <div className="empty-gallery">
             <FaImages className="empty-icon" />
             <h3>لا توجد صور</h3>
@@ -383,7 +239,7 @@ const ImageGalleryManager = ({
             </button>
           </div>
         ) : (
-          filteredImages.map((image) => (
+          images.map((image) => (
             <motion.div
               key={image.id}
               className="image-card"
@@ -415,13 +271,6 @@ const ImageGalleryManager = ({
                     onClick={() => handleDeleteImage(image.id)}
                   >
                     <FaTrash />
-                  </button>
-                  <button
-                    className="overlay-btn"
-                    onClick={() => openEditModal(image)}
-                    aria-label="تعديل الصورة"
-                  >
-                    <FaEdit />
                   </button>
                 </div>
               </div>
@@ -498,7 +347,6 @@ const ImageGalleryManager = ({
                     <input
                       type="file"
                       id="image-file"
-                      name="image-file"
                       accept="image/*"
                       onChange={handleFileChange}
                       className="file-input"
@@ -515,7 +363,6 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-title"
-                      name="image-title"
                       value={newImage.title}
                       onChange={(e) => setNewImage(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="أدخل عنوان الصورة"
@@ -526,7 +373,6 @@ const ImageGalleryManager = ({
                     <label htmlFor="image-description">وصف الصورة</label>
                     <textarea
                       id="image-description"
-                      name="image-description"
                       value={newImage.description}
                       onChange={(e) => setNewImage(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="أدخل وصف الصورة"
@@ -538,7 +384,6 @@ const ImageGalleryManager = ({
                     <label htmlFor="image-category">الفئة</label>
                     <select
                       id="image-category"
-                      name="image-category"
                       value={newImage.category}
                       onChange={(e) => setNewImage(prev => ({ ...prev, category: e.target.value }))}
                     >
@@ -554,7 +399,6 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-location"
-                      name="image-location"
                       value={newImage.location}
                       onChange={(e) => setNewImage(prev => ({ ...prev, location: e.target.value }))}
                       placeholder="أدخل مكان التقاط الصورة"
@@ -566,7 +410,6 @@ const ImageGalleryManager = ({
                     <input
                       type="date"
                       id="image-date"
-                      name="image-date"
                       value={newImage.date}
                       onChange={(e) => setNewImage(prev => ({ ...prev, date: e.target.value }))}
                     />
@@ -577,7 +420,6 @@ const ImageGalleryManager = ({
                     <input
                       type="text"
                       id="image-tags"
-                      name="image-tags"
                       value={newImage.tags}
                       onChange={(e) => setNewImage(prev => ({ ...prev, tags: e.target.value }))}
                       placeholder="مثال: مساعدات، طعام، رمضان"
@@ -697,108 +539,6 @@ const ImageGalleryManager = ({
                   <FaShare />
                   مشاركة
                 </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* نموذج تعديل بيانات الصورة */}
-      <AnimatePresence>
-        {showEditModal && editImage && (
-          <motion.div
-            className="modal-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowEditModal(false)}
-          >
-            <motion.div
-              className="modal-content large"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="modal-header">
-                <h3><FaEdit /> تعديل بيانات الصورة</h3>
-                <button className="close-btn" onClick={() => setShowEditModal(false)}><FaTimes /></button>
-              </div>
-              <div className="modal-body">
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="edit-image-title">عنوان الصورة *</label>
-                    <input
-                      type="text"
-                      id="edit-image-title"
-                      name="edit-image-title"
-                      value={editImage.title}
-                      onChange={e => setEditImage(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="أدخل عنوان الصورة"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="edit-image-description">وصف الصورة</label>
-                    <textarea
-                      id="edit-image-description"
-                      name="edit-image-description"
-                      value={editImage.description}
-                      onChange={e => setEditImage(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="أدخل وصف الصورة"
-                      rows="3"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="edit-image-category">الفئة</label>
-                    <select
-                      id="edit-image-category"
-                      name="edit-image-category"
-                      value={editImage.category}
-                      onChange={e => setEditImage(prev => ({ ...prev, category: e.target.value }))}
-                    >
-                      <option value="">اختر الفئة</option>
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="edit-image-location">المكان</label>
-                    <input
-                      type="text"
-                      id="edit-image-location"
-                      name="edit-image-location"
-                      value={editImage.location}
-                      onChange={e => setEditImage(prev => ({ ...prev, location: e.target.value }))}
-                      placeholder="أدخل مكان التقاط الصورة"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="edit-image-date">تاريخ الصورة</label>
-                    <input
-                      type="date"
-                      id="edit-image-date"
-                      name="edit-image-date"
-                      value={editImage.date}
-                      onChange={e => setEditImage(prev => ({ ...prev, date: e.target.value }))}
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="edit-image-tags">العلامات (مفصولة بفواصل)</label>
-                    <input
-                      type="text"
-                      id="edit-image-tags"
-                      name="edit-image-tags"
-                      value={editImage.tags}
-                      onChange={e => setEditImage(prev => ({ ...prev, tags: e.target.value }))}
-                      placeholder="مثال: مساعدات، طعام، رمضان"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowEditModal(false)}>إلغاء</button>
-                <button className="btn btn-primary" onClick={handleEditImage}><FaEdit /> حفظ التعديلات</button>
               </div>
             </motion.div>
           </motion.div>

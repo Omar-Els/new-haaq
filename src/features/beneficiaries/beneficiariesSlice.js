@@ -4,12 +4,6 @@ import { addNotification } from '../notifications/notificationsSlice';
 import { mongoService } from '../../services/mongoService';
 import { offlineService } from '../../services/offlineService';
 import cloudSync from '../../services/cloudSync';
-import { 
-  saveToIndexedDB, 
-  getFromIndexedDB, 
-  deleteFromIndexedDB,
-  migrateData 
-} from '../../utils/indexedDBManager';
 
 // دالة مساعدة لتحويل dataURL إلى File
 const dataURLtoFile = (dataurl, filename) => {
@@ -22,29 +16,6 @@ const dataURLtoFile = (dataurl, filename) => {
     u8arr[n] = bstr.charCodeAt(n);
   }
   return new File([u8arr], filename, { type: mime });
-};
-
-// دالة لإنشاء معرف كشف فريد
-const generateSheetId = () => {
-  const timestamp = Date.now();
-  const random = Math.floor(Math.random() * 1000);
-  return `SHEET-${timestamp}-${random}`;
-};
-
-// دالة لإنشاء اسم كشف تلقائي
-const generateSheetName = (beneficiaryCount = 0) => {
-  const now = new Date();
-  const month = now.toLocaleDateString('ar-EG', { month: 'long' });
-  const year = now.getFullYear();
-  return `كشف ${month} ${year} (${beneficiaryCount} مستفيد)`;
-};
-
-// دالة لضغط البيانات للحفظ
-const compressDataForStorage = (beneficiaries) => {
-  return beneficiaries.map(beneficiary => {
-    const { spouseIdImage, wifeIdImage, ...compressedBeneficiary } = beneficiary;
-    return compressedBeneficiary;
-  });
 };
 
 // حفظ معرفات المستفيدين فقط في localStorage للجلسة
@@ -75,12 +46,11 @@ const getBeneficiariesFromStorage = async () => {
         const beneficiariesWithImages = await Promise.all(
           beneficiaries.map(async (beneficiary) => {
             try {
-              const images = await getFromIndexedDB('images');
-              const beneficiaryImages = images.filter(img => img.beneficiaryId === beneficiary.id);
+              const images = await dbManager.getBeneficiaryImages(beneficiary.id);
               const imageData = {};
 
-              if (Array.isArray(beneficiaryImages)) {
-                beneficiaryImages.forEach(img => {
+              if (Array.isArray(images)) {
+                images.forEach(img => {
                   imageData[img.type] = img.data;
                 });
               }
@@ -224,7 +194,7 @@ const saveBeneficiariesToStorage = async (beneficiaries) => {
 
       if (migrate) {
         try {
-          await migrateData();
+          await dbManager.migrateFromLocalStorage();
           await saveBeneficiariesToStorage(beneficiaries);
           alert('تم الترحيل بنجاح! الآن لديك مساحة تخزين أكبر.');
         } catch (migrationError) {
@@ -459,12 +429,6 @@ export const addBeneficiary = createAsyncThunk(
       // فحص الحقول المفقودة
       checkForMissingFields(savedBeneficiary, dispatch);
       checkForMissingIDImages(savedBeneficiary, dispatch);
-
-      // إضافة المستفيد للكشف إذا تم تحديده
-      if (beneficiaryData.sheetId) {
-        // سيتم التعامل مع إضافة المستفيد للكشف في مكون آخر
-        console.log(`📝 المستفيد ${savedBeneficiary.name} محدد للكشف: ${beneficiaryData.sheetId}`);
-      }
 
       dispatch(addNotification({
         type: 'success',

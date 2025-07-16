@@ -116,9 +116,9 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
   };
 
   return (
-    <div className="form-container form-fade-in">
+    <div className="initiative-form-container">
       <h2>{isEditing ? 'تعديل المبادرة' : 'إضافة مبادرة جديدة'}</h2>
-      <form onSubmit={handleSubmit} className="form-grid single-column">
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">اسم المبادرة</label>
           <input
@@ -128,7 +128,6 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             value={formData.name}
             onChange={handleChange}
             className={errors.name ? 'error' : ''}
-            autoComplete="off"
           />
           {errors.name && <div className="error-message">{errors.name}</div>}
         </div>
@@ -142,7 +141,6 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             value={formData.date}
             onChange={handleChange}
             className={errors.date ? 'error' : ''}
-            autoComplete="off"
           />
           {errors.date && <div className="error-message">{errors.date}</div>}
         </div>
@@ -156,13 +154,12 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             onChange={handleChange}
             rows="4"
             className={errors.description ? 'error' : ''}
-            autoComplete="off"
           ></textarea>
           {errors.description && <div className="error-message">{errors.description}</div>}
         </div>
 
         <div className="form-group">
-          <span className="group-label">المستفيدون</span>
+          <label htmlFor="beneficiaries-selection">المستفيدون</label>
           <div id="beneficiaries-selection" className="beneficiaries-selection">
             {allBeneficiaries.length > 0 ? (
               <div className="beneficiaries-list">
@@ -199,15 +196,14 @@ const InitiativeForm = ({ initiative = null, onComplete, isEditing = false }) =>
             onChange={handleChange}
             min="0"
             step="0.01"
-            autoComplete="off"
           />
         </div>
 
         <div className="form-actions">
-          <button type="button" className="btn-secondary" onClick={onComplete}>
+          <button type="button" className="btn btn-secondary" onClick={onComplete}>
             إلغاء
           </button>
-          <button type="submit" className="btn-primary">
+          <button type="submit" className="btn btn-primary">
             {isEditing ? 'تحديث المبادرة' : 'إضافة المبادرة'}
           </button>
         </div>

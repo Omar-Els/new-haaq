@@ -124,21 +124,6 @@ const Login = () => {
       animate="visible"
     >
       <motion.div className="card" variants={itemVariants}>
-        {/* شعار الجمعية */}
-        <div className="auth-logo">
-          <div className="logo-container">
-            <div className="logo-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-            </div>
-            <div className="logo-text">
-              <h1>دعوة الحق</h1>
-              <p>جمعية خيرية مغلقة</p>
-            </div>
-          </div>
-        </div>
-        
         <h2>تسجيل الدخول</h2>
 
         {authError && (
@@ -182,7 +167,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="btn-primary"
+            className="btn btn-primary"
             disabled={isLoading}
           >
             {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}

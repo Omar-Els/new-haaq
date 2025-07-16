@@ -192,7 +192,7 @@ const VolunteerRegistration = () => {
 
   return (
     <motion.div
-      className="form-container form-fade-in"
+      className="volunteer-registration-container"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -219,74 +219,69 @@ const VolunteerRegistration = () => {
             
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="name" className="adaptive-text">الاسم الكامل *</label>
+                <label htmlFor="name">الاسم الكامل *</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={errors.name ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.name ? 'error' : ''}
                   placeholder="أدخل الاسم الكامل"
-                  autoComplete="name"
                 />
-                {errors.name && <span className="error-message adaptive-text">{errors.name}</span>}
+                {errors.name && <span className="error-message">{errors.name}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="nationalId" className="adaptive-text">الرقم القومي *</label>
+                <label htmlFor="nationalId">الرقم القومي *</label>
                 <input
                   type="text"
                   id="nationalId"
                   name="nationalId"
                   value={formData.nationalId}
                   onChange={handleInputChange}
-                  className={errors.nationalId ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.nationalId ? 'error' : ''}
                   placeholder="14 رقم"
                   maxLength="14"
-                  autoComplete="off"
                 />
-                {errors.nationalId && <span className="error-message adaptive-text">{errors.nationalId}</span>}
+                {errors.nationalId && <span className="error-message">{errors.nationalId}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="email" className="adaptive-text">البريد الإلكتروني *</label>
+                <label htmlFor="email">البريد الإلكتروني *</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={errors.email ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.email ? 'error' : ''}
                   placeholder="example@email.com"
-                  autoComplete="email"
                 />
-                {errors.email && <span className="error-message adaptive-text">{errors.email}</span>}
+                {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone" className="adaptive-text">رقم الهاتف *</label>
+                <label htmlFor="phone">رقم الهاتف *</label>
                 <input
                   type="tel"
                   id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className={errors.phone ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.phone ? 'error' : ''}
                   placeholder="01234567890"
-                  autoComplete="tel"
                 />
-                {errors.phone && <span className="error-message adaptive-text">{errors.phone}</span>}
+                {errors.phone && <span className="error-message">{errors.phone}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="gender" className="adaptive-text">الجنس</label>
+                <label htmlFor="gender">الجنس</label>
                 <select
                   id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="adaptive-text"
                 >
                   <option value="male">ذكر</option>
                   <option value="female">أنثى</option>
@@ -294,19 +289,18 @@ const VolunteerRegistration = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="birthDate" className="adaptive-text">تاريخ الميلاد</label>
+                <label htmlFor="birthDate">تاريخ الميلاد</label>
                 <input
                   type="date"
                   id="birthDate"
                   name="birthDate"
                   value={formData.birthDate}
                   onChange={handleInputChange}
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="address" className="adaptive-text">العنوان</label>
+                <label htmlFor="address">العنوان</label>
                 <textarea
                   id="address"
                   name="address"
@@ -314,7 +308,6 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   rows="2"
                   placeholder="أدخل العنوان الكامل"
-                  className="adaptive-text"
                 />
               </div>
             </div>
@@ -329,13 +322,13 @@ const VolunteerRegistration = () => {
             
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="qualification" className="adaptive-text">المؤهل التعليمي *</label>
+                <label htmlFor="qualification">المؤهل التعليمي *</label>
                 <select
                   id="qualification"
                   name="qualification"
                   value={formData.qualification}
                   onChange={handleInputChange}
-                  className={errors.qualification ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.qualification ? 'error' : ''}
                 >
                   <option value="">اختر المؤهل</option>
                   <option value="high-school">ثانوية عامة</option>
@@ -345,11 +338,11 @@ const VolunteerRegistration = () => {
                   <option value="phd">دكتوراه</option>
                   <option value="other">أخرى</option>
                 </select>
-                {errors.qualification && <span className="error-message adaptive-text">{errors.qualification}</span>}
+                {errors.qualification && <span className="error-message">{errors.qualification}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="job" className="adaptive-text">الوظيفة الحالية</label>
+                <label htmlFor="job">الوظيفة الحالية</label>
                 <input
                   type="text"
                   id="job"
@@ -357,18 +350,17 @@ const VolunteerRegistration = () => {
                   value={formData.job}
                   onChange={handleInputChange}
                   placeholder="مثال: مهندس، طبيب، معلم"
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="department" className="adaptive-text">القسم المفضل *</label>
+                <label htmlFor="department">القسم المفضل *</label>
                 <select
                   id="department"
                   name="department"
                   value={formData.department}
                   onChange={handleInputChange}
-                  className={errors.department ? 'error adaptive-text' : 'adaptive-text'}
+                  className={errors.department ? 'error' : ''}
                 >
                   <option value="">اختر القسم</option>
                   <option value="education">التعليم والتدريب</option>
@@ -381,17 +373,16 @@ const VolunteerRegistration = () => {
                   <option value="legal">الشؤون القانونية</option>
                   <option value="other">أخرى</option>
                 </select>
-                {errors.department && <span className="error-message adaptive-text">{errors.department}</span>}
+                {errors.department && <span className="error-message">{errors.department}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="availability" className="adaptive-text">التوفر</label>
+                <label htmlFor="availability">التوفر</label>
                 <select
                   id="availability"
                   name="availability"
                   value={formData.availability}
                   onChange={handleInputChange}
-                  className="adaptive-text"
                 >
                   <option value="part-time">دوام جزئي</option>
                   <option value="full-time">دوام كامل</option>
@@ -401,7 +392,7 @@ const VolunteerRegistration = () => {
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="skills" className="adaptive-text">المهارات</label>
+                <label htmlFor="skills">المهارات</label>
                 <input
                   type="text"
                   id="skills"
@@ -409,12 +400,11 @@ const VolunteerRegistration = () => {
                   value={formData.skills}
                   onChange={handleInputChange}
                   placeholder="مثال: تصميم، برمجة، تدريس، إدارة (مفصولة بفواصل)"
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="experience" className="adaptive-text">الخبرات السابقة</label>
+                <label htmlFor="experience">الخبرات السابقة</label>
                 <textarea
                   id="experience"
                   name="experience"
@@ -422,7 +412,6 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   rows="3"
                   placeholder="اذكر خبراتك السابقة في العمل التطوعي أو المهني"
-                  className="adaptive-text"
                 />
               </div>
             </div>
@@ -437,7 +426,7 @@ const VolunteerRegistration = () => {
             
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="emergencyContact.name" className="adaptive-text">اسم شخص للطوارئ</label>
+                <label htmlFor="emergencyContact.name">اسم شخص للطوارئ</label>
                 <input
                   type="text"
                   id="emergencyContact.name"
@@ -445,12 +434,11 @@ const VolunteerRegistration = () => {
                   value={formData.emergencyContact.name}
                   onChange={handleInputChange}
                   placeholder="اسم الشخص"
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="emergencyContact.phone" className="adaptive-text">رقم هاتف الطوارئ</label>
+                <label htmlFor="emergencyContact.phone">رقم هاتف الطوارئ</label>
                 <input
                   type="tel"
                   id="emergencyContact.phone"
@@ -458,12 +446,11 @@ const VolunteerRegistration = () => {
                   value={formData.emergencyContact.phone}
                   onChange={handleInputChange}
                   placeholder="01234567890"
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="emergencyContact.relation" className="adaptive-text">صلة القرابة</label>
+                <label htmlFor="emergencyContact.relation">صلة القرابة</label>
                 <input
                   type="text"
                   id="emergencyContact.relation"
@@ -471,12 +458,11 @@ const VolunteerRegistration = () => {
                   value={formData.emergencyContact.relation}
                   onChange={handleInputChange}
                   placeholder="مثال: والد، أخ، صديق"
-                  className="adaptive-text"
                 />
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="notes" className="adaptive-text">ملاحظات إضافية</label>
+                <label htmlFor="notes">ملاحظات إضافية</label>
                 <textarea
                   id="notes"
                   name="notes"
@@ -484,7 +470,6 @@ const VolunteerRegistration = () => {
                   onChange={handleInputChange}
                   rows="3"
                   placeholder="أي ملاحظات أو معلومات إضافية"
-                  className="adaptive-text"
                 />
               </div>
             </div>
@@ -494,7 +479,7 @@ const VolunteerRegistration = () => {
           <div className="form-actions">
             <button
               type="button"
-              className="btn btn-secondary adaptive-text"
+              className="btn btn-secondary"
               onClick={() => navigate('/volunteers')}
             >
               <FaTimes />
@@ -503,7 +488,7 @@ const VolunteerRegistration = () => {
             
             <button
               type="submit"
-              className={`btn-primary ${isSubmitting ? 'btn-loading' : ''} adaptive-text`}
+              className={`btn btn-primary ${isSubmitting ? 'loading' : ''}`}
               disabled={isSubmitting}
             >
               {isSubmitting ? (

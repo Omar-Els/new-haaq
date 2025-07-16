@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { selectTheme } from './features/ui/themeSlice';
 import { selectIsAuthenticated, loginSuccess } from './features/auth/authSlice';
-import ThemeProvider from './components/ThemeProvider';
 import { fetchBeneficiaries } from './features/beneficiaries/beneficiariesSlice';
 import { fetchTransactions } from './features/finance/financeSlice';
 import { clearOldNotifications } from './features/notifications/notificationsSlice';
@@ -11,7 +10,6 @@ import { saveAppState, loadAppState } from './utils/stateManager';
 import { setupScrollManager, restoreScrollPosition } from './utils/scrollManager';
 import { StorageManager } from './utils/storageManager';
 import { getUserFromStorage } from './utils/firebase';
-import { migrateData } from './utils/indexedDBManager';
 import { store } from './app/store';
 import Navbar from './components/Navbar';
 import FloatingActionButton from './components/FloatingActionButton';
@@ -71,21 +69,6 @@ function App() {
   // تحميل البيانات من localStorage عند بدء التطبيق
   useEffect(() => {
     console.log('Loading data from localStorage...');
-
-    // ترحيل البيانات إلى IndexedDB إذا كان متاحاً
-    const performMigration = async () => {
-      try {
-        const migrated = await migrateData();
-        if (migrated) {
-          console.log('✅ تم ترحيل البيانات إلى IndexedDB بنجاح');
-        }
-      } catch (error) {
-        console.warn('⚠️ فشل في ترحيل البيانات إلى IndexedDB:', error);
-      }
-    };
-
-    // تأخير الترحيل قليلاً لضمان تحميل التطبيق أولاً
-    setTimeout(performMigration, 2000);
 
     // فحص ومراقبة مساحة التخزين
     console.log('🚀 بدء مراقبة مساحة التخزين...');
@@ -238,20 +221,18 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <div className={`app ${theme === 'dark' ? 'dark-theme' : ''} ${isFabActive ? 'fab-active' : ''}`}>
-        <Navbar />
-        <main className="main-content">
-          <AppRoutes />
-        </main>
-        <ScrollToTop scrollThreshold={300} />
-        {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
-        <FloatingActionButton />
-        <ToastNotifications />
-        {/* تم تعطيل StorageAlert لأن لدينا نظام أفضل في الإعدادات */}
-        {/* <StorageAlert /> */}
-      </div>
-    </ThemeProvider>
+    <div className={`app ${theme === 'dark' ? 'dark-theme' : ''} ${isFabActive ? 'fab-active' : ''}`}>
+      <Navbar />
+      <main className="main-content">
+        <AppRoutes />
+      </main>
+      <ScrollToTop scrollThreshold={300} />
+      {/* إزالة الشرط لضمان ظهور الزر دائمًا للاختبار */}
+      <FloatingActionButton />
+      <ToastNotifications />
+      {/* تم تعطيل StorageAlert لأن لدينا نظام أفضل في الإعدادات */}
+      {/* <StorageAlert /> */}
+    </div>
   );
 }
 

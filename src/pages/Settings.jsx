@@ -24,8 +24,6 @@ import { dbManager, getDatabaseInfo, migrateData } from '../utils/indexedDBManag
 import DataCleanupButton from '../components/DataCleanupButton';
 import NotificationCleanup from '../components/NotificationCleanup';
 import RoleSwitcher from '../components/RoleSwitcher';
-import SyncIndicator from '../components/SyncIndicator';
-import BackupManager from '../components/BackupManager';
 import './Settings.css';
 
 /**
@@ -55,7 +53,6 @@ const Settings = () => {
   const [isCleaningStorage, setIsCleaningStorage] = useState(false);
   const [databaseInfo, setDatabaseInfo] = useState(null);
   const [isMigrating, setIsMigrating] = useState(false);
-  const [showBackupManager, setShowBackupManager] = useState(false);
 
   // مراجع للعناصر
   const colorPickerRef = useRef(null);
@@ -1154,20 +1151,6 @@ const Settings = () => {
 
               {/* زر تنظيف البيانات المحلية */}
               <DataCleanupButton />
-
-              {/* أيقونة المزامنة */}
-              <div className="setting-item">
-                <div className="setting-label">حالة المزامنة</div>
-                <div className="setting-control">
-                  <SyncIndicator onClick={() => setShowBackupManager(true)} />
-                </div>
-              </div>
-
-              {/* Backup Manager Modal */}
-              <BackupManager
-                isOpen={showBackupManager}
-                onClose={() => setShowBackupManager(false)}
-              />
 
               <div className="setting-preview">
                 <h3>إدارة البيانات</h3>

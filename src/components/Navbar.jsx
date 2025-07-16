@@ -7,7 +7,6 @@ import SyncIndicator from './SyncIndicator';
 import BackupManager from './BackupManager';
 import { FaBars, FaTimes, FaChevronDown } from 'react-icons/fa';
 import './Navbar.css';
-import { createPortal } from 'react-dom';
 
 const MENU_STATE_KEY = 'navbar_menu_state';
 
@@ -23,7 +22,6 @@ const Navbar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showBackupManager, setShowBackupManager] = useState(false);
   const [showDropdownBackdrop, setShowDropdownBackdrop] = useState(false);
-  const [showMoreDrawer, setShowMoreDrawer] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -139,11 +137,11 @@ const Navbar = () => {
         <ul className={isMenuOpen ? "nav-menu active" : "nav-menu"}>
           {isAuthenticated ? (
             <>
-              {/* <li className="nav-item">
+              <li className="nav-item">
                 <Link to="/" className="nav-link" onClick={closeMenu}>
                   الرئيسية
                 </Link>
-              </li> */}
+              </li>
               <li className="nav-item">
                 <Link to="/initiatives" className="nav-link" onClick={closeMenu}>
                   المبادرات
@@ -173,19 +171,16 @@ const Navbar = () => {
                 </Link>
               </li>
 
-
               {isMobileView ? (
                 <>
-                  {/* زر المزيد في الموبايل */}
                   <li className="nav-item">
-                    <button className="nav-link more-btn-mobile" style={{fontSize:'1.1rem',fontWeight:'bold',padding:'1rem',width:'100%'}} onClick={() => setShowMoreDrawer(true)}>
-                      المزيد <FaChevronDown style={{verticalAlign:'middle'}} />
-                    </button>
+                    <Link to="/beneficiaries" className="nav-link" onClick={closeMenu}>
+                      المستفيدون
+                    </Link>
                   </li>
-                  {/* باقي الروابط الأساسية ... */}
                   <li className="nav-item">
-                    <Link to="/sheets" className="nav-link" onClick={closeMenu}>
-                      الكشفات
+                    <Link to="/volunteers" className="nav-link" onClick={closeMenu}>
+                      المتطوعون
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -194,18 +189,13 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/development-projects" className="nav-link" onClick={closeMenu}>
-                      المشاريع التنموية
+                    <Link to="/settings" className="nav-link" onClick={closeMenu}>
+                      الإعدادات
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/gallery" className="nav-link" onClick={closeMenu}>
-                      معرض الصور
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link to="/healthcare" className="nav-link" onClick={closeMenu}>
-                      الرعاية الصحية
+                    <Link to="/about" className="nav-link" onClick={closeMenu}>
+                      عن دعوة الحق
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -230,11 +220,6 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/sheets" onClick={closeMenu}>
-                        الكشفات
-                      </Link>
-                    </li>
-                    <li>
                       <Link to="/volunteers" onClick={closeMenu}>
                         المتطوعون
                       </Link>
@@ -255,29 +240,9 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/development-projects" onClick={closeMenu}>
-                        المشاريع التنموية
-                      </Link>
-                    </li>
-                                      <li>
-                    <Link to="/quran" onClick={closeMenu}>
-                      تحفيظ القرآن
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/gallery" className="dropdown-link" onClick={closeMenu}>
-                      معرض الصور
-                    </Link>
-                  </li>
-                    <li>
                       <button onClick={handleLogout}>
                         تسجيل الخروج
                       </button>
-                    </li>
-                    <li>
-                      <Link to="/healthcare" className="dropdown-link" onClick={closeMenu}>
-                        الرعاية الصحية
-                      </Link>
                     </li>
                   </ul>
                 </li>
@@ -298,9 +263,9 @@ const Navbar = () => {
             </>
           )}
 
-          {/* <li className="sync-indicator-container">
+          <li className="sync-indicator-container">
             <SyncIndicator onClick={() => setShowBackupManager(true)} />
-          </li> */}
+          </li>
 
           <li className="theme-toggle-container">
             <ThemeToggle />
@@ -313,29 +278,6 @@ const Navbar = () => {
           </div>
         )}
       </div>
-
-      {/* Drawer/Overlay للمزيد في الموبايل */}
-      {isMobileView && showMoreDrawer && (
-        <div className="more-drawer-overlay" onClick={() => setShowMoreDrawer(false)}>
-          <div className="more-drawer" onClick={e => e.stopPropagation()}>
-            <button className="close-more-drawer" onClick={() => setShowMoreDrawer(false)} style={{background:'none',border:'none',fontSize:'2rem',color:'#333',position:'absolute',top:10,left:10,cursor:'pointer'}}>
-              <FaTimes />
-            </button>
-            <ul style={{listStyle:'none',padding:'2rem 1rem 1rem 1rem',margin:0}}>
-              <li><Link to="/beneficiaries" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المستفيدون</Link></li>
-              <li><Link to="/sheets" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الكشفات</Link></li>
-              <li><Link to="/volunteers" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المتطوعون</Link></li>
-              <li><Link to="/reports" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>التقارير</Link></li>
-              <li><Link to="/settings" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الإعدادات</Link></li>
-              <li><Link to="/about" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>عن دعوة الحق</Link></li>
-              <li><Link to="/development-projects" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>المشاريع التنموية</Link></li>
-              <li><Link to="/quran" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>تحفيظ القرآن</Link></li>
-              <li><Link to="/gallery" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>معرض الصور</Link></li>
-              <li><Link to="/healthcare" onClick={() => {setShowMoreDrawer(false);closeMenu();}}>الرعاية الصحية</Link></li>
-            </ul>
-          </div>
-        </div>
-      )}
 
       {/* Dropdown Backdrop */}
       {showDropdownBackdrop && (

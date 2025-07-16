@@ -13,7 +13,6 @@ import {
   selectSheetsError,
   selectSheetsStats,
   selectMonthlyTotal,
-  fetchSheets,
   createSheet,
   updateSheet,
   deleteSheet,
@@ -21,7 +20,8 @@ import {
   removeBeneficiaryFromSheet,
   updateBeneficiaryAmount,
   setSelectedSheet,
-  clearSelectedSheet
+  clearSelectedSheet,
+  listenToSheetsRealtime
 } from '../features/sheets/sheetsSlice';
 import { selectAllBeneficiaries } from '../features/beneficiaries/beneficiariesSlice';
 import { addNotification } from '../features/notifications/notificationsSlice';
@@ -73,9 +73,9 @@ const SheetsManager = () => {
     monthlyAmount: ''
   });
 
-  // Load sheets on component mount
+  // الاستماع اللحظي للكشوفات من الريل تايم
   useEffect(() => {
-    dispatch(fetchSheets());
+    dispatch(listenToSheetsRealtime());
   }, [dispatch]);
 
   // Filter sheets

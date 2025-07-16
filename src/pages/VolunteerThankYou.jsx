@@ -38,46 +38,46 @@ const VolunteerThankYou = () => {
           <FaCheckCircle />
         </div>
         
-        <h1 className="adaptive-text">شكراً لك!</h1>
-        <h2 className="adaptive-text">تم إرسال طلب الانضمام بنجاح</h2>
+        <h1>شكراً لك!</h1>
+        <h2>تم إرسال طلب الانضمام بنجاح</h2>
         
-        <p className="main-message adaptive-text">
+        <p className="main-message">
           نشكرك على رغبتك في الانضمام لفريق دعوة الحق. 
           سيتم مراجعة طلبك والتواصل معك خلال 3-5 أيام عمل.
         </p>
 
         <div className="next-steps">
-          <h3 className="adaptive-text">الخطوات التالية:</h3>
+          <h3>الخطوات التالية:</h3>
           <div className="steps-list">
             <div className="step-item">
               <span className="step-number">1</span>
               <div className="step-content">
-                <h4 className="adaptive-text">مراجعة الطلب</h4>
-                <p className="adaptive-text">سيقوم فريقنا بمراجعة طلبك والتحقق من البيانات</p>
+                <h4>مراجعة الطلب</h4>
+                <p>سيقوم فريقنا بمراجعة طلبك والتحقق من البيانات</p>
               </div>
             </div>
             
             <div className="step-item">
               <span className="step-number">2</span>
               <div className="step-content">
-                <h4 className="adaptive-text">المقابلة الشخصية</h4>
-                <p className="adaptive-text">سنتواصل معك لترتيب مقابلة شخصية أو عبر الهاتف</p>
+                <h4>المقابلة الشخصية</h4>
+                <p>سنتواصل معك لترتيب مقابلة شخصية أو عبر الهاتف</p>
               </div>
             </div>
             
             <div className="step-item">
               <span className="step-number">3</span>
               <div className="step-content">
-                <h4 className="adaptive-text">التدريب والتأهيل</h4>
-                <p className="adaptive-text">ستحصل على التدريب اللازم للبدء في العمل التطوعي</p>
+                <h4>التدريب والتأهيل</h4>
+                <p>ستحصل على التدريب اللازم للبدء في العمل التطوعي</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="contact-info">
-          <h3 className="adaptive-text">تواصل معنا</h3>
-          <p className="adaptive-text">إذا كان لديك أي استفسار، لا تتردد في التواصل معنا:</p>
+          <h3>تواصل معنا</h3>
+          <p>إذا كان لديك أي استفسار، لا تتردد في التواصل معنا:</p>
           
           <div className="contact-methods">
             <a href="tel:01234567890" className="contact-method">
@@ -98,7 +98,7 @@ const VolunteerThankYou = () => {
         </div>
 
         <div className="social-follow">
-          <h3 className="adaptive-text">تابعنا على وسائل التواصل</h3>
+          <h3>تابعنا على وسائل التواصل</h3>
           <div className="social-links">
             <a href="#" className="social-link facebook">
               <FaFacebook />

@@ -1,8 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
 import ProtectedRoute from '../components/ProtectedRoute';
-import HealthcarePage from '../features/healthcare/HealthcarePage';
-import DevelopmentProjectsManager from '../components/DevelopmentProjectsManager';
 
 // Lazy loading components
 const Login = lazy(() => import('../pages/Login'));
@@ -18,15 +16,12 @@ const Volunteers = lazy(() => import('../pages/Volunteers'));
 const JoinVolunteer = lazy(() => import('../pages/JoinVolunteer'));
 const VolunteerThankYou = lazy(() => import('../pages/VolunteerThankYou'));
 const Beneficiaries = lazy(() => import('../pages/Beneficiaries'));
-const Sheets = lazy(() => import('../pages/Sheets'));
 const VolunteerRegistration = lazy(() => import('../pages/VolunteerRegistration'));
-const Gallery = lazy(() => import('../pages/Gallery'));
-const QuranMemorization = lazy(() => import('../pages/QuranMemorization'));
 
 // Loading fallback
 const LoadingFallback = () => (
   <div className="loading-fallback">
-    <h2 className="adaptive-text">جاري التحميل...</h2>
+    <h2>جاري التحميل...</h2>
   </div>
 );
 
@@ -108,14 +103,6 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/sheets"
-          element={
-            <ProtectedRoute>
-              <Sheets />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/join-volunteer" element={<JoinVolunteer />} />
         <Route path="/volunteer-thank-you" element={<VolunteerThankYou />} />
         <Route
@@ -126,24 +113,6 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/gallery"
-          element={
-            <ProtectedRoute>
-              <Gallery />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/quran"
-          element={
-            <ProtectedRoute>
-              <QuranMemorization />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/healthcare" element={<HealthcarePage />} />
-        <Route path="/development-projects" element={<DevelopmentProjectsManager />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

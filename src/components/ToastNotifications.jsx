@@ -160,73 +160,31 @@ const ToastNotifications = () => {
     }
   };
 
-  // دالة لتحديد إذا كانت الخلفية فاتحة أم غامقة
-  const isColorLight = (color) => {
-    if (!color) return true;
-    // إزالة # إذا موجود
-    color = color.replace('#', '');
-    // دعم rgb/rgba
-    if (color.startsWith('rgb')) {
-      const rgb = color.match(/\d+/g).map(Number);
-      // صيغة: [r,g,b]
-      const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
-      return brightness > 150;
-    }
-    // hex
-    if (color.length === 3) {
-      color = color.split('').map(x => x + x).join('');
-    }
-    const r = parseInt(color.substr(0,2),16);
-    const g = parseInt(color.substr(2,2),16);
-    const b = parseInt(color.substr(4,2),16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 150;
-  };
-
-  // دالة لإرجاع لون النص المناسب حسب الخلفية
-  const getAdaptiveTextColor = (bgColor) => {
-    return isColorLight(bgColor) ? '#222' : '#fff';
-  };
-
   return (
     <div className="toast-container">
       <AnimatePresence>
-        {visibleToasts.map(toast => {
-          // جلب لون الخلفية الفعلي من CSS
-          let bgColor = getComputedStyle(document.documentElement).getPropertyValue('--card-bg') || '#fff';
-          // إذا كان هناك نوع خاص (success, error, ...)
-          if (toast.type === 'success') bgColor = getComputedStyle(document.documentElement).getPropertyValue('--success-color') || bgColor;
-          if (toast.type === 'error') bgColor = getComputedStyle(document.documentElement).getPropertyValue('--error-color') || bgColor;
-          if (toast.type === 'warning') bgColor = getComputedStyle(document.documentElement).getPropertyValue('--warning-color') || bgColor;
-          if (toast.type === 'info') bgColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || bgColor;
-
-          const adaptiveTextColor = getAdaptiveTextColor(bgColor.trim());
-
-          return (
-            <motion.div
-              key={toast.toastId}
-              className={`toast-notification ${toast.type || 'info'}`}
-              initial={{ opacity: 0, y: 50, scale: 0.3 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-              layout
-              style={{ color: adaptiveTextColor }}
+        {visibleToasts.map(toast => (
+          <motion.div
+            key={toast.toastId}
+            className={`toast-notification ${toast.type || 'info'}`}
+            initial={{ opacity: 0, y: 50, scale: 0.3 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+            layout
+          >
+            <div className="toast-content">
+              {getIcon(toast.type)}
+              <div className="toast-message">{toast.message}</div>
+            </div>
+            <button
+              className="toast-close"
+              onClick={() => dismissToast(toast.id)}
+              aria-label="إغلاق الإشعار"
             >
-              <div className="toast-content">
-                {getIcon(toast.type)}
-                <div className="toast-message adaptive-text">{toast.message}</div>
-              </div>
-              <button
-                className="toast-close adaptive-text"
-                onClick={() => dismissToast(toast.id)}
-                aria-label="إغلاق الإشعار"
-                style={{ color: adaptiveTextColor }}
-              >
-                <FaTimes />
-              </button>
-            </motion.div>
-          );
-        })}
+              <FaTimes />
+            </button>
+          </motion.div>
+        ))}
       </AnimatePresence>
     </div>
   );

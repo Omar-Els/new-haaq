@@ -97,4 +97,65 @@ export function exportSheetToPDF(sheet, beneficiaries) {
   };
 
   pdfMake.createPdf(docDefinition).download(`كشف_${sheet.name}_${sheet.month}_${sheet.year}.pdf`);
+}
+
+// تصدير تقرير شهري PDF
+export function exportMonthlyReportToPDF(data, month, year) {
+  const tableBody = [
+    Object.keys(data[0] || {}).map(key => ({ text: key, alignment: "right" })),
+    ...data.map(row => Object.values(row))
+  ];
+  const docDefinition = {
+    content: [
+      { text: `تقرير شهري (${month}/${year})`, style: "header", alignment: "right" },
+      { table: { headerRows: 1, body: tableBody }, layout: "lightHorizontalLines" }
+    ],
+    defaultStyle: { font: "Cairo", alignment: "right" },
+    styles: { header: { fontSize: 18, bold: true } }
+  };
+  pdfMake.createPdf(docDefinition).download(`تقرير_شهري_${month}_${year}.pdf`);
+}
+
+// تصدير كشف تفصيلي PDF
+export function exportDetailedSheetToPDF(sheet, beneficiaries) {
+  const tableBody = [
+    [
+      { text: "م", alignment: "right" },
+      { text: "اسم المستفيد", alignment: "right" },
+      { text: "الرقم القومي", alignment: "right" },
+      { text: "تفاصيل إضافية", alignment: "right" }
+    ],
+    ...beneficiaries.map((b, i) => [
+      i + 1,
+      b.name || "غير محدد",
+      b.nationalId || "غير محدد",
+      b.details || "-"
+    ])
+  ];
+  const docDefinition = {
+    content: [
+      { text: `كشف تفصيلي - ${sheet.name}`, style: "header", alignment: "right" },
+      { table: { headerRows: 1, body: tableBody }, layout: "lightHorizontalLines" }
+    ],
+    defaultStyle: { font: "Cairo", alignment: "right" },
+    styles: { header: { fontSize: 18, bold: true } }
+  };
+  pdfMake.createPdf(docDefinition).download(`كشف_تفصيلي_${sheet.name}.pdf`);
+}
+
+// تصدير تقرير سنوي PDF
+export function exportYearlyReportToPDF(data, year) {
+  const tableBody = [
+    Object.keys(data[0] || {}).map(key => ({ text: key, alignment: "right" })),
+    ...data.map(row => Object.values(row))
+  ];
+  const docDefinition = {
+    content: [
+      { text: `تقرير سنوي (${year})`, style: "header", alignment: "right" },
+      { table: { headerRows: 1, body: tableBody }, layout: "lightHorizontalLines" }
+    ],
+    defaultStyle: { font: "Cairo", alignment: "right" },
+    styles: { header: { fontSize: 18, bold: true } }
+  };
+  pdfMake.createPdf(docDefinition).download(`تقرير_سنوي_${year}.pdf`);
 } 

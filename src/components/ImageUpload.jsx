@@ -100,7 +100,6 @@ const ImageUpload = ({
         accept="image/*"
         style={{ display: "none" }}
         id={inputId || `file-input-${containerId}`}
-        name={inputId || `file-input-${containerId}`}
         aria-label={label}
       />
 
